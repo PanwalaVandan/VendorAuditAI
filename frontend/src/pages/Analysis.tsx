@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, Component, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Play, FileText, AlertTriangle, Loader2, RefreshCw, Download, FileSpreadsheet, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,6 +7,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/u
 import { CardSkeleton, SkeletonLoader } from '@/components/ui/TypingIndicator';
 import { FindingsSummary, FindingsList } from '@/components/findings';
 import apiClient, { getApiErrorMessage } from '@/lib/api';
+import { normalizeFinding } from '@/lib/findings';
 import type { Document, Finding, AnalysisRun, Severity } from '@/types/api';
 
 // Animation variants
@@ -52,13 +54,50 @@ const FRAMEWORKS = [
 type FrameworkType = typeof FRAMEWORKS[number]['value'];
 
 /**
+ * Error boundary to catch render crashes in findings components
+ * and show a readable error instead of a blank screen.
+ */
+class FindingsErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, message: error.message };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 rounded-lg bg-destructive/10 text-destructive border border-destructive/20">
+          <p className="font-medium">Failed to render findings</p>
+          <p className="text-sm mt-1 text-muted-foreground">{this.state.message}</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/**
  * Analysis Page - Document analysis dashboard with findings display.
  * Allows users to select a document, run analysis, and view findings.
  */
 export function Analysis() {
   const queryClient = useQueryClient();
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string>('');
+  const [searchParams] = useSearchParams();
+
+  // Allow vendor/document pages to pre-select a document via ?document_id=...
+  const documentIdParam = searchParams.get('document_id') ?? '';
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string>(documentIdParam);
   const [selectedFramework, setSelectedFramework] = useState<FrameworkType>('soc2_tsc');
+
+  // Keep the selection in sync if the URL param changes (e.g. browser back/forward)
+  useEffect(() => {
+    if (documentIdParam) setSelectedDocumentId(documentIdParam);
+  }, [documentIdParam]);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState<'csv' | 'pdf' | null>(null);
 
@@ -140,7 +179,8 @@ export function Analysis() {
     enabled: !!selectedDocumentId,
   });
 
-  const findings: Finding[] = findingsResponse?.data || [];
+  // Normalize snake_case backend response to camelCase Finding shape
+  const findings: Finding[] = (findingsResponse?.data || []).map(normalizeFinding);
   const analysisRuns: AnalysisRun[] = runsResponse?.data || [];
   const latestRun = analysisRuns[0];
 
@@ -148,10 +188,11 @@ export function Analysis() {
   const runAnalysisMutation = useMutation({
     mutationFn: async ({ documentId, framework }: { documentId: string; framework: FrameworkType }) => {
       // POST /analysis/documents/{document_id}/analyze with { framework, chunk_limit }
+      // LLM analysis can take 60-180s depending on document size and provider, so use a long timeout
       const response = await apiClient.post(`/analysis/documents/${documentId}/analyze`, {
         framework,
         chunk_limit: 50,
-      });
+      }, { timeout: 180000 });
       return response.data;
     },
     onSuccess: () => {
@@ -452,6 +493,7 @@ export function Analysis() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            <FindingsErrorBoundary>
             {findings.length > 0 ? (
               <div className="space-y-6">
                 {/* Summary Statistics */}
@@ -528,6 +570,7 @@ export function Analysis() {
                 </Card>
               </motion.div>
             )}
+            </FindingsErrorBoundary>
           </motion.div>
         )}
       </AnimatePresence>

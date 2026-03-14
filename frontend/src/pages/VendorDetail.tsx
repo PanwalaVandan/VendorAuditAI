@@ -34,6 +34,7 @@ import {
   DialogFooter,
 } from '@/components/ui';
 import apiClient, { getApiErrorMessage } from '@/lib/api';
+import { normalizeFinding } from '@/lib/findings';
 import { AIClassificationPanel } from '@/components/vendors/AIClassificationPanel';
 import type { Vendor, VendorTier, VendorStatus, Document, Finding, UpdateVendorRequest } from '@/types/api';
 
@@ -101,7 +102,8 @@ export function VendorDetail() {
   });
 
   const documents: Document[] = documentsResponse?.data || [];
-  const findings: Finding[] = findingsResponse?.data || [];
+  // Normalize snake_case backend response to camelCase Finding shape
+  const findings: Finding[] = (findingsResponse?.data || []).map(normalizeFinding);
 
   // Update mutation
   const updateMutation = useMutation({
@@ -479,7 +481,7 @@ export function VendorDetail() {
                 <FileText className="h-5 w-5" />
                 Documents ({documents.length})
               </CardTitle>
-              <Button variant="outline" size="sm" onClick={() => navigate('/documents')}>
+              <Button variant="outline" size="sm" onClick={() => navigate(`/documents?vendor_id=${id}`)}>
                 Upload Document
               </Button>
             </CardHeader>
@@ -568,7 +570,17 @@ export function VendorDetail() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => navigate('/analysis')}
+                    onClick={() => {
+                      // Navigate to analysis pre-selecting the first analyzed document
+                      const analyzedDoc = documents.find(
+                        (d) => d.status === 'analyzed' || d.status === 'processed'
+                      );
+                      navigate(
+                        analyzedDoc
+                          ? `/analysis?document_id=${analyzedDoc.id}`
+                          : '/analysis'
+                      );
+                    }}
                   >
                     View All Findings
                   </Button>

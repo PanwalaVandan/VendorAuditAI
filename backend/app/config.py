@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     minio_secure: bool = False
 
     # AI/ML - Provider Selection
-    llm_provider: str = "anthropic"  # "anthropic" or "gemini"
+    llm_provider: str = "anthropic"  # "anthropic", "gemini", or "deepseek"
     embedding_provider: str = "openai"  # "openai" or "gemini"
 
     # Anthropic (Claude) - Using Claude Opus 4.5 (Latest as of Jan 2026)
@@ -57,6 +57,11 @@ class Settings(BaseSettings):
     google_api_key: str | None = None
     gemini_model: str = "gemini-3.0-flash"
     gemini_embedding_model: str = "text-embedding-005"
+
+    # DeepSeek - OpenAI-compatible API
+    deepseek_api_key: str | None = None
+    deepseek_model: str = "deepseek-chat"
+    deepseek_base_url: str = "https://api.deepseek.com"
 
     # Document Processing
     azure_doc_intel_endpoint: str | None = None

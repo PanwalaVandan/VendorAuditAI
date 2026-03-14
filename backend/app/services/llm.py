@@ -725,11 +725,224 @@ Provide your answer in JSON format:
         return self._parse_json_response(raw_text)
 
 
-LLMService = ClaudeService | GeminiService
+class DeepSeekService(BaseLLMService):
+    """Service for interacting with DeepSeek API for document analysis.
+
+    DeepSeek exposes an OpenAI-compatible API, so this service uses the
+    openai Python package pointed at DeepSeek's base URL.
+
+    Supported models:
+    - deepseek-chat     (DeepSeek-V3, general purpose, default)
+    - deepseek-reasoner (DeepSeek-R1, chain-of-thought reasoning)
+    """
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        base_url: str | None = None,
+    ):
+        """Initialize the DeepSeek service.
+
+        Args:
+            api_key: DeepSeek API key (uses settings if not provided)
+            model: Model name (uses settings if not provided)
+            base_url: API base URL (uses settings if not provided)
+        """
+        settings = get_settings()
+        self.api_key = api_key or settings.deepseek_api_key
+        self._model = model or settings.deepseek_model
+        self._base_url = base_url or settings.deepseek_base_url
+        self._client = None
+
+        if self.api_key:
+            try:
+                from openai import AsyncOpenAI
+
+                self._client = AsyncOpenAI(
+                    api_key=self.api_key,
+                    base_url=self._base_url,
+                )
+            except ImportError:
+                pass
+
+    @property
+    def is_configured(self) -> bool:
+        """Check if the service has valid API credentials."""
+        return self._client is not None
+
+    @property
+    def model(self) -> str:
+        """Return the model name being used."""
+        return self._model
+
+    async def _generate(
+        self,
+        prompt: str,
+        system: str | None = None,
+        max_tokens: int = 4096,
+    ) -> tuple[str, int, int]:
+        """Generate content using the DeepSeek API.
+
+        Args:
+            prompt: The user prompt to send
+            system: Optional system prompt
+            max_tokens: Maximum tokens in response
+
+        Returns:
+            Tuple of (response_text, input_tokens, output_tokens)
+        """
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+
+        response = await self._client.chat.completions.create(
+            model=self._model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=0.1,
+        )
+
+        content = response.choices[0].message.content or ""
+        input_tokens = response.usage.prompt_tokens if response.usage else 0
+        output_tokens = response.usage.completion_tokens if response.usage else 0
+        return content, input_tokens, output_tokens
+
+    async def analyze_document(
+        self,
+        chunks: list[dict],
+        framework: str,
+        document_type: str,
+        max_tokens: int = 4096,
+    ) -> AnalysisResult:
+        """Analyze document chunks against a compliance framework."""
+        if not self.is_configured:
+            raise ValueError("DeepSeek API key not configured")
+
+        context = self._build_context(chunks)
+        prompt = self._build_analysis_prompt(context, framework, document_type)
+        raw_text, input_tokens, output_tokens = await self._generate(
+            prompt, self.ANALYSIS_SYSTEM_PROMPT, max_tokens
+        )
+        findings = self._parse_findings(raw_text)
+
+        return AnalysisResult(
+            findings=findings,
+            summary=self._extract_summary(findings),
+            raw_response=raw_text,
+            model=self._model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+        )
+
+    async def analyze_document_with_prompt(
+        self,
+        prompt: str,
+        framework: str,
+        document_type: str | None = None,
+        max_tokens: int = 8192,
+    ) -> AnalysisResult:
+        """Analyze document using a pre-built prompt."""
+        if not self.is_configured:
+            raise ValueError("DeepSeek API key not configured")
+
+        from app.prompts.compliance_analysis import COMPLIANCE_ANALYSIS_SYSTEM_PROMPT
+
+        raw_text, input_tokens, output_tokens = await self._generate(
+            prompt, COMPLIANCE_ANALYSIS_SYSTEM_PROMPT, max_tokens
+        )
+        parsed = self._parse_enhanced_response(raw_text)
+        findings = parsed.get("findings", [])
+        summary = parsed.get("overall_assessment", {}).get(
+            "summary", self._extract_summary(findings)
+        )
+
+        return AnalysisResult(
+            findings=findings,
+            summary=summary,
+            raw_response=raw_text,
+            model=self._model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+        )
+
+    async def generate_finding_details(
+        self,
+        chunk_content: str,
+        framework_control: str,
+        initial_concern: str,
+        max_tokens: int = 2048,
+    ) -> dict:
+        """Generate detailed finding information for a specific concern."""
+        if not self.is_configured:
+            raise ValueError("DeepSeek API key not configured")
+
+        prompt = f"""Analyze this document excerpt and provide a detailed finding assessment.
+
+Document Excerpt:
+{chunk_content}
+
+Framework Control: {framework_control}
+Initial Concern: {initial_concern}
+
+Provide a detailed assessment in JSON format:
+{{
+    "title": "Brief finding title",
+    "severity": "critical|high|medium|low|info",
+    "description": "Detailed description of the finding",
+    "evidence": "Specific quote from the document",
+    "impact": "Business impact of this finding",
+    "remediation": "Recommended remediation steps",
+    "confidence": 0.0-1.0
+}}"""
+
+        raw_text, _, _ = await self._generate(prompt, max_tokens=max_tokens)
+        return self._parse_json_response(raw_text)
+
+    async def answer_query(
+        self,
+        query: str,
+        context_chunks: list[dict],
+        max_tokens: int = 2048,
+    ) -> dict:
+        """Answer a natural language query about the documents."""
+        if not self.is_configured:
+            raise ValueError("DeepSeek API key not configured")
+
+        context = self._build_context(context_chunks)
+
+        prompt = f"""Based on the following document excerpts, answer the user's question.
+
+Document Context:
+{context}
+
+User Question: {query}
+
+Provide your answer in JSON format:
+{{
+    "answer": "Your detailed answer",
+    "confidence": 0.0-1.0,
+    "citations": [
+        {{
+            "chunk_index": 0,
+            "excerpt": "relevant quote",
+            "relevance": "why this is relevant"
+        }}
+    ],
+    "limitations": "Any limitations or caveats"
+}}"""
+
+        raw_text, _, _ = await self._generate(prompt, max_tokens=max_tokens)
+        return self._parse_json_response(raw_text)
+
+
+LLMService = ClaudeService | GeminiService | DeepSeekService
 
 
 _claude_service: ClaudeService | None = None
 _gemini_service: GeminiService | None = None
+_deepseek_service: DeepSeekService | None = None
 _llm_service: LLMService | None = None
 
 
@@ -747,6 +960,13 @@ def get_gemini_service() -> GeminiService:
     return _gemini_service
 
 
+def get_deepseek_service() -> DeepSeekService:
+    global _deepseek_service
+    if _deepseek_service is None:
+        _deepseek_service = DeepSeekService()
+    return _deepseek_service
+
+
 def create_llm_service(provider: str | None = None) -> LLMService:
     settings = get_settings()
     provider = provider or settings.llm_provider
@@ -754,6 +974,8 @@ def create_llm_service(provider: str | None = None) -> LLMService:
         return ClaudeService()
     elif provider == "gemini":
         return GeminiService()
+    elif provider == "deepseek":
+        return DeepSeekService()
     raise ValueError(f"Unsupported LLM provider: {provider}")
 
 

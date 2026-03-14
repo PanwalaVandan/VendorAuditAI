@@ -239,11 +239,12 @@ def _calculate_document_freshness_score(documents: list[Document]) -> tuple[floa
     oldest_age_days = 0
 
     for doc in processed_docs:
-        if doc.processed_at:
-            age = (now - doc.processed_at).days
-            oldest_age_days = max(oldest_age_days, age)
-        elif doc.created_at:
-            age = (now - doc.created_at).days
+        ts = doc.processed_at or doc.created_at
+        if ts:
+            # SQLite stores naive datetimes - treat as UTC for safe comparison
+            if ts.tzinfo is None:
+                ts = ts.replace(tzinfo=timezone.utc)
+            age = (now - ts).days
             oldest_age_days = max(oldest_age_days, age)
 
     # Score based on age thresholds

@@ -48,6 +48,9 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      // Clear the Zustand persist store so isAuthenticated resets to false,
+      // preventing an infinite redirect loop between /login and /dashboard
+      localStorage.removeItem('auth-storage');
 
       // Only redirect if not already on login page
       if (window.location.pathname !== '/login') {

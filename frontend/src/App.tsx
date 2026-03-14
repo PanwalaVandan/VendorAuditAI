@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout, AuthLayout } from '@/components/layout';
 import { Landing, Login, Register, Dashboard, Vendors, VendorDetail, Documents, Query, Analysis, Remediation, Monitoring, Agents, Risk, Analytics, Competition, Playbooks, ApprovedVendors, BPO, Integrations } from '@/pages';
@@ -33,10 +33,21 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   const { init } = useAuthStore();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Run init synchronously then allow routes to render.
+    // This prevents a race where Zustand's persisted isAuthenticated: true
+    // is visible to ProtectedRoute/PublicRoute before init() has a chance
+    // to reset it when tokens are missing (which causes the redirect loop).
     init();
+    setReady(true);
   }, [init]);
+
+  if (!ready) {
+    // Blank frame while auth state is being resolved - avoids redirect flicker
+    return null;
+  }
 
   return (
     <ToastProvider>

@@ -177,11 +177,20 @@ export const useAuthStore = create<AuthState>()(
         const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken && refreshToken) {
-          // Tokens exist, consider authenticated (will be validated on first API call)
+          // Tokens exist - consider authenticated (validated on first API call)
           set({
             accessToken,
             refreshToken,
             isAuthenticated: true,
+          });
+        } else {
+          // No tokens - explicitly reset auth state to prevent stale persisted
+          // isAuthenticated: true from causing an infinite /login <-> /dashboard loop
+          set({
+            user: null,
+            accessToken: null,
+            refreshToken: null,
+            isAuthenticated: false,
           });
         }
       },

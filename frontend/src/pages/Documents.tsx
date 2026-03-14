@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Search, FileText, MoreVertical, CheckCircle, Clock, AlertCircle, Loader2, Download, Trash2 } from 'lucide-react';
 import {
@@ -51,6 +52,8 @@ interface BackendDocument {
 
 export function Documents() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const vendorIdFromUrl = searchParams.get('vendor_id');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -87,11 +90,21 @@ export function Documents() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await apiClient.post('/documents', formData);
+      // If arriving from a vendor detail page, associate the document with that vendor
+      const url = vendorIdFromUrl
+        ? `/documents?vendor_id=${encodeURIComponent(vendorIdFromUrl)}`
+        : '/documents';
+
+      // Document upload triggers text extraction and chunking which can be slow for large files
+      const response = await apiClient.post(url, formData, { timeout: 120000 });
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
+      // Also invalidate vendor-documents so the vendor detail page refreshes
+      if (vendorIdFromUrl) {
+        queryClient.invalidateQueries({ queryKey: ['vendor-documents', vendorIdFromUrl] });
+      }
       setUploadError(null);
     },
     onError: (error) => {
@@ -233,6 +246,12 @@ export function Documents() {
           <h1 className="text-5xl font-bold tracking-tighter text-white neon-text mb-2">
             DOCUMENT<span className="text-primary">VAULT</span>
           </h1>
+          {vendorIdFromUrl && (
+            <div className="mb-2 px-3 py-1.5 rounded-md bg-primary/10 border border-primary/30 text-sm text-primary font-mono inline-flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              UPLOADING FOR VENDOR — documents will be linked automatically
+            </div>
+          )}
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <motion.span

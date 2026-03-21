@@ -46,6 +46,7 @@ from app.models.bpo import (
     TestResult,
 )
 from app.models.base import Base, SoftDeleteMixin, TimestampMixin, UUIDMixin
+from app.models.custom_framework import CustomControl, CustomFramework
 from app.models.chunk import DocumentChunk
 from app.models.document import Document, DocumentStatus, DocumentType, ProcessingStage
 from app.models.finding import AnalysisRun, Finding, FindingSeverity, FindingStatus
@@ -138,6 +139,8 @@ __all__ = [
     "AuditAction",
     "AuditLog",
     "Base",
+    "CustomControl",
+    "CustomFramework",
     "ConversationThread",
     "Department",
     "Document",

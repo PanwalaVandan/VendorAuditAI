@@ -18,6 +18,7 @@ import {
   CheckCircle,
   Users,
   Link2,
+  Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/authStore';
@@ -41,6 +42,7 @@ const navigation: NavItem[] = [
   { name: 'Vendors', href: '/vendors', icon: Building2 },
   { name: 'Documents', href: '/documents', icon: FileText },
   { name: 'Analysis', href: '/analysis', icon: Shield },
+  { name: 'Frameworks', href: '/frameworks', icon: Layers },
   { name: 'Remediation', href: '/remediation', icon: ClipboardList },
   { name: 'Monitoring', href: '/monitoring', icon: Bell },
   { name: 'Query', href: '/query', icon: MessageSquare },

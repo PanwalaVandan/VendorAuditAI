@@ -8,6 +8,7 @@ from app.api.v1.endpoints import (
     ai_classification,
     analysis,
     analytics,
+    custom_frameworks,
     approved_vendors,
     audit,
     auth,
@@ -105,6 +106,11 @@ api_router.include_router(
 # Include approved vendors router
 api_router.include_router(
     approved_vendors.router, prefix="/approved-vendors", tags=["Approved AI Vendors"]
+)
+
+# Include custom frameworks router
+api_router.include_router(
+    custom_frameworks.router, prefix="/custom-frameworks", tags=["Custom Frameworks"]
 )
 
 # Include BPO router

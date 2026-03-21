@@ -12,9 +12,18 @@ FrameworkType = Literal["nist_800_53", "soc2_tsc", "iso_27001", "cis_controls", 
 
 
 class AnalysisRequest(BaseModel):
-    """Request to trigger document analysis."""
+    """Request to trigger document analysis.
 
-    framework: FrameworkType = Field(..., description="Compliance framework to analyze against")
+    Supply either `framework` (a built-in framework key) OR `custom_framework_id`
+    (the UUID of a custom framework).  Exactly one must be provided.
+    """
+
+    framework: FrameworkType | None = Field(
+        None, description="Built-in compliance framework key"
+    )
+    custom_framework_id: str | None = Field(
+        None, description="UUID of a custom framework to analyze against"
+    )
     chunk_limit: int = Field(50, ge=1, le=200, description="Maximum chunks to analyze")
 
 

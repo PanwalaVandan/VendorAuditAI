@@ -38,13 +38,19 @@ async def analyze_document(
     The document must be processed before analysis.
     Analysis uses Claude to identify gaps against the specified framework.
     """
+    if not analysis_request.framework and not analysis_request.custom_framework_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Provide either 'framework' (built-in) or 'custom_framework_id'.",
+        )
     try:
         analysis_run = await analysis_service.run_analysis(
             db=db,
             document_id=document_id,
             org_id=current_user.organization_id,
-            framework=analysis_request.framework,
+            framework=analysis_request.framework or "custom",
             chunk_limit=analysis_request.chunk_limit,
+            custom_framework_id=analysis_request.custom_framework_id,
         )
         await db.commit()
         await db.refresh(analysis_run)

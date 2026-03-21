@@ -24,7 +24,9 @@ from app.services.compliance import (
     get_framework_controls,
     get_framework_summary,
 )
+from app.models.custom_framework import CustomFramework
 from app.services.llm import SUPPORTED_FRAMEWORKS, get_llm_service
+from sqlalchemy.orm import selectinload
 
 
 async def get_analysis_run_by_id(
@@ -303,6 +305,7 @@ async def run_analysis(
     framework: str,
     chunk_limit: int = 50,
     focus_controls: list[str] | None = None,
+    custom_framework_id: str | None = None,
 ) -> AnalysisRun:
     """Run enhanced compliance analysis on a document.
 
@@ -311,13 +314,17 @@ async def run_analysis(
     - Enhanced prompts for detailed finding generation
     - Page-specific citations from document chunks
 
+    When custom_framework_id is provided the analysis runs against the user-defined
+    controls from that framework instead of a built-in one.
+
     Args:
         db: Database session
         document_id: Document to analyze
         org_id: Organization ID
-        framework: Compliance framework (e.g., 'soc2', 'iso27001')
+        framework: Compliance framework key or 'custom'
         chunk_limit: Maximum chunks to analyze
         focus_controls: Optional list of specific control IDs to focus on
+        custom_framework_id: UUID of a CustomFramework to use instead of built-in
 
     Returns:
         AnalysisRun with detailed findings
@@ -325,8 +332,26 @@ async def run_analysis(
     Raises:
         ValueError: If document not found or analysis fails
     """
-    # Validate framework
-    if framework not in SUPPORTED_FRAMEWORKS:
+    # Resolve custom framework or validate built-in
+    custom_fw = None
+    if custom_framework_id:
+        fw_result = await db.execute(
+            select(CustomFramework)
+            .where(
+                CustomFramework.id == custom_framework_id,
+                CustomFramework.organization_id == org_id,
+                CustomFramework.is_active == True,  # noqa: E712
+            )
+            .options(selectinload(CustomFramework.controls))
+        )
+        custom_fw = fw_result.scalar_one_or_none()
+        if not custom_fw:
+            raise ValueError("Custom framework not found")
+        if not custom_fw.controls:
+            raise ValueError("Custom framework has no controls — add at least one control before running analysis")
+        # Use a unique framework label so findings are traceable
+        framework = f"custom:{custom_fw.name}"
+    elif framework not in SUPPORTED_FRAMEWORKS:
         raise ValueError(f"Unsupported framework: {framework}")
 
     # Get document
@@ -348,24 +373,36 @@ async def run_analysis(
     if not llm_service.is_configured:
         raise ValueError("LLM service not configured - check API keys")
 
-    # Load framework controls for validation and context
-    framework_summary = get_framework_summary(framework)
-    control_mapping = _get_framework_control_mapping(framework)
-
-    # Get specific controls if focus_controls specified
-    controls_for_prompt = None
-    if focus_controls:
+    # Load framework controls for prompt context
+    if custom_fw:
+        framework_summary = None
+        control_mapping = {}
+        # Serialise custom controls into the same shape the prompt builder expects
         controls_for_prompt = [
-            {"id": ctrl_id, **control_mapping[ctrl_id]}
-            for ctrl_id in focus_controls
-            if ctrl_id in control_mapping
+            {
+                "id": ctrl.control_id,
+                "name": ctrl.name,
+                "description": ctrl.description,
+                "category": ctrl.category or "",
+                "guidance": ctrl.guidance or "",
+            }
+            for ctrl in custom_fw.controls
         ]
-    elif control_mapping:
-        # Include a sample of controls in the prompt for context
-        sample_controls = list(control_mapping.items())[:15]
-        controls_for_prompt = [
-            {"id": ctrl_id, **details} for ctrl_id, details in sample_controls
-        ]
+    else:
+        framework_summary = get_framework_summary(framework)
+        control_mapping = _get_framework_control_mapping(framework)
+        controls_for_prompt = None
+        if focus_controls:
+            controls_for_prompt = [
+                {"id": ctrl_id, **control_mapping[ctrl_id]}
+                for ctrl_id in focus_controls
+                if ctrl_id in control_mapping
+            ]
+        elif control_mapping:
+            sample_controls = list(control_mapping.items())[:15]
+            controls_for_prompt = [
+                {"id": ctrl_id, **details} for ctrl_id, details in sample_controls
+            ]
 
     # Create analysis run
     analysis_run = AnalysisRun(

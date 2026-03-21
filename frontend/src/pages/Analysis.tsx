@@ -51,7 +51,18 @@ const FRAMEWORKS = [
   { value: 'ai_risk', label: 'AI Risk Assessment' },
 ] as const;
 
-type FrameworkType = typeof FRAMEWORKS[number]['value'];
+type BuiltinFrameworkType = typeof FRAMEWORKS[number]['value'];
+// Allow built-in keys or a custom: prefixed key for display purposes
+type FrameworkType = BuiltinFrameworkType | string;
+
+// Custom framework summary shape returned by /custom-frameworks
+interface CustomFrameworkSummary {
+  id: string;
+  name: string;
+  version: string;
+  control_count: number;
+  is_active: boolean;
+}
 
 /**
  * Error boundary to catch render crashes in findings components
@@ -91,13 +102,23 @@ export function Analysis() {
 
   // Allow vendor/document pages to pre-select a document via ?document_id=...
   const documentIdParam = searchParams.get('document_id') ?? '';
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string>(documentIdParam);
-  const [selectedFramework, setSelectedFramework] = useState<FrameworkType>('soc2_tsc');
+  // Allow Frameworks page to pre-select a custom framework via ?custom_framework_id=...
+  const customFrameworkIdParam = searchParams.get('custom_framework_id') ?? '';
 
-  // Keep the selection in sync if the URL param changes (e.g. browser back/forward)
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string>(documentIdParam);
+  // Selected value is either a built-in key (e.g. "soc2_tsc") or "custom:<uuid>" for custom frameworks
+  const [selectedFramework, setSelectedFramework] = useState<FrameworkType>(
+    customFrameworkIdParam ? `custom:${customFrameworkIdParam}` : 'soc2_tsc'
+  );
+
+  // Keep the selection in sync if the URL params change (e.g. browser back/forward)
   useEffect(() => {
     if (documentIdParam) setSelectedDocumentId(documentIdParam);
   }, [documentIdParam]);
+
+  useEffect(() => {
+    if (customFrameworkIdParam) setSelectedFramework(`custom:${customFrameworkIdParam}`);
+  }, [customFrameworkIdParam]);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState<'csv' | 'pdf' | null>(null);
 
@@ -151,6 +172,19 @@ export function Analysis() {
     (doc: Document) => doc.status === 'processed' || doc.status === 'analyzed'
   );
 
+  // Fetch custom frameworks for the org
+  const { data: customFrameworksResponse } = useQuery({
+    queryKey: ['custom-frameworks-for-analysis'],
+    queryFn: async () => {
+      const response = await apiClient.get('/custom-frameworks?limit=100');
+      return response.data;
+    },
+  });
+
+  const customFrameworks: CustomFrameworkSummary[] = (customFrameworksResponse?.data || []).filter(
+    (fw: CustomFrameworkSummary) => fw.is_active
+  );
+
   // Fetch findings for selected document using the correct endpoint
   const {
     data: findingsResponse,
@@ -187,12 +221,18 @@ export function Analysis() {
   // Run analysis mutation - uses correct backend endpoint
   const runAnalysisMutation = useMutation({
     mutationFn: async ({ documentId, framework }: { documentId: string; framework: FrameworkType }) => {
-      // POST /analysis/documents/{document_id}/analyze with { framework, chunk_limit }
+      // Determine if this is a custom framework (stored as "custom:<uuid>")
+      const isCustom = framework.startsWith('custom:');
+      const body = isCustom
+        ? { custom_framework_id: framework.replace('custom:', ''), chunk_limit: 50 }
+        : { framework, chunk_limit: 50 };
+      // POST /analysis/documents/{document_id}/analyze
       // LLM analysis can take 60-180s depending on document size and provider, so use a long timeout
-      const response = await apiClient.post(`/analysis/documents/${documentId}/analyze`, {
-        framework,
-        chunk_limit: 50,
-      }, { timeout: 180000 });
+      const response = await apiClient.post(
+        `/analysis/documents/${documentId}/analyze`,
+        body,
+        { timeout: 180000 }
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -315,11 +355,22 @@ export function Analysis() {
                   onChange={(e) => setSelectedFramework(e.target.value as FrameworkType)}
                   className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  {FRAMEWORKS.map((fw) => (
-                    <option key={fw.value} value={fw.value}>
-                      {fw.label}
-                    </option>
-                  ))}
+                  <optgroup label="Built-in Frameworks">
+                    {FRAMEWORKS.map((fw) => (
+                      <option key={fw.value} value={fw.value}>
+                        {fw.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                  {customFrameworks.length > 0 && (
+                    <optgroup label="Custom Frameworks">
+                      {customFrameworks.map((fw) => (
+                        <option key={fw.id} value={`custom:${fw.id}`}>
+                          {fw.name} v{fw.version} ({fw.control_count} controls)
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
                 </select>
               </div>
 
@@ -431,7 +482,11 @@ export function Analysis() {
                   <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
                   <h3 className="text-lg font-medium mb-2">Analysis in Progress</h3>
                   <p className="text-muted-foreground text-center mb-4">
-                    Analyzing document against {FRAMEWORKS.find(f => f.value === selectedFramework)?.label || selectedFramework}...
+                    Analyzing document against {
+                      selectedFramework.startsWith('custom:')
+                        ? customFrameworks.find(f => `custom:${f.id}` === selectedFramework)?.name ?? 'Custom Framework'
+                        : FRAMEWORKS.find(f => f.value === selectedFramework)?.label ?? selectedFramework
+                    }...
                   </p>
                   <p className="text-sm text-muted-foreground">
                     This may take 1-2 minutes depending on document size.

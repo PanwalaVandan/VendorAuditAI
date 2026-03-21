@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout, AuthLayout } from '@/components/layout';
-import { Landing, Login, Register, Dashboard, Vendors, VendorDetail, Documents, Query, Analysis, Remediation, Monitoring, Agents, Risk, Analytics, Competition, Playbooks, ApprovedVendors, BPO, Integrations } from '@/pages';
+import { Landing, Login, Register, Dashboard, Vendors, VendorDetail, Documents, Query, Analysis, Remediation, Monitoring, Agents, Risk, Analytics, Competition, Playbooks, ApprovedVendors, BPO, Integrations, Frameworks } from '@/pages';
 import { useAuthStore } from '@/stores/authStore';
 import { ToastProvider } from '@/components/ui/toast';
 
@@ -88,6 +88,7 @@ function App() {
           <Route path="/approved-vendors" element={<ApprovedVendors />} />
           <Route path="/bpo" element={<BPO />} />
           <Route path="/integrations" element={<Integrations />} />
+          <Route path="/frameworks" element={<Frameworks />} />
           <Route path="/search" element={<Dashboard />} />
           <Route path="/settings" element={<Dashboard />} />
         </Route>

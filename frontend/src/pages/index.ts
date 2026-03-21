@@ -17,3 +17,4 @@ export { Playbooks } from './Playbooks';
 export { ApprovedVendors } from './ApprovedVendors';
 export { BPO } from './BPO';
 export { Integrations } from './Integrations';
+export { Frameworks } from './Frameworks';

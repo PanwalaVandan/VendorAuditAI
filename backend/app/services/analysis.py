@@ -348,7 +348,7 @@ async def run_analysis(
         if not custom_fw:
             raise ValueError("Custom framework not found")
         if not custom_fw.controls:
-            raise ValueError("Custom framework has no controls — add at least one control before running analysis")
+            raise ValueError("Custom framework has no controls - add at least one control before running analysis")
         # Use a unique framework label so findings are traceable
         framework = f"custom:{custom_fw.name}"
     elif framework not in SUPPORTED_FRAMEWORKS:

@@ -126,7 +126,7 @@ export function Frameworks() {
     queryKey: ['builtin-frameworks'],
     queryFn: async () => {
       const res = await apiClient.get('/frameworks');
-      return res.data.frameworks as BuiltinFrameworkSummary[];
+      return (res.data.data ?? res.data.frameworks ?? []) as BuiltinFrameworkSummary[];
     },
     enabled: showClone,
     staleTime: Infinity,

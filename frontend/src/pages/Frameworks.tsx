@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Layers, Trash2, Pencil, Play, X, ChevronDown, ChevronUp, Copy } from 'lucide-react';
+import { Plus, Layers, Trash2, Pencil, Play, X, ChevronDown, ChevronUp, Copy, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/ui';
 import apiClient, { getApiErrorMessage } from '@/lib/api';
@@ -45,33 +45,30 @@ interface FrameworkSummary {
   updated_at: string;
 }
 
-// Starter controls to pre-populate when cloning a built-in
-const BUILTIN_STARTER_CONTROLS: Record<string, Array<{ control_id: string; name: string; description: string; category: string }>> = {
-  soc2_tsc: [
-    { control_id: 'CC1.1', name: 'Control Environment', description: 'The entity demonstrates a commitment to integrity and ethical values.', category: 'Common Criteria' },
-    { control_id: 'CC2.1', name: 'Communication of Objectives', description: 'Management communicates information relevant to meeting objectives.', category: 'Common Criteria' },
-    { control_id: 'CC6.1', name: 'Logical Access Controls', description: 'Logical access security software and infrastructure protect against threats.', category: 'Security' },
-  ],
-  nist_800_53: [
-    { control_id: 'AC-1', name: 'Access Control Policy', description: 'Develop, document, and disseminate an access control policy.', category: 'Access Control' },
-    { control_id: 'AU-2', name: 'Audit Events', description: 'Identify the types of events that the system is capable of logging.', category: 'Audit & Accountability' },
-    { control_id: 'IR-4', name: 'Incident Handling', description: 'Implement an incident handling capability for security incidents.', category: 'Incident Response' },
-  ],
-  iso_27001: [
-    { control_id: 'A.5.1', name: 'Information Security Policies', description: 'Policies for information security shall be defined and approved by management.', category: 'Policies' },
-    { control_id: 'A.9.1', name: 'Access Control Policy', description: 'An access control policy shall be established, documented and reviewed.', category: 'Access Control' },
-    { control_id: 'A.12.1', name: 'Operational Procedures', description: 'Operating procedures shall be documented and made available to users.', category: 'Operations' },
-  ],
-};
+// Types for built-in framework API responses
+interface BuiltinFrameworkSummary {
+  id: string;
+  name: string;
+  version: string;
+  description: string;
+  category_count: number;
+  control_count: number;
+}
 
-const BUILTIN_LABELS: Record<string, string> = {
-  soc2_tsc: 'SOC 2 TSC',
-  nist_800_53: 'NIST 800-53',
-  iso_27001: 'ISO 27001',
-  cis_controls: 'CIS Controls',
-  hipaa: 'HIPAA',
-  pci_dss: 'PCI-DSS',
-};
+interface BuiltinControlRequirement {
+  id: string;
+  description: string;
+  guidance?: string;
+}
+
+interface BuiltinControl {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  framework_id: string;
+  requirements: BuiltinControlRequirement[];
+}
 
 // ── Empty blank control for the add-control form ─────────────────────────────
 const BLANK_CONTROL = { control_id: '', name: '', description: '', category: '', guidance: '', order_index: 0 };
@@ -95,7 +92,11 @@ export function Frameworks() {
   const [createError, setCreateError] = useState<string | null>(null);
   // Clone modal
   const [showClone, setShowClone] = useState(false);
-  const [cloneTarget, setCloneTarget] = useState<string>('soc2_tsc');
+  const [cloneStep, setCloneStep] = useState<'framework' | 'controls'>('framework');
+  const [cloneTarget, setCloneTarget] = useState<string>('');
+  const [cloneSearch, setCloneSearch] = useState('');
+  const [cloneSelected, setCloneSelected] = useState<Set<string>>(new Set());
+  const [importing, setImporting] = useState(false);
   // Control form
   const [controlForm, setControlForm] = useState({ ...BLANK_CONTROL });
   const [editingControlId, setEditingControlId] = useState<string | null>(null);
@@ -119,6 +120,26 @@ export function Frameworks() {
       return res.data as CustomFramework;
     },
     enabled: !!editingId,
+  });
+
+  const { data: builtinFrameworks, isLoading: builtinLoading } = useQuery({
+    queryKey: ['builtin-frameworks'],
+    queryFn: async () => {
+      const res = await apiClient.get('/frameworks');
+      return res.data.frameworks as BuiltinFrameworkSummary[];
+    },
+    enabled: showClone,
+    staleTime: Infinity,
+  });
+
+  const { data: builtinControls, isLoading: controlsLoading } = useQuery({
+    queryKey: ['builtin-controls', cloneTarget],
+    queryFn: async () => {
+      const res = await apiClient.get(`/frameworks/${cloneTarget}/controls`);
+      return res.data as BuiltinControl[];
+    },
+    enabled: showClone && cloneStep === 'controls' && !!cloneTarget,
+    staleTime: Infinity,
   });
 
   const frameworks: FrameworkSummary[] = listData?.data || [];
@@ -197,12 +218,36 @@ export function Frameworks() {
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
-  const handleCloneApply = () => {
-    const starters = BUILTIN_STARTER_CONTROLS[cloneTarget] || [];
-    starters.forEach((ctrl, i) => {
-      addControlMutation.mutate({ ...BLANK_CONTROL, ...ctrl, order_index: i });
-    });
+  const handleCloneClose = () => {
     setShowClone(false);
+    setCloneStep('framework');
+    setCloneTarget('');
+    setCloneSearch('');
+    setCloneSelected(new Set());
+  };
+
+  const handleCloneImport = async () => {
+    if (!builtinControls || cloneSelected.size === 0) return;
+    setImporting(true);
+    const toImport = builtinControls.filter(c => cloneSelected.has(c.id));
+    const existingCount = detail?.controls.length ?? 0;
+    try {
+      for (let i = 0; i < toImport.length; i++) {
+        const ctrl = toImport[i];
+        await apiClient.post(`/custom-frameworks/${editingId}/controls`, {
+          control_id: ctrl.id,
+          name: ctrl.name,
+          description: ctrl.description,
+          category: ctrl.category,
+          guidance: ctrl.requirements?.map(r => r.description).join(' | ').slice(0, 500) || '',
+          order_index: existingCount + i,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['custom-framework', editingId] });
+      handleCloneClose();
+    } finally {
+      setImporting(false);
+    }
   };
 
   const handleControlSubmit = () => {
@@ -452,44 +497,199 @@ export function Frameworks() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="bg-background border border-border rounded-2xl w-[480px] shadow-2xl"
+                className="bg-background border border-border rounded-2xl w-[640px] max-h-[80vh] flex flex-col shadow-2xl"
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
               >
-                <div className="p-6 border-b border-border flex items-center justify-between">
+                {/* Modal header */}
+                <div className="p-5 border-b border-border flex items-center justify-between flex-shrink-0">
                   <div>
                     <h2 className="text-base font-semibold">Clone from Built-in Framework</h2>
-                    <p className="text-xs text-muted-foreground mt-0.5">Adds starter controls — you can edit or remove them</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {cloneStep === 'framework'
+                        ? 'Step 1 of 2 — Pick a framework'
+                        : `Step 2 of 2 — Select controls to import (${cloneSelected.size} selected)`}
+                    </p>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => setShowClone(false)}>
+                  <Button variant="ghost" size="sm" onClick={handleCloneClose}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="p-6 space-y-2">
-                  {Object.entries(BUILTIN_LABELS).map(([key, label]) => (
-                    <button
-                      key={key}
-                      onClick={() => setCloneTarget(key)}
-                      className={`w-full flex items-center justify-between p-3 rounded-lg border text-sm transition-colors ${
-                        cloneTarget === key
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border hover:border-muted-foreground'
-                      }`}
-                    >
-                      <span className="font-medium">{label}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {BUILTIN_STARTER_CONTROLS[key]?.length ?? 0} starter controls
-                      </span>
-                    </button>
-                  ))}
-                  <p className="text-xs text-muted-foreground pt-2">
-                    Only a few representative controls are added as starters. Add more manually as needed.
-                  </p>
-                </div>
-                <div className="p-4 border-t border-border flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => setShowClone(false)}>Cancel</Button>
-                  <Button size="sm" onClick={handleCloneApply}>Add Starter Controls</Button>
+
+                {/* Step 1 — Framework picker */}
+                {cloneStep === 'framework' && (
+                  <div className="flex-1 overflow-y-auto p-5">
+                    {builtinLoading ? (
+                      <div className="space-y-2">
+                        {[1,2,3,4].map(i => (
+                          <div key={i} className="h-12 bg-muted/40 rounded-lg animate-pulse" />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {(builtinFrameworks ?? []).map(fw => (
+                          <button
+                            key={fw.id}
+                            onClick={() => setCloneTarget(fw.id)}
+                            className={`w-full flex items-center justify-between p-3 rounded-lg border text-sm transition-colors ${
+                              cloneTarget === fw.id
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border hover:border-muted-foreground'
+                            }`}
+                          >
+                            <div className="text-left">
+                              <span className="font-medium block">{fw.name}</span>
+                              {fw.description && (
+                                <span className="text-xs text-muted-foreground line-clamp-1">{fw.description}</span>
+                              )}
+                            </div>
+                            <span className="text-xs text-muted-foreground ml-4 flex-shrink-0">
+                              {fw.control_count} controls
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 2 — Controls picker */}
+                {cloneStep === 'controls' && (() => {
+                  const filteredControls = (builtinControls ?? []).filter(ctrl => {
+                    if (!cloneSearch.trim()) return true;
+                    const q = cloneSearch.toLowerCase();
+                    return (
+                      ctrl.id.toLowerCase().includes(q) ||
+                      ctrl.name.toLowerCase().includes(q) ||
+                      ctrl.category.toLowerCase().includes(q) ||
+                      ctrl.description.toLowerCase().includes(q)
+                    );
+                  });
+                  const allFilteredSelected = filteredControls.length > 0 && filteredControls.every(c => cloneSelected.has(c.id));
+
+                  return (
+                    <>
+                      <div className="p-4 border-b border-border flex-shrink-0 space-y-3">
+                        {/* Search */}
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            className="pl-9 h-9 text-sm"
+                            placeholder="Search by ID, name, category or description..."
+                            value={cloneSearch}
+                            onChange={e => setCloneSearch(e.target.value)}
+                          />
+                        </div>
+                        {/* Select all / clear */}
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{filteredControls.length} of {builtinControls?.length ?? 0} controls shown</span>
+                          <div className="flex gap-3">
+                            <button
+                              className="text-primary hover:underline"
+                              onClick={() => {
+                                const next = new Set(cloneSelected);
+                                filteredControls.forEach(c => next.add(c.id));
+                                setCloneSelected(next);
+                              }}
+                            >
+                              Select all shown
+                            </button>
+                            <button
+                              className="hover:underline"
+                              onClick={() => {
+                                const next = new Set(cloneSelected);
+                                filteredControls.forEach(c => next.delete(c.id));
+                                setCloneSelected(next);
+                              }}
+                            >
+                              Clear shown
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto">
+                        {controlsLoading ? (
+                          <div className="p-4 space-y-2">
+                            {[1,2,3,4,5].map(i => (
+                              <div key={i} className="h-10 bg-muted/40 rounded animate-pulse" />
+                            ))}
+                          </div>
+                        ) : filteredControls.length === 0 ? (
+                          <p className="p-6 text-center text-sm text-muted-foreground">No controls match your search.</p>
+                        ) : (
+                          <div className="divide-y divide-border/50">
+                            {filteredControls.map(ctrl => (
+                              <label
+                                key={ctrl.id}
+                                className={`flex items-start gap-3 px-5 py-3 cursor-pointer hover:bg-muted/10 transition-colors ${
+                                  cloneSelected.has(ctrl.id) ? 'bg-primary/5' : ''
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  className="mt-0.5 accent-primary flex-shrink-0"
+                                  checked={cloneSelected.has(ctrl.id)}
+                                  onChange={e => {
+                                    const next = new Set(cloneSelected);
+                                    e.target.checked ? next.add(ctrl.id) : next.delete(ctrl.id);
+                                    setCloneSelected(next);
+                                  }}
+                                />
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-mono text-xs text-primary">{ctrl.id}</span>
+                                    {ctrl.category && (
+                                      <span className="text-xs bg-muted/60 px-1.5 py-0.5 rounded text-muted-foreground">{ctrl.category}</span>
+                                    )}
+                                  </div>
+                                  <p className="text-sm font-medium truncate">{ctrl.name}</p>
+                                  <p className="text-xs text-muted-foreground line-clamp-1">{ctrl.description}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  );
+                })()}
+
+                {/* Footer */}
+                <div className="p-4 border-t border-border flex justify-between gap-2 flex-shrink-0">
+                  {cloneStep === 'framework' ? (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={handleCloneClose}>Cancel</Button>
+                      <Button
+                        size="sm"
+                        disabled={!cloneTarget}
+                        onClick={() => {
+                          setCloneStep('controls');
+                          setCloneSearch('');
+                          setCloneSelected(new Set());
+                        }}
+                      >
+                        Next: Select Controls
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={() => setCloneStep('framework')}>
+                        Back
+                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={handleCloneClose}>Cancel</Button>
+                        <Button
+                          size="sm"
+                          disabled={cloneSelected.size === 0 || importing}
+                          onClick={handleCloneImport}
+                        >
+                          {importing ? `Importing...` : `Import ${cloneSelected.size} Control${cloneSelected.size !== 1 ? 's' : ''}`}
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </motion.div>
             </motion.div>

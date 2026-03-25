@@ -1,12 +1,17 @@
 """Document parsing service for text extraction."""
 
 import io
+import logging
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 from typing import ClassVar
 
 import fitz  # PyMuPDF
 from docx import Document as DocxDocument
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -25,6 +30,7 @@ class ParsedDocument:
     pages: list[ParsedPage]
     total_pages: int
     metadata: dict = field(default_factory=dict)
+    markdown_text: str | None = None  # Set when parsed via docling; None for legacy path
 
     @property
     def full_text(self) -> str:
@@ -217,29 +223,160 @@ class DOCXParser:
         )
 
 
-class DocumentParser:
-    """Main document parser that delegates to specific parsers."""
+class DoclingParser:
+    """Document parser using docling for structure-aware extraction.
 
-    PARSERS: ClassVar[dict[str, type[PDFParser] | type[DOCXParser]]] = {
-        "application/pdf": PDFParser,
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": DOCXParser,
-        "application/msword": DOCXParser,  # Older .doc format - may not work perfectly
+    Handles PDF, DOCX, DOC, XLSX, and XLS files. Extracts markdown with
+    preserved tables, heading hierarchy, and reading order. Falls back
+    gracefully so the caller can use the legacy parser on failure.
+    """
+
+    SUPPORTED_MIME_TYPES: ClassVar[set[str]] = {
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+    }
+
+    # Map MIME type to a file extension docling can recognise
+    _EXTENSIONS: ClassVar[dict[str, str]] = {
+        "application/pdf": ".pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+        "application/msword": ".doc",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+        "application/vnd.ms-excel": ".xls",
     }
 
     @classmethod
-    def parse(cls, content: bytes, mime_type: str) -> ParsedDocument:
-        """Parse a document based on its MIME type.
+    def _build_converter(cls) -> "DocumentConverter":
+        """Build a DocumentConverter with lightweight pipeline options.
+
+        Uses force_backend_text=True so only docling-parse's compiled C++
+        backend is used — no Heron layout models, no TableFormer, no OCR.
+        This avoids the 4-9 GB model downloads while still producing
+        structured Markdown with tables and headings.
+        """
+        from docling.document_converter import DocumentConverter, PdfFormatOption
+        from docling.datamodel.pipeline_options import PdfPipelineOptions
+
+        pdf_opts = PdfPipelineOptions()
+        pdf_opts.force_backend_text = True    # use C++ parser only, no ML models
+        pdf_opts.do_table_structure = False   # skip TableFormer
+        pdf_opts.do_ocr = False               # skip OCR models
+        pdf_opts.generate_page_images = False
+        pdf_opts.generate_picture_images = False
+
+        return DocumentConverter(
+            format_options={"pdf": PdfFormatOption(pipeline_options=pdf_opts)}
+        )
+
+    @classmethod
+    def parse(cls, content: bytes, mime_type: str, filename: str = "") -> ParsedDocument:
+        """Parse a document using docling.
+
+        Uses a lightweight pipeline (no Heron/TableFormer models) that runs
+        without large model downloads. Still produces structured Markdown
+        with tables and headings for DOCX/XLSX/PDF via docling-parse.
 
         Args:
             content: File bytes
             mime_type: MIME type of the document
+            filename: Original filename (used for extension hint only)
+
+        Returns:
+            ParsedDocument with markdown_text populated
+
+        Raises:
+            Exception: Propagated so caller can fall back to legacy parser
+        """
+        ext = cls._EXTENSIONS.get(mime_type, Path(filename).suffix or ".pdf")
+
+        with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = Path(tmp.name)
+
+        try:
+            converter = cls._build_converter()
+            result = converter.convert(str(tmp_path))
+            doc = result.document
+
+            # Export full markdown (tables rendered as GFM pipe tables)
+            markdown_text = doc.export_to_markdown()
+
+            # Build per-page text for ParsedDocument.pages
+            pages: list[ParsedPage] = []
+            if hasattr(doc, "pages") and doc.pages:
+                for page_no, _page in enumerate(doc.pages, start=1):
+                    pages.append(ParsedPage(page_number=page_no, text=""))
+            else:
+                pages = [ParsedPage(page_number=1, text=markdown_text)]
+
+            # Populate page text by distributing markdown lines
+            if len(pages) > 0 and all(p.text == "" for p in pages):
+                pages[0].text = markdown_text
+
+            metadata: dict = {}
+            if hasattr(doc, "metadata") and doc.metadata:
+                raw = doc.metadata
+                metadata = {
+                    "title": getattr(raw, "title", "") or "",
+                    "author": getattr(raw, "authors", "") or "",
+                }
+
+            return ParsedDocument(
+                pages=pages,
+                total_pages=len(pages),
+                metadata=metadata,
+                markdown_text=markdown_text,
+            )
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
+
+class DocumentParser:
+    """Main document parser that delegates to specific parsers.
+
+    Uses DoclingParser as the primary path for structure-aware extraction.
+    Falls back to the legacy PyMuPDF / python-docx parsers if docling fails.
+    """
+
+    PARSERS: ClassVar[dict[str, type[PDFParser] | type[DOCXParser]]] = {
+        "application/pdf": PDFParser,
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": DOCXParser,
+        "application/msword": DOCXParser,
+    }
+
+    @classmethod
+    def parse(cls, content: bytes, mime_type: str, filename: str = "") -> ParsedDocument:
+        """Parse a document based on its MIME type.
+
+        Tries docling first for structure-aware extraction. Falls back to the
+        legacy PyMuPDF / python-docx parsers if docling raises an exception.
+
+        Args:
+            content: File bytes
+            mime_type: MIME type of the document
+            filename: Original filename (optional, used as extension hint)
 
         Returns:
             ParsedDocument with extracted content
 
         Raises:
-            ValueError: If MIME type is not supported or parsing fails
+            ValueError: If MIME type is not supported or all parsers fail
         """
+        # Primary path: docling
+        if mime_type in DoclingParser.SUPPORTED_MIME_TYPES:
+            try:
+                return DoclingParser.parse(content, mime_type, filename)
+            except Exception as exc:
+                logger.warning(
+                    "Docling parsing failed for mime_type=%s, falling back to legacy parser: %s",
+                    mime_type,
+                    exc,
+                )
+
+        # Fallback: legacy parsers (PDF + DOCX only)
         parser_class = cls.PARSERS.get(mime_type)
         if not parser_class:
             raise ValueError(f"Unsupported document type: {mime_type}")
@@ -248,5 +385,5 @@ class DocumentParser:
 
     @classmethod
     def supported_types(cls) -> list[str]:
-        """Get list of supported MIME types."""
-        return list(cls.PARSERS.keys())
+        """Get list of supported MIME types (union of docling + legacy)."""
+        return list(DoclingParser.SUPPORTED_MIME_TYPES | set(cls.PARSERS.keys()))

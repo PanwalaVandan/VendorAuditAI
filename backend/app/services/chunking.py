@@ -280,6 +280,96 @@ class TextChunker:
         return None
 
 
+class DoclingChunker:
+    """Structure-aware chunker that uses docling-core's HybridChunker.
+
+    Produces chunks that respect document boundaries (sections, tables,
+    paragraphs) instead of splitting on arbitrary token counts.
+    Only used when parsing.ParsedDocument.markdown_text is populated.
+    """
+
+    def __init__(self, target_chunk_size: int = 500):
+        self.target_chunk_size = target_chunk_size
+
+    def chunk_markdown(self, markdown_text: str) -> list[Chunk]:
+        """Chunk a markdown string using docling-core's HybridChunker.
+
+        Args:
+            markdown_text: Markdown output from DoclingParser
+
+        Returns:
+            List of Chunk objects with section and page metadata
+        """
+        from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
+        from docling_core.types.doc import DoclingDocument
+
+        try:
+            doc = DoclingDocument.model_validate({"schema_name": "DoclingDocument", "version": "1.0.0", "name": "doc", "body": {"self_ref": "#/body", "children": [], "content_layer": "body"}})
+        except Exception:
+            doc = None
+
+        # Parse markdown into DoclingDocument via the markdown loader
+        try:
+            from docling.document_converter import DocumentConverter
+            import tempfile, pathlib
+            with tempfile.NamedTemporaryFile(suffix=".md", delete=False, mode="w", encoding="utf-8") as f:
+                f.write(markdown_text)
+                tmp_path = pathlib.Path(f.name)
+            try:
+                result = DocumentConverter().convert(str(tmp_path))
+                doc = result.document
+            finally:
+                tmp_path.unlink(missing_ok=True)
+        except Exception:
+            # If re-parsing fails, fall back to naive markdown splitting
+            return self._fallback_chunk(markdown_text)
+
+        try:
+            chunker = HybridChunker(max_tokens=self.target_chunk_size, merge_peers=True)
+            dl_chunks = list(chunker.chunk(doc))
+        except Exception:
+            return self._fallback_chunk(markdown_text)
+
+        result_chunks: list[Chunk] = []
+        for i, dl_chunk in enumerate(dl_chunks):
+            try:
+                text = chunker.serialize(chunk=dl_chunk)
+            except Exception:
+                text = " ".join(getattr(dl_chunk, "texts", [str(dl_chunk)]))
+
+            if not text.strip():
+                continue
+
+            # Extract page number from chunk metadata if available
+            page_number: int | None = None
+            section_header: str | None = None
+            try:
+                meta = dl_chunk.meta
+                if hasattr(meta, "page_no"):
+                    page_number = meta.page_no
+                if hasattr(meta, "headings") and meta.headings:
+                    section_header = meta.headings[-1][:200]
+            except Exception:
+                pass
+
+            token_count = len(text.split())
+            result_chunks.append(Chunk(
+                content=text,
+                token_count=token_count,
+                chunk_index=i,
+                page_number=page_number,
+                section_header=section_header,
+                metadata={"source": "docling"},
+            ))
+
+        return result_chunks if result_chunks else self._fallback_chunk(markdown_text)
+
+    def _fallback_chunk(self, text: str) -> list[Chunk]:
+        """Simple paragraph-based fallback when HybridChunker cannot be used."""
+        chunker = TextChunker(target_chunk_size=self.target_chunk_size)
+        return chunker.chunk_text(text)
+
+
 # Default chunker instance
 default_chunker = TextChunker()
 

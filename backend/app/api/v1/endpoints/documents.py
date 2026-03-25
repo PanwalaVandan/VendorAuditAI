@@ -25,6 +25,8 @@ ALLOWED_MIME_TYPES = {
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  # .docx
     "application/msword",  # .doc
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",        # .xlsx
+    "application/vnd.ms-excel",                                                  # .xls
 }
 
 # Maximum file size (50 MB)

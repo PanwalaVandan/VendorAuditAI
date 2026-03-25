@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.chunk import DocumentChunk
 from app.models.document import Document, DocumentStatus, ProcessingStage
-from app.services.chunking import Chunk, TextChunker
+from app.services.chunking import Chunk, DoclingChunker, TextChunker
 from app.services.embedding import embedding_to_json, get_embedding_service
 from app.services.parsing import DocumentParser, ParsedDocument
 from app.services.storage import get_storage_backend
@@ -125,12 +125,27 @@ class DocumentProcessor:
     def _chunk_document(self, parsed: ParsedDocument) -> list[Chunk]:
         """Split parsed document into chunks.
 
+        Uses DoclingChunker when the document was parsed via docling
+        (markdown_text is populated). Falls back to TextChunker otherwise.
+
         Args:
             parsed: ParsedDocument to chunk
 
         Returns:
             List of Chunk objects
         """
+        if parsed.markdown_text:
+            try:
+                docling_chunker = DoclingChunker(target_chunk_size=self.chunker.target_chunk_size)
+                chunks = docling_chunker.chunk_markdown(parsed.markdown_text)
+                if chunks:
+                    return chunks
+            except Exception as exc:
+                import logging
+                logging.getLogger(__name__).warning(
+                    "DoclingChunker failed, falling back to TextChunker: %s", exc
+                )
+
         full_text = parsed.full_text
         if not full_text.strip():
             return []

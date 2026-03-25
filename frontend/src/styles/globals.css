@@ -48,7 +48,9 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased selection:bg-obsidian-teal/30 selection:text-obsidian-teal font-sans;
+    @apply antialiased font-sans;
+    color: hsl(var(--foreground));
+    ::selection { background-color: rgba(0, 212, 170, 0.3); color: #00D4AA; }
     
     /* Ambient Animated Mesh Gradient */
     background-color: #04070D;

@@ -41,6 +41,21 @@ export function Register() {
       return;
     }
 
+    if (!/[A-Z]/.test(password)) {
+      setLocalError('Password must contain at least one uppercase letter');
+      return;
+    }
+
+    if (!/[a-z]/.test(password)) {
+      setLocalError('Password must contain at least one lowercase letter');
+      return;
+    }
+
+    if (!/[0-9]/.test(password)) {
+      setLocalError('Password must contain at least one number');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setLocalError('Passwords do not match');
       return;
@@ -114,7 +129,7 @@ export function Register() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Min. 8 characters"
+                placeholder="Min. 8 chars, uppercase, lowercase, number"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"

@@ -280,11 +280,240 @@ def _patch_ragflow_for_modal():
     )
     print(f"[patch] Stubbed {prompts_dir}")
 
+    # 9. Patch deepdoc/vision/ocr.py — increase ONNX BFC arena gpu_mem_limit.
+    #
+    #    Root cause of OOM: the default 2GB arena per ONNX session fragments under
+    #    sustained load (56-page OCR run), leaving <1MB contiguous space.  When the
+    #    table structure recognizer then tries to allocate a ~68MB tensor it fails.
+    #
+    #    Fix: raise gpu_mem_limit to 6GB (T4 has 16GB VRAM; OCR + layout + TSR
+    #    running in parallel fit easily within 12GB total).
+    #    Also switch arena_extend_strategy from kNextPowerOfTwo → kSameAsRequested
+    #    so the arena grows in exact increments rather than doubling, which is the
+    #    pattern that causes rapid fragmentation.
+    import re as _re  # noqa: PLC0415 — needed inside the container function
+    ocr_py = base / "deepdoc" / "vision" / "ocr.py"
+    if ocr_py.exists():
+        text = ocr_py.read_text()
+
+        # Diagnostic: print the lines around 'gpu_mem_limit' so we can see the
+        # exact source pattern if our replacement attempts below don't match.
+        for i, ln in enumerate(text.splitlines()):
+            if "gpu_mem_limit" in ln:
+                print(f"[patch-diag] ocr.py:{i+1}: {ln!r}")
+
+        original = text
+
+        # Pattern A: 'gpu_mem_limit': 2 * 1024 * 1024 * 1024  (any spacing)
+        text = _re.sub(
+            r"(['\"])gpu_mem_limit\1\s*:\s*2\s*\*\s*1024\s*\*\s*1024\s*\*\s*1024",
+            "'gpu_mem_limit': 6 * 1024 * 1024 * 1024",
+            text,
+        )
+        # Pattern B: 2 * 1024 ** 3  or  2 * 1024**3  (exponent form)
+        text = _re.sub(
+            r"(['\"])gpu_mem_limit\1\s*:\s*2\s*\*\s*1024\s*\*\*\s*3",
+            "'gpu_mem_limit': 6 * 1024 ** 3",
+            text,
+        )
+        # Pattern C: hard-coded integer 2147483648  (= 2 * 1024^3)
+        # Use a word-boundary so we don't corrupt other numbers.
+        text = _re.sub(
+            r"(['\"])gpu_mem_limit\1\s*:\s*2147483648\b",
+            "'gpu_mem_limit': 6442450944",   # 6 * 1024^3
+            text,
+        )
+        # Pattern D: int(os.environ.get(..., 2 * 1024 * 1024 * 1024)) style
+        text = _re.sub(
+            r"(['\"])gpu_mem_limit\1\s*:\s*int\s*\([^)]*\b2\s*\*\s*1024(?:\s*\*\s*1024){2}[^)]*\)",
+            "'gpu_mem_limit': 6 * 1024 * 1024 * 1024",
+            text,
+        )
+
+        # Pattern E: env-var style — os.environ.get("OCR_GPU_MEM_LIMIT_MB", "2048")
+        # Confirmed from diagnostic output: this is the actual RAGFlow pattern.
+        # Change the hard-coded default from "2048" MB (2GB) to "6144" MB (6GB).
+        text = text.replace('"OCR_GPU_MEM_LIMIT_MB", "2048"', '"OCR_GPU_MEM_LIMIT_MB", "6144"')
+        text = text.replace("'OCR_GPU_MEM_LIMIT_MB', '2048'", "'OCR_GPU_MEM_LIMIT_MB', '6144'")
+
+        # Switch arena strategy to avoid doubling-induced fragmentation
+        text = text.replace("'kNextPowerOfTwo'", "'kSameAsRequested'")
+        text = text.replace('"kNextPowerOfTwo"', '"kSameAsRequested"')
+
+        if text != original:
+            ocr_py.write_text(text)
+            print(f"[patch] Patched gpu_mem_limit + arena_extend_strategy in {ocr_py}")
+        else:
+            print(f"[patch] WARN: gpu_mem_limit pattern not matched in {ocr_py} — arena_extend_strategy only")
+            ocr_py.write_text(text)  # still write back the arena_extend_strategy change
+    else:
+        print(f"[patch] WARN: {ocr_py} not found — skipping gpu_mem_limit patch")
+
+    # 10. Patch deepdoc/vision/table_structure_recognizer.py — disable orientation
+    #     detection.
+    #
+    #     Without this patch, RAGFlow calls OCR 4 times per table (at 0°, 90°, 180°,
+    #     270°) to determine which orientation yields the best reading order.
+    #     Each pass allocates large GPU tensors; after the initial 56-page OCR run the
+    #     arena is fragmented and these allocations fail with OOM.
+    #
+    #     Compliance documents (SOC 2, ISO 27001, NIST 800-53, HIPAA …) are always
+    #     printed in standard orientation — there is no such thing as a sideways
+    #     table of controls.  Returning (0, None) immediately is safe and saves
+    #     ~20 s × number-of-tables worth of wasted GPU time.
+    tsr_py = base / "deepdoc" / "vision" / "table_structure_recognizer.py"
+    if tsr_py.exists():
+        text = tsr_py.read_text()
+        # Replace the det_orient method body with an immediate early return.
+        # The method signature varies across RAGFlow versions; match any variant.
+        patched = _re.sub(
+            r"(def\s+det_orient\s*\(self[^)]*\)\s*:)"
+            r"((?:\s+(?!def\s)\S[^\n]*|\n(?=\s))*)",   # grab the full body
+            lambda m: (
+                m.group(1)
+                + "\n        # Patched for Modal: skip 4-pass orientation detection.\n"
+                  "        # Compliance PDFs always use 0-degree (standard) orientation.\n"
+                  "        # This eliminates the GPU OOM caused by repeated large tensor\n"
+                  "        # allocations after the main OCR run fragments the BFC arena.\n"
+                  "        return 0, None"
+            ),
+            text,
+            count=1,
+            flags=_re.DOTALL,
+        )
+        if patched != text:
+            tsr_py.write_text(patched)
+            print(f"[patch] Disabled orientation detection in {tsr_py}")
+        else:
+            # Fallback: the regex didn't match (different RAGFlow version).
+            # Try a simpler line-by-line replacement of just the first executable
+            # line after the def, inserting an early return above it.
+            lines = text.splitlines()
+            new_lines = []
+            in_det_orient = False
+            inserted = False
+            for line in lines:
+                if _re.match(r"\s*def\s+det_orient\s*\(", line):
+                    in_det_orient = True
+                    inserted = False
+                    new_lines.append(line)
+                    continue
+                if in_det_orient and not inserted:
+                    # Insert early return as the first line of the method body
+                    indent = len(line) - len(line.lstrip())
+                    pad = " " * indent
+                    new_lines.append(pad + "# Patched for Modal: skip orientation detection.")
+                    new_lines.append(pad + "return 0, None")
+                    inserted = True
+                    in_det_orient = False
+                new_lines.append(line)
+            tsr_py.write_text("\n".join(new_lines))
+            print(f"[patch] Disabled orientation detection (fallback path) in {tsr_py}")
+    else:
+        print(f"[patch] WARN: {tsr_py} not found — skipping orientation-detection patch")
+
+    # 11. Diagnostic + patch: locate the orientation-detection function in pdf_parser.py
+    #     and replace it with a no-op that immediately returns (0, original_img, {}).
+    #     The "Best table orientation" log confirmed the function lives in pdf_parser.py,
+    #     returns (best_angle, best_img, results), and iterates OCR at 4 angles.
+    pdf_parser_py = base / "deepdoc" / "parser" / "pdf_parser.py"
+    if pdf_parser_py.exists():
+        _content = pdf_parser_py.read_text(errors="replace")
+        _lines = _content.splitlines()
+
+        # Find the def that owns the "Best table orientation" log line.
+        _orient_log_lineno = None
+        for _i, _ln in enumerate(_lines):
+            if "Best table orientation" in _ln:
+                _orient_log_lineno = _i
+                break
+
+        if _orient_log_lineno is not None:
+            # Walk backwards from the log line to find the enclosing def statement.
+            _def_lineno = None
+            _def_indent = None
+            for _i in range(_orient_log_lineno, -1, -1):
+                stripped = _lines[_i].lstrip()
+                if stripped.startswith("def ") or stripped.startswith("async def "):
+                    _def_lineno = _i
+                    _def_indent = len(_lines[_i]) - len(_lines[_i].lstrip())
+                    break
+
+            if _def_lineno is not None:
+                _def_line = _lines[_def_lineno]
+                print(f"[patch-diag] Orientation detection function at pdf_parser.py:{_def_lineno + 1}")
+                # Print function signature + a few lines for confirmation
+                for _j in range(_def_lineno, min(_def_lineno + 6, len(_lines))):
+                    print(f"  {_j + 1:4d}: {_lines[_j]}")
+
+                # Patch: replace the BODY of this function with an early return.
+                # We keep the def line and its docstring (if any), then insert
+                # `return 0, <first_img_param>, {}` as the first executable line.
+                # The function signature ends at the line containing '):'
+                # Find the first line of the body (non-def, non-blank after the def).
+                _body_start = _def_lineno + 1
+                # Skip multi-line signature (lines that are part of the def header)
+                while _body_start < len(_lines):
+                    ln = _lines[_body_start]
+                    stripped = ln.strip()
+                    if stripped and not stripped.startswith("#"):
+                        break
+                    _body_start += 1
+
+                # Determine body indentation
+                _body_indent = " " * (_def_indent + 4)
+
+                # Find the end of this function (next def at same or lower indent,
+                # or EOF).
+                _func_end = len(_lines)
+                for _i in range(_def_lineno + 1, len(_lines)):
+                    ln = _lines[_i]
+                    if not ln.strip():
+                        continue
+                    cur_indent = len(ln) - len(ln.lstrip())
+                    if cur_indent <= _def_indent and (
+                        ln.lstrip().startswith("def ")
+                        or ln.lstrip().startswith("async def ")
+                        or ln.lstrip().startswith("class ")
+                    ):
+                        _func_end = _i
+                        break
+
+                # Extract the first non-self parameter name from the def line.
+                # e.g. "def _evaluate_table_orientation(self, table_img, ..."
+                # → first_param = "table_img"
+                import re as _re2
+                _sig_match = _re2.search(r"\(\s*self\s*,\s*(\w+)", _lines[_def_lineno])
+                _img_param = _sig_match.group(1) if _sig_match else "table_img"
+                print(f"[patch] Using img param '{_img_param}' for orientation no-op return")
+
+                # Rebuild: keep def line(s), replace body with immediate return.
+                # Return (0, <img_param>, {}) — 0 = no rotation, original image, empty results.
+                new_lines = (
+                    _lines[:_body_start]
+                    + [
+                        _body_indent + "# Patched for Modal: skip 4-pass OCR orientation detection.",
+                        _body_indent + "# Compliance PDFs are always 0-degree standard orientation.",
+                        _body_indent + "# This eliminates ~12 s × n_tables of GPU BFC arena exhaustion.",
+                        _body_indent + f"return 0, {_img_param}, {{}}",
+                    ]
+                    + _lines[_func_end:]
+                )
+                pdf_parser_py.write_text("\n".join(new_lines))
+                print(f"[patch] Patched orientation function body in pdf_parser.py:{_def_lineno + 1}")
+            else:
+                print("[patch] WARN: Could not find enclosing def for 'Best table orientation'")
+        else:
+            print("[patch] INFO: 'Best table orientation' not found in pdf_parser.py")
+    else:
+        print(f"[patch] WARN: {pdf_parser_py} not found")
+
     # 8. Verify critical files exist after sparse checkout
     critical = [
         base / "deepdoc" / "parser" / "pdf_parser.py",
         base / "deepdoc" / "vision" / "ocr.py",
         base / "deepdoc" / "vision" / "layout_recognizer.py",
+        base / "deepdoc" / "vision" / "table_structure_recognizer.py",
         base / "common" / "file_utils.py",
     ]
     for f in critical:
@@ -297,7 +526,12 @@ def _patch_ragflow_for_modal():
 # ---------------------------------------------------------------------------
 
 image = (
-    modal.Image.debian_slim(python_version="3.11")
+    # CUDA 12.4 + cuDNN 9 runtime — required for onnxruntime-gpu 1.23.x
+    # debian_slim has no CUDA libs so onnxruntime silently falls back to CPU
+    modal.Image.from_registry(
+        "nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04",
+        add_python="3.11",
+    )
     # ---- System libraries ----
     .apt_install(
         "git",
@@ -473,12 +707,12 @@ def chunk_sections(
 @app.function(
     image=image,
     gpu="T4",                       # cheapest Modal GPU ~$0.000164/s
-    timeout=600,                    # 10 min max — covers 200-page PDFs
+    timeout=600,                    # 10 min max — covers 200-page PDFs on GPU
     scaledown_window=120,           # stay warm 2 min after last request
     volumes={str(VOLUME_PATH): models_volume},
     memory=16384,                   # 16 GB RAM
     secrets=[modal.Secret.from_name("vendorauditai-parser-secret")],
-    retries=modal.Retries(max_retries=2, backoff_coefficient=2.0, initial_delay=5.0),
+    # no retries — timeout failures are not transient; retrying just burns more GPU time
 )
 def parse_document(
     pdf_bytes: bytes,
@@ -516,6 +750,10 @@ def parse_document(
     # 1. Configure paths so DeepDoc finds its model weights in the volume
     # ------------------------------------------------------------------
     os.environ["RAG_PROJECT_BASE"] = str(VOLUME_PATH)
+    # Raise ONNX BFC arena limit: RAGFlow reads this env var in ocr.py.
+    # Default is "2048" MB (2GB) which fragments under 56-page OCR load.
+    # T4 has 16GB VRAM; 6GB per arena gives OCR/layout/TSR plenty of room.
+    os.environ.setdefault("OCR_GPU_MEM_LIMIT_MB", "6144")
     sys.path.insert(0, str(RAGFLOW_SRC))
 
     # Symlink volume model directory into the path DeepDoc expects
@@ -529,6 +767,61 @@ def parse_document(
     # ------------------------------------------------------------------
     import pdfplumber
     from deepdoc.parser.pdf_parser import RAGFlowPdfParser
+
+    # ------------------------------------------------------------------
+    # 2a. Runtime monkey-patch: disable table orientation detection.
+    #
+    #     det_orient() runs OCR at 0°, 90°, 180°, 270° per table to find
+    #     the best reading orientation.  After the main OCR pass the BFC
+    #     arena is partially exhausted; each det_orient call then OOMs and
+    #     retries 4× with 5 s delays — adding ~12 s per table × 27 tables
+    #     = ~300 s of pure waste before timeout.
+    #
+    #     Compliance PDFs are always standard-orientation (0°).  Returning
+    #     (0, None) immediately is safe and saves ~300 s.
+    #
+    #     IMPORTANT: det_orient is a MODULE-LEVEL function in
+    #     table_structure_recognizer.py, not a class method.  Python resolves
+    #     it via the module's __dict__ (global namespace), so we must patch
+    #     the module object — patching the class attribute does nothing.
+    # ------------------------------------------------------------------
+    try:
+        import inspect as _inspect
+        import deepdoc.parser.pdf_parser as _pdf_parser_mod
+
+        # The orientation-detection function lives in pdf_parser.py (confirmed by
+        # build-time diagnostic at line 410).  It returns (best_angle, best_img, results).
+        # Use inspect to find the exact method name so we don't hard-code it.
+        _patched_orient = False
+        for _attr_name in dir(_pdf_parser_mod.RAGFlowPdfParser):
+            try:
+                _method = getattr(_pdf_parser_mod.RAGFlowPdfParser, _attr_name)
+                if not callable(_method):
+                    continue
+                _src = _inspect.getsource(_method)
+                if "Best table orientation" in _src:
+                    # Replace with a no-op that returns immediately.
+                    # Signature: _evaluate_table_orientation(self, table_img, sample_ratio=0.3)
+                    # → return (0, table_img, {}) meaning: no rotation, original image, no results.
+                    def _noop_orient(self, table_img=None, *args, **kwargs):
+                        return 0, table_img, {}
+                    setattr(_pdf_parser_mod.RAGFlowPdfParser, _attr_name, _noop_orient)
+                    log.info(
+                        "Runtime patch applied: RAGFlowPdfParser.%s -> (0, img, {}) "
+                        "[eliminates 4-pass OCR per table]",
+                        _attr_name,
+                    )
+                    _patched_orient = True
+                    break
+            except Exception:
+                continue
+
+        if not _patched_orient:
+            log.warning("Runtime patch: orientation method not found in RAGFlowPdfParser — "
+                        "build-time patch in pdf_parser.py is the fallback")
+
+    except Exception as _patch_exc:
+        log.warning("Could not apply runtime orientation patch: %s — proceeding anyway", _patch_exc)
 
     # ------------------------------------------------------------------
     # 3. Get page count
@@ -578,6 +871,7 @@ def parse_document(
     image=image,
     volumes={str(VOLUME_PATH): models_volume},
     secrets=[modal.Secret.from_name("vendorauditai-parser-secret")],
+    timeout=700,                    # must exceed parse_document timeout (600s) + overhead
 )
 @modal.asgi_app()
 def fastapi_app():
@@ -641,7 +935,7 @@ def fastapi_app():
         if document_type not in valid_types:
             document_type = "other"
 
-        result = parse_document.remote(pdf_bytes, filename, document_type)
+        result = await parse_document.remote.aio(pdf_bytes, filename, document_type)
         return result
 
     return web_app

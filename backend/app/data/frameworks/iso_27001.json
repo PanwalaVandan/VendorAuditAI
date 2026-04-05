@@ -1,0 +1,421 @@
+{
+  "id": "iso_27001",
+  "name": "ISO/IEC 27001:2022",
+  "version": "2022",
+  "description": "ISO/IEC 27001 is an international standard for information security management systems (ISMS). It provides requirements for establishing, implementing, maintaining, and continually improving an ISMS.",
+  "organization": "ISO/IEC",
+  "categories": [
+    {
+      "id": "A5",
+      "name": "Organizational Controls",
+      "description": "Controls related to organizational policies, roles, responsibilities, and management of information security.",
+      "controls": [
+        {
+          "id": "A.5.1",
+          "name": "Policies for Information Security",
+          "description": "Information security policy and topic-specific policies shall be defined, approved by management, published, communicated to and acknowledged by relevant personnel and relevant interested parties.",
+          "requirements": [
+            {
+              "id": "A.5.1.1",
+              "description": "Define and approve an information security policy at the highest level of the organization.",
+              "guidance": "Ensure the policy is signed by top management and includes security objectives aligned with business strategy."
+            },
+            {
+              "id": "A.5.1.2",
+              "description": "Communicate the policy to all relevant personnel and stakeholders.",
+              "guidance": "Use multiple channels (email, intranet, training) and track acknowledgment."
+            }
+          ]
+        },
+        {
+          "id": "A.5.2",
+          "name": "Information Security Roles and Responsibilities",
+          "description": "Information security roles and responsibilities shall be defined and allocated according to the organization needs.",
+          "requirements": [
+            {
+              "id": "A.5.2.1",
+              "description": "Define clear information security roles and responsibilities.",
+              "guidance": "Document roles in job descriptions and RACI matrices."
+            },
+            {
+              "id": "A.5.2.2",
+              "description": "Allocate responsibilities for information security across the organization.",
+              "guidance": "Assign specific security responsibilities to appropriate personnel at all levels."
+            }
+          ]
+        },
+        {
+          "id": "A.5.3",
+          "name": "Segregation of Duties",
+          "description": "Conflicting duties and conflicting areas of responsibility shall be segregated.",
+          "requirements": [
+            {
+              "id": "A.5.3.1",
+              "description": "Identify duties and responsibilities that need to be segregated.",
+              "guidance": "Analyze processes to identify potential conflicts of interest."
+            },
+            {
+              "id": "A.5.3.2",
+              "description": "Implement controls to enforce segregation of duties.",
+              "guidance": "Use technical controls and organizational measures to prevent one person from having conflicting responsibilities."
+            }
+          ]
+        },
+        {
+          "id": "A.5.4",
+          "name": "Management Responsibilities",
+          "description": "Management shall require all personnel to apply information security in accordance with the established policies and procedures.",
+          "requirements": [
+            {
+              "id": "A.5.4.1",
+              "description": "Ensure management actively supports information security.",
+              "guidance": "Document management commitment and include security in performance reviews."
+            }
+          ]
+        },
+        {
+          "id": "A.5.7",
+          "name": "Threat Intelligence",
+          "description": "Information relating to information security threats shall be collected and analyzed to produce threat intelligence.",
+          "requirements": [
+            {
+              "id": "A.5.7.1",
+              "description": "Establish processes to collect threat intelligence from relevant sources.",
+              "guidance": "Subscribe to threat feeds, participate in ISACs, and monitor security advisories."
+            },
+            {
+              "id": "A.5.7.2",
+              "description": "Analyze threat intelligence and integrate findings into security processes.",
+              "guidance": "Use threat intelligence to inform risk assessments and security controls."
+            }
+          ]
+        },
+        {
+          "id": "A.5.8",
+          "name": "Information Security in Project Management",
+          "description": "Information security shall be integrated into project management.",
+          "requirements": [
+            {
+              "id": "A.5.8.1",
+              "description": "Include information security requirements in project management methodologies.",
+              "guidance": "Add security checkpoints and requirements to project gates."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A6",
+      "name": "People Controls",
+      "description": "Controls related to human resource security, including hiring, during employment, and termination.",
+      "controls": [
+        {
+          "id": "A.6.1",
+          "name": "Screening",
+          "description": "Background verification checks on all candidates for employment shall be carried out prior to joining the organization.",
+          "requirements": [
+            {
+              "id": "A.6.1.1",
+              "description": "Conduct background checks appropriate to the role and information access.",
+              "guidance": "Verify identity, qualifications, and conduct appropriate criminal and reference checks."
+            }
+          ]
+        },
+        {
+          "id": "A.6.2",
+          "name": "Terms and Conditions of Employment",
+          "description": "Employment contractual agreements shall state the personnel's and the organization's responsibilities for information security.",
+          "requirements": [
+            {
+              "id": "A.6.2.1",
+              "description": "Include information security responsibilities in employment contracts.",
+              "guidance": "Reference security policies, acceptable use policies, and confidentiality requirements."
+            }
+          ]
+        },
+        {
+          "id": "A.6.3",
+          "name": "Information Security Awareness, Education and Training",
+          "description": "Personnel and relevant interested parties shall receive appropriate information security awareness, education and training.",
+          "requirements": [
+            {
+              "id": "A.6.3.1",
+              "description": "Provide security awareness training to all personnel.",
+              "guidance": "Include regular training on security policies, threats, and best practices."
+            },
+            {
+              "id": "A.6.3.2",
+              "description": "Provide role-specific security training where appropriate.",
+              "guidance": "Deliver specialized training for IT staff, developers, and administrators."
+            }
+          ]
+        },
+        {
+          "id": "A.6.4",
+          "name": "Disciplinary Process",
+          "description": "A disciplinary process shall be formalized and communicated to take actions against personnel who have committed an information security policy violation.",
+          "requirements": [
+            {
+              "id": "A.6.4.1",
+              "description": "Define and communicate a disciplinary process for security violations.",
+              "guidance": "Document the process, ensure it is fair, and align with HR policies."
+            }
+          ]
+        },
+        {
+          "id": "A.6.5",
+          "name": "Responsibilities After Termination or Change of Employment",
+          "description": "Information security responsibilities and duties that remain valid after termination or change of employment shall be defined, enforced and communicated.",
+          "requirements": [
+            {
+              "id": "A.6.5.1",
+              "description": "Define post-employment security obligations.",
+              "guidance": "Include confidentiality obligations and intellectual property requirements in termination agreements."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A7",
+      "name": "Physical Controls",
+      "description": "Controls related to physical security of facilities, equipment, and information.",
+      "controls": [
+        {
+          "id": "A.7.1",
+          "name": "Physical Security Perimeters",
+          "description": "Security perimeters shall be defined and used to protect areas that contain information and other associated assets.",
+          "requirements": [
+            {
+              "id": "A.7.1.1",
+              "description": "Define physical security perimeters for sensitive areas.",
+              "guidance": "Use walls, access-controlled doors, and barriers to create secure zones."
+            }
+          ]
+        },
+        {
+          "id": "A.7.2",
+          "name": "Physical Entry",
+          "description": "Secure areas shall be protected by appropriate entry controls to ensure only authorized personnel are allowed access.",
+          "requirements": [
+            {
+              "id": "A.7.2.1",
+              "description": "Implement physical access controls for secure areas.",
+              "guidance": "Use badge readers, biometrics, or security personnel to control entry."
+            },
+            {
+              "id": "A.7.2.2",
+              "description": "Maintain access logs for secure areas.",
+              "guidance": "Record entry and exit times for all personnel accessing secure areas."
+            }
+          ]
+        },
+        {
+          "id": "A.7.3",
+          "name": "Securing Offices, Rooms and Facilities",
+          "description": "Physical security for offices, rooms and facilities shall be designed and implemented.",
+          "requirements": [
+            {
+              "id": "A.7.3.1",
+              "description": "Design physical security measures appropriate to the sensitivity of information.",
+              "guidance": "Consider visibility, access controls, and protection against environmental threats."
+            }
+          ]
+        },
+        {
+          "id": "A.7.4",
+          "name": "Physical Security Monitoring",
+          "description": "Premises shall be continuously monitored for unauthorized physical access.",
+          "requirements": [
+            {
+              "id": "A.7.4.1",
+              "description": "Implement monitoring systems for physical security.",
+              "guidance": "Use CCTV, intrusion detection systems, and security patrols."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A8",
+      "name": "Technological Controls",
+      "description": "Controls related to technology, including access control, cryptography, and secure development.",
+      "controls": [
+        {
+          "id": "A.8.1",
+          "name": "User Endpoint Devices",
+          "description": "Information stored on, processed by or accessible via user endpoint devices shall be protected.",
+          "requirements": [
+            {
+              "id": "A.8.1.1",
+              "description": "Implement security controls for user endpoint devices.",
+              "guidance": "Deploy endpoint protection, encryption, and mobile device management."
+            }
+          ]
+        },
+        {
+          "id": "A.8.2",
+          "name": "Privileged Access Rights",
+          "description": "The allocation and use of privileged access rights shall be restricted and managed.",
+          "requirements": [
+            {
+              "id": "A.8.2.1",
+              "description": "Restrict allocation of privileged access rights.",
+              "guidance": "Apply least privilege principle and require approval for privileged access."
+            },
+            {
+              "id": "A.8.2.2",
+              "description": "Monitor and review privileged access usage.",
+              "guidance": "Implement privileged access management (PAM) and regular access reviews."
+            }
+          ]
+        },
+        {
+          "id": "A.8.3",
+          "name": "Information Access Restriction",
+          "description": "Access to information and other associated assets shall be restricted in accordance with the established topic-specific policy on access control.",
+          "requirements": [
+            {
+              "id": "A.8.3.1",
+              "description": "Restrict access to information based on need-to-know.",
+              "guidance": "Implement role-based access control and data classification."
+            }
+          ]
+        },
+        {
+          "id": "A.8.5",
+          "name": "Secure Authentication",
+          "description": "Secure authentication technologies and procedures shall be implemented based on information access restrictions and the topic-specific policy on access control.",
+          "requirements": [
+            {
+              "id": "A.8.5.1",
+              "description": "Implement secure authentication mechanisms.",
+              "guidance": "Use multi-factor authentication for sensitive systems and remote access."
+            },
+            {
+              "id": "A.8.5.2",
+              "description": "Manage authentication credentials securely.",
+              "guidance": "Enforce strong passwords, secure storage, and regular rotation."
+            }
+          ]
+        },
+        {
+          "id": "A.8.8",
+          "name": "Management of Technical Vulnerabilities",
+          "description": "Information about technical vulnerabilities of information systems in use shall be obtained, the organization's exposure to such vulnerabilities evaluated and appropriate measures taken.",
+          "requirements": [
+            {
+              "id": "A.8.8.1",
+              "description": "Identify technical vulnerabilities in systems.",
+              "guidance": "Conduct regular vulnerability scanning and penetration testing."
+            },
+            {
+              "id": "A.8.8.2",
+              "description": "Remediate vulnerabilities based on risk.",
+              "guidance": "Prioritize patching based on severity and exposure, track remediation progress."
+            }
+          ]
+        },
+        {
+          "id": "A.8.9",
+          "name": "Configuration Management",
+          "description": "Configurations, including security configurations, of hardware, software, services and networks shall be established, documented, implemented, monitored and reviewed.",
+          "requirements": [
+            {
+              "id": "A.8.9.1",
+              "description": "Establish and document secure configurations.",
+              "guidance": "Define baselines for systems, applications, and network devices."
+            },
+            {
+              "id": "A.8.9.2",
+              "description": "Monitor configurations for unauthorized changes.",
+              "guidance": "Implement configuration management tools and change detection."
+            }
+          ]
+        },
+        {
+          "id": "A.8.12",
+          "name": "Data Leakage Prevention",
+          "description": "Data leakage prevention measures shall be applied to systems, networks and any other devices that process, store or transmit sensitive information.",
+          "requirements": [
+            {
+              "id": "A.8.12.1",
+              "description": "Implement data loss prevention controls.",
+              "guidance": "Deploy DLP tools to monitor and prevent unauthorized data transfers."
+            }
+          ]
+        },
+        {
+          "id": "A.8.15",
+          "name": "Logging",
+          "description": "Logs that record activities, exceptions, faults and other relevant events shall be produced, stored, protected and analysed.",
+          "requirements": [
+            {
+              "id": "A.8.15.1",
+              "description": "Implement comprehensive logging.",
+              "guidance": "Log security events, access attempts, and system activities."
+            },
+            {
+              "id": "A.8.15.2",
+              "description": "Protect log integrity and availability.",
+              "guidance": "Secure logs from tampering and ensure sufficient retention."
+            }
+          ]
+        },
+        {
+          "id": "A.8.16",
+          "name": "Monitoring Activities",
+          "description": "Networks, systems and applications shall be monitored for anomalous behaviour and appropriate actions taken to evaluate potential information security incidents.",
+          "requirements": [
+            {
+              "id": "A.8.16.1",
+              "description": "Monitor systems for anomalous behavior.",
+              "guidance": "Use SIEM, IDS/IPS, and behavioral analytics to detect threats."
+            }
+          ]
+        },
+        {
+          "id": "A.8.24",
+          "name": "Use of Cryptography",
+          "description": "Rules for the effective use of cryptography, including cryptographic key management, shall be defined and implemented.",
+          "requirements": [
+            {
+              "id": "A.8.24.1",
+              "description": "Define cryptography policy and standards.",
+              "guidance": "Specify approved algorithms, key lengths, and use cases."
+            },
+            {
+              "id": "A.8.24.2",
+              "description": "Implement cryptographic key management.",
+              "guidance": "Establish procedures for key generation, distribution, storage, and destruction."
+            }
+          ]
+        },
+        {
+          "id": "A.8.25",
+          "name": "Secure Development Life Cycle",
+          "description": "Rules for the secure development of software and systems shall be established and applied.",
+          "requirements": [
+            {
+              "id": "A.8.25.1",
+              "description": "Integrate security into the development lifecycle.",
+              "guidance": "Implement secure coding standards, code reviews, and security testing."
+            }
+          ]
+        },
+        {
+          "id": "A.8.28",
+          "name": "Secure Coding",
+          "description": "Secure coding principles shall be applied to software development.",
+          "requirements": [
+            {
+              "id": "A.8.28.1",
+              "description": "Apply secure coding practices.",
+              "guidance": "Train developers on OWASP top 10, use static analysis tools."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

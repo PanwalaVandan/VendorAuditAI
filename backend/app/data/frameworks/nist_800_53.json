@@ -1,0 +1,285 @@
+{
+  "id": "nist_800_53",
+  "name": "NIST SP 800-53 Rev 5",
+  "version": "Rev 5",
+  "description": "NIST Special Publication 800-53 provides a catalog of security and privacy controls for federal information systems and organizations. It is widely adopted as a baseline for enterprise security programs.",
+  "organization": "NIST",
+  "categories": [
+    {
+      "id": "AC",
+      "name": "Access Control",
+      "description": "Controls related to system access, account management, and least privilege.",
+      "controls": [
+        {
+          "id": "AC-1",
+          "name": "Access Control Policy and Procedures",
+          "description": "Develop, document, and disseminate an access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance.",
+          "requirements": [
+            {
+              "id": "AC-1.a",
+              "description": "Develop and document an access control policy.",
+              "guidance": "Policy should address purpose, scope, roles, responsibilities, and management commitment."
+            },
+            {
+              "id": "AC-1.b",
+              "description": "Review and update access control policy at least annually.",
+              "guidance": "Document review dates and any changes made to the policy."
+            }
+          ]
+        },
+        {
+          "id": "AC-2",
+          "name": "Account Management",
+          "description": "Manage information system accounts including identifying account types, establishing conditions for group membership, and identifying authorized users.",
+          "requirements": [
+            {
+              "id": "AC-2.a",
+              "description": "Identify and select types of information system accounts.",
+              "guidance": "Include individual, shared, group, system, application, guest/anonymous, and temporary accounts."
+            },
+            {
+              "id": "AC-2.b",
+              "description": "Establish conditions for group and role membership.",
+              "guidance": "Define criteria and approval processes for assigning users to groups or roles."
+            },
+            {
+              "id": "AC-2.c",
+              "description": "Establish account management procedures for activation, modification, disabling, and removal.",
+              "guidance": "Document procedures for the full lifecycle of user accounts."
+            }
+          ]
+        },
+        {
+          "id": "AC-3",
+          "name": "Access Enforcement",
+          "description": "Enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
+          "requirements": [
+            {
+              "id": "AC-3.1",
+              "description": "Enforce access control policies through technical mechanisms.",
+              "guidance": "Use role-based, attribute-based, or mandatory access controls as appropriate."
+            }
+          ]
+        },
+        {
+          "id": "AC-17",
+          "name": "Remote Access",
+          "description": "Establish and document usage restrictions, configuration/connection requirements, and implementation guidance for each type of remote access allowed.",
+          "requirements": [
+            {
+              "id": "AC-17.1",
+              "description": "Employ automated mechanisms to monitor and control remote access sessions.",
+              "guidance": "Use VPN, MFA, and session logging for all remote access."
+            },
+            {
+              "id": "AC-17.2",
+              "description": "Implement cryptographic mechanisms to protect confidentiality and integrity of remote access sessions.",
+              "guidance": "Use TLS 1.2+ or equivalent for all remote connections."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AU",
+      "name": "Audit and Accountability",
+      "description": "Controls related to audit logging, review, and protection of audit information.",
+      "controls": [
+        {
+          "id": "AU-2",
+          "name": "Event Logging",
+          "description": "Identify events that the system is capable of logging in support of the audit function and coordinate the event logging function with other organizations.",
+          "requirements": [
+            {
+              "id": "AU-2.a",
+              "description": "Identify types of events that the system is capable of logging.",
+              "guidance": "Include logon/logoff, access to sensitive data, changes to accounts, and use of privileged functions."
+            }
+          ]
+        },
+        {
+          "id": "AU-6",
+          "name": "Audit Record Review, Analysis, and Reporting",
+          "description": "Review and analyze system audit records for indications of inappropriate or unusual activity.",
+          "requirements": [
+            {
+              "id": "AU-6.1",
+              "description": "Review and analyze audit records at least weekly.",
+              "guidance": "Use automated tools to assist in the review where feasible."
+            },
+            {
+              "id": "AU-6.2",
+              "description": "Report findings of inappropriate or unusual activity to appropriate personnel.",
+              "guidance": "Define escalation paths and reporting timeframes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CM",
+      "name": "Configuration Management",
+      "description": "Controls related to baseline configurations, change control, and security configuration settings.",
+      "controls": [
+        {
+          "id": "CM-2",
+          "name": "Baseline Configuration",
+          "description": "Develop, document, and maintain a current baseline configuration of the information system.",
+          "requirements": [
+            {
+              "id": "CM-2.1",
+              "description": "Review and update baseline configurations at least annually.",
+              "guidance": "Update baselines when system components are installed, upgraded, or modified."
+            }
+          ]
+        },
+        {
+          "id": "CM-6",
+          "name": "Configuration Settings",
+          "description": "Establish and document configuration settings for information technology products employed within the information system.",
+          "requirements": [
+            {
+              "id": "CM-6.1",
+              "description": "Establish and document configuration settings that reflect the most restrictive mode consistent with operational requirements.",
+              "guidance": "Reference CIS Benchmarks or DISA STIGs as baselines."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "IA",
+      "name": "Identification and Authentication",
+      "description": "Controls related to user identification, authentication, and credential management.",
+      "controls": [
+        {
+          "id": "IA-2",
+          "name": "Identification and Authentication (Organizational Users)",
+          "description": "Uniquely identify and authenticate organizational users and processes acting on behalf of organizational users.",
+          "requirements": [
+            {
+              "id": "IA-2.1",
+              "description": "Implement multi-factor authentication for access to privileged accounts.",
+              "guidance": "Use a combination of something you know, have, or are."
+            },
+            {
+              "id": "IA-2.2",
+              "description": "Implement multi-factor authentication for network access to non-privileged accounts.",
+              "guidance": "Apply MFA to remote access and cloud service access."
+            }
+          ]
+        },
+        {
+          "id": "IA-5",
+          "name": "Authenticator Management",
+          "description": "Manage information system authenticators by verifying the identity of the individual, group, role, or device receiving the authenticator.",
+          "requirements": [
+            {
+              "id": "IA-5.1",
+              "description": "Enforce minimum password complexity and change requirements.",
+              "guidance": "Require minimum length, character mix, and periodic rotation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "IR",
+      "name": "Incident Response",
+      "description": "Controls related to incident response planning, handling, and reporting.",
+      "controls": [
+        {
+          "id": "IR-4",
+          "name": "Incident Handling",
+          "description": "Implement an incident handling capability for security incidents that includes preparation, detection and analysis, containment, eradication, and recovery.",
+          "requirements": [
+            {
+              "id": "IR-4.1",
+              "description": "Employ automated mechanisms to support the incident handling process.",
+              "guidance": "Use a SIEM or ticketing system to track incidents through their lifecycle."
+            }
+          ]
+        },
+        {
+          "id": "IR-6",
+          "name": "Incident Reporting",
+          "description": "Require personnel to report suspected security incidents to the organizational incident response capability.",
+          "requirements": [
+            {
+              "id": "IR-6.1",
+              "description": "Report security incidents to external authorities as required.",
+              "guidance": "Identify applicable regulatory reporting requirements and timeframes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SC",
+      "name": "System and Communications Protection",
+      "description": "Controls related to protecting system and communications channels.",
+      "controls": [
+        {
+          "id": "SC-8",
+          "name": "Transmission Confidentiality and Integrity",
+          "description": "Implement cryptographic or alternative physical safeguards to prevent unauthorized disclosure of information during transmission.",
+          "requirements": [
+            {
+              "id": "SC-8.1",
+              "description": "Implement cryptographic mechanisms to prevent unauthorized disclosure of information during transmission.",
+              "guidance": "Use TLS 1.2+ for all network communications carrying sensitive data."
+            }
+          ]
+        },
+        {
+          "id": "SC-28",
+          "name": "Protection of Information at Rest",
+          "description": "Protect the confidentiality and integrity of information at rest.",
+          "requirements": [
+            {
+              "id": "SC-28.1",
+              "description": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of information at rest.",
+              "guidance": "Encrypt databases, file systems, and backup media containing sensitive data."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SI",
+      "name": "System and Information Integrity",
+      "description": "Controls related to flaw remediation, malicious code protection, and security alerts.",
+      "controls": [
+        {
+          "id": "SI-2",
+          "name": "Flaw Remediation",
+          "description": "Identify, report, and correct information system flaws; test software updates before installation; and incorporate flaw remediation into organizational configuration management processes.",
+          "requirements": [
+            {
+              "id": "SI-2.1",
+              "description": "Centrally manage flaw remediation.",
+              "guidance": "Use a vulnerability management platform to track and prioritize patching."
+            },
+            {
+              "id": "SI-2.2",
+              "description": "Employ automated mechanisms to determine whether system components are current.",
+              "guidance": "Run vulnerability scans at least monthly."
+            }
+          ]
+        },
+        {
+          "id": "SI-3",
+          "name": "Malicious Code Protection",
+          "description": "Implement malicious code protection mechanisms at information system entry and exit points and at workstations, servers, or mobile computing devices on the network.",
+          "requirements": [
+            {
+              "id": "SI-3.1",
+              "description": "Centrally manage malicious code protection mechanisms.",
+              "guidance": "Deploy endpoint protection on all systems with centralized management console."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

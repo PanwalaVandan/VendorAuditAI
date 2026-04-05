@@ -1,0 +1,222 @@
+{
+  "id": "hipaa",
+  "name": "HIPAA Security Rule",
+  "version": "2013",
+  "description": "The HIPAA Security Rule establishes national standards to protect individuals' electronic personal health information (ePHI) that is created, received, used, or maintained by a covered entity or business associate.",
+  "organization": "U.S. Department of Health and Human Services",
+  "categories": [
+    {
+      "id": "AS",
+      "name": "Administrative Safeguards",
+      "description": "Administrative actions, policies, and procedures to manage the selection, development, implementation, and maintenance of security measures.",
+      "controls": [
+        {
+          "id": "164.308(a)(1)",
+          "name": "Security Management Process",
+          "description": "Implement policies and procedures to prevent, detect, contain, and correct security violations.",
+          "requirements": [
+            {
+              "id": "164.308(a)(1)(ii)(A)",
+              "description": "Risk Analysis — Conduct an accurate and thorough assessment of the potential risks and vulnerabilities to the confidentiality, integrity, and availability of ePHI.",
+              "guidance": "Document all ePHI assets, threats, vulnerabilities, and current controls. Calculate likelihood and impact for each risk."
+            },
+            {
+              "id": "164.308(a)(1)(ii)(B)",
+              "description": "Risk Management — Implement security measures sufficient to reduce risks and vulnerabilities to a reasonable and appropriate level.",
+              "guidance": "Prioritize and remediate identified risks. Document risk acceptance decisions."
+            },
+            {
+              "id": "164.308(a)(1)(ii)(C)",
+              "description": "Sanction Policy — Apply appropriate sanctions against workforce members who fail to comply with security policies.",
+              "guidance": "Include clear escalation steps from warning to termination in the sanction policy."
+            },
+            {
+              "id": "164.308(a)(1)(ii)(D)",
+              "description": "Information System Activity Review — Regularly review records of information system activity, such as audit logs, access reports, and security incident tracking reports.",
+              "guidance": "Review logs at least weekly. Automate alerting for anomalous activity."
+            }
+          ]
+        },
+        {
+          "id": "164.308(a)(3)",
+          "name": "Workforce Security",
+          "description": "Implement policies and procedures to ensure that all members of the workforce have appropriate access to ePHI and to prevent those who do not have access from obtaining access.",
+          "requirements": [
+            {
+              "id": "164.308(a)(3)(ii)(A)",
+              "description": "Authorization and/or Supervision — Implement procedures for the authorization and/or supervision of workforce members who work with ePHI.",
+              "guidance": "Document role-based access controls and supervisory responsibilities."
+            },
+            {
+              "id": "164.308(a)(3)(ii)(B)",
+              "description": "Workforce Clearance Procedure — Implement procedures to determine that the access of a workforce member to ePHI is appropriate.",
+              "guidance": "Perform background checks and verify credentials before granting ePHI access."
+            },
+            {
+              "id": "164.308(a)(3)(ii)(C)",
+              "description": "Termination Procedures — Implement procedures for terminating access to ePHI when the employment of a workforce member ends.",
+              "guidance": "Disable accounts and retrieve devices within 24 hours of termination."
+            }
+          ]
+        },
+        {
+          "id": "164.308(a)(5)",
+          "name": "Security Awareness and Training",
+          "description": "Implement a security awareness and training program for all members of its workforce.",
+          "requirements": [
+            {
+              "id": "164.308(a)(5)(ii)(A)",
+              "description": "Security Reminders — Periodic security updates to workforce members.",
+              "guidance": "Send security awareness communications at least quarterly."
+            },
+            {
+              "id": "164.308(a)(5)(ii)(B)",
+              "description": "Protection from Malicious Software — Procedures for guarding against, detecting, and reporting malicious software.",
+              "guidance": "Train workforce on phishing recognition and safe computing practices annually."
+            }
+          ]
+        },
+        {
+          "id": "164.308(a)(6)",
+          "name": "Security Incident Procedures",
+          "description": "Implement policies and procedures to address security incidents.",
+          "requirements": [
+            {
+              "id": "164.308(a)(6)(ii)",
+              "description": "Response and Reporting — Identify and respond to suspected or known security incidents; mitigate harmful effects; and document incidents and their outcomes.",
+              "guidance": "Maintain an incident response plan and test it at least annually."
+            }
+          ]
+        },
+        {
+          "id": "164.308(a)(7)",
+          "name": "Contingency Plan",
+          "description": "Establish policies and procedures for responding to an emergency or other occurrence that damages systems containing ePHI.",
+          "requirements": [
+            {
+              "id": "164.308(a)(7)(ii)(A)",
+              "description": "Data Backup Plan — Establish and implement procedures to create and maintain retrievable exact copies of ePHI.",
+              "guidance": "Perform daily backups and test restores at least quarterly."
+            },
+            {
+              "id": "164.308(a)(7)(ii)(B)",
+              "description": "Disaster Recovery Plan — Establish and implement procedures to restore any loss of data.",
+              "guidance": "Document RTO and RPO objectives and test the plan annually."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PS",
+      "name": "Physical Safeguards",
+      "description": "Physical measures, policies, and procedures to protect electronic information systems and related buildings and equipment from natural and environmental hazards and unauthorized intrusion.",
+      "controls": [
+        {
+          "id": "164.310(a)(1)",
+          "name": "Facility Access Controls",
+          "description": "Implement policies and procedures to limit physical access to electronic information systems and the facilities in which they are housed.",
+          "requirements": [
+            {
+              "id": "164.310(a)(2)(i)",
+              "description": "Contingency Operations — Establish procedures that allow facility access in support of restoration of lost data under the disaster recovery plan.",
+              "guidance": "Document emergency access procedures and test them annually."
+            },
+            {
+              "id": "164.310(a)(2)(ii)",
+              "description": "Facility Security Plan — Implement policies and procedures to safeguard the facility and equipment from unauthorized physical access, tampering, and theft.",
+              "guidance": "Use badge access, security cameras, and visitor logs for all areas housing ePHI systems."
+            }
+          ]
+        },
+        {
+          "id": "164.310(d)(1)",
+          "name": "Device and Media Controls",
+          "description": "Implement policies and procedures that govern the receipt and removal of hardware and electronic media that contain ePHI.",
+          "requirements": [
+            {
+              "id": "164.310(d)(2)(i)",
+              "description": "Disposal — Implement policies and procedures to address the final disposition of ePHI and the hardware or electronic media on which it is stored.",
+              "guidance": "Use NIST 800-88 media sanitization guidelines. Document all disposal actions."
+            },
+            {
+              "id": "164.310(d)(2)(ii)",
+              "description": "Media Re-use — Implement procedures for removal of ePHI from electronic media before the media are made available for re-use.",
+              "guidance": "Perform cryptographic erasure or physical destruction before media reuse."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TS",
+      "name": "Technical Safeguards",
+      "description": "Technology, policies, and procedures for its use that protect ePHI and control access to it.",
+      "controls": [
+        {
+          "id": "164.312(a)(1)",
+          "name": "Access Control",
+          "description": "Implement technical policies and procedures for electronic information systems that maintain ePHI to allow access only to authorized persons or software programs.",
+          "requirements": [
+            {
+              "id": "164.312(a)(2)(i)",
+              "description": "Unique User Identification — Assign a unique name and/or number for identifying and tracking user identity.",
+              "guidance": "Prohibit shared accounts. Each user must have a unique identifier."
+            },
+            {
+              "id": "164.312(a)(2)(iii)",
+              "description": "Automatic Logoff — Implement electronic procedures that terminate an electronic session after a predetermined time of inactivity.",
+              "guidance": "Configure session timeout of 15 minutes or less for ePHI access."
+            },
+            {
+              "id": "164.312(a)(2)(iv)",
+              "description": "Encryption and Decryption — Implement a mechanism to encrypt and decrypt ePHI.",
+              "guidance": "Encrypt ePHI at rest using AES-256 and in transit using TLS 1.2+."
+            }
+          ]
+        },
+        {
+          "id": "164.312(b)",
+          "name": "Audit Controls",
+          "description": "Implement hardware, software, and/or procedural mechanisms that record and examine activity in information systems that contain or use ePHI.",
+          "requirements": [
+            {
+              "id": "164.312(b).1",
+              "description": "Implement and monitor audit logging for all systems that create, receive, maintain, or transmit ePHI.",
+              "guidance": "Log all access to ePHI records. Retain logs for at least 6 years."
+            }
+          ]
+        },
+        {
+          "id": "164.312(c)(1)",
+          "name": "Integrity",
+          "description": "Implement policies and procedures to protect ePHI from improper alteration or destruction.",
+          "requirements": [
+            {
+              "id": "164.312(c)(2)",
+              "description": "Implement electronic mechanisms to corroborate that ePHI has not been altered or destroyed in an unauthorized manner.",
+              "guidance": "Use checksums, digital signatures, or hash verification for ePHI integrity."
+            }
+          ]
+        },
+        {
+          "id": "164.312(e)(1)",
+          "name": "Transmission Security",
+          "description": "Implement technical security measures to guard against unauthorized access to ePHI that is being transmitted over an electronic communications network.",
+          "requirements": [
+            {
+              "id": "164.312(e)(2)(i)",
+              "description": "Integrity Controls — Implement security measures to ensure that electronically transmitted ePHI is not improperly modified without detection.",
+              "guidance": "Use message authentication codes (MACs) or digital signatures."
+            },
+            {
+              "id": "164.312(e)(2)(ii)",
+              "description": "Encryption — Implement a mechanism to encrypt ePHI whenever deemed appropriate.",
+              "guidance": "Encrypt all ePHI transmitted over public networks using TLS 1.2+."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

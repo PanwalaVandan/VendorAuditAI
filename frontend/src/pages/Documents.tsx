@@ -50,6 +50,14 @@ interface BackendDocument {
   created_at: string;
 }
 
+interface ProcessingProgress {
+  stage: string;
+  pages_done: number;
+  total_pages: number;
+  percent: number;
+  eta_seconds: number;
+}
+
 export function Documents() {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
@@ -60,6 +68,8 @@ export function Documents() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<BackendDocument | null>(null);
+  const [processingDocId, setProcessingDocId] = useState<string | null>(null);
+  const [processingFilename, setProcessingFilename] = useState<string>('');
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close menu when clicking outside
@@ -85,25 +95,52 @@ export function Documents() {
     },
   });
 
+  // Poll progress while a document is being processed
+  const { data: progressData } = useQuery<ProcessingProgress>({
+    queryKey: ['doc-progress', processingDocId],
+    queryFn: async () => {
+      const res = await apiClient.get<ProcessingProgress>(`/documents/${processingDocId}/progress`);
+      return res.data;
+    },
+    enabled: !!processingDocId,
+    refetchInterval: (query) => {
+      const data = query.state.data as ProcessingProgress | undefined;
+      if (!data) return 2000;
+      const done = ['completed', 'processed', 'error', 'failed'].includes(data.stage);
+      return done ? false : 2000;
+    },
+  });
+
+  // When polling detects completion, clear state and refresh list
+  useEffect(() => {
+    if (!progressData) return;
+    const done = ['completed', 'processed', 'error', 'failed'].includes(progressData.stage);
+    if (done) {
+      setProcessingDocId(null);
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      if (vendorIdFromUrl) {
+        queryClient.invalidateQueries({ queryKey: ['vendor-documents', vendorIdFromUrl] });
+      }
+    }
+  }, [progressData, vendorIdFromUrl, queryClient]);
+
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
 
-      // If arriving from a vendor detail page, associate the document with that vendor
       const url = vendorIdFromUrl
         ? `/documents?vendor_id=${encodeURIComponent(vendorIdFromUrl)}`
         : '/documents';
 
-      // Document upload triggers text extraction and chunking which can be slow for large files
-      const response = await apiClient.post(url, formData, { timeout: 120000 });
-      return response.data;
+      const response = await apiClient.post(url, formData, { timeout: 30000 });
+      return { data: response.data, filename: file.name };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents'] });
-      // Also invalidate vendor-documents so the vendor detail page refreshes
-      if (vendorIdFromUrl) {
-        queryClient.invalidateQueries({ queryKey: ['vendor-documents', vendorIdFromUrl] });
+    onSuccess: ({ data, filename }) => {
+      const doc = data?.data ?? data;
+      if (doc?.id) {
+        setProcessingDocId(doc.id);
+        setProcessingFilename(filename);
       }
       setUploadError(null);
     },
@@ -362,6 +399,32 @@ export function Documents() {
         <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
           Uploading...
+        </div>
+      )}
+
+      {processingDocId && progressData && (
+        <div className="mb-6 rounded-lg border border-border bg-card p-4 space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              <span className="font-medium text-foreground truncate max-w-xs">{processingFilename}</span>
+              <span>— {progressData.stage === 'parsing' ? 'Parsing pages' : progressData.stage === 'chunking' ? 'Chunking' : progressData.stage === 'embedding' ? 'Embedding' : progressData.stage}</span>
+            </div>
+            <span className="text-muted-foreground text-xs whitespace-nowrap">
+              {progressData.total_pages > 0
+                ? `${progressData.pages_done} / ${progressData.total_pages} pages`
+                : 'Starting...'}
+              {progressData.eta_seconds > 0 && ` — ~${progressData.eta_seconds >= 60
+                ? `${Math.ceil(progressData.eta_seconds / 60)} min`
+                : `${progressData.eta_seconds}s`} remaining`}
+            </span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <div
+              className="bg-primary h-2 rounded-full transition-all duration-500"
+              style={{ width: `${Math.max(progressData.percent, progressData.total_pages > 0 ? 2 : 0)}%` }}
+            />
+          </div>
         </div>
       )}
 

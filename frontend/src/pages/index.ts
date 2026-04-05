@@ -18,3 +18,4 @@ export { ApprovedVendors } from './ApprovedVendors';
 export { BPO } from './BPO';
 export { Integrations } from './Integrations';
 export { Frameworks } from './Frameworks';
+export { default as Settings } from './Settings';

@@ -49,6 +49,14 @@ const severityConfigs: SeverityStatConfig[] = [
     textColor: 'text-blue-700',
     iconColor: 'text-blue-500',
   },
+  {
+    severity: 'info',
+    label: 'Info',
+    icon: Info,
+    bgColor: 'bg-gray-50',
+    textColor: 'text-gray-700',
+    iconColor: 'text-gray-500',
+  },
 ];
 
 /**

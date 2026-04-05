@@ -1,9 +1,23 @@
 """Document processing pipeline orchestration."""
 
 import json
+import time
 from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
+# Module-level progress store: document_id -> progress dict
+# Populated during parsing; cleared after processing completes or fails.
+_doc_progress: dict[str, dict] = {}
+
+
+def get_doc_progress(doc_id: str) -> dict | None:
+    """Return current progress info for a document, or None if not tracked."""
+    return _doc_progress.get(doc_id)
+
+
+def clear_doc_progress(doc_id: str) -> None:
+    _doc_progress.pop(doc_id, None)
 
 from app.models.chunk import DocumentChunk
 from app.models.document import Document, DocumentStatus, ProcessingStage
@@ -52,6 +66,7 @@ class DocumentProcessor:
         Raises:
             ValueError: If processing fails
         """
+        doc_id = str(document.id)
         try:
             # Update status to processing
             document.status = DocumentStatus.PROCESSING.value
@@ -60,7 +75,7 @@ class DocumentProcessor:
             document.processing_stage = ProcessingStage.PARSING.value
             await db.flush()
 
-            parsed = await self._parse_document(document)
+            parsed = await self._parse_document(document, db)
 
             # Update document metadata from parsing
             document.page_count = parsed.total_pages
@@ -68,6 +83,8 @@ class DocumentProcessor:
                 document.metadata_ = json.dumps(parsed.metadata)
 
             # Stage 2: Chunk document
+            if doc_id in _doc_progress:
+                _doc_progress[doc_id]["stage"] = "chunking"
             document.processing_stage = ProcessingStage.CHUNKING.value
             await db.flush()
 
@@ -77,6 +94,8 @@ class DocumentProcessor:
             db_chunks = await self._save_chunks(db, document, chunks)
 
             # Stage 3: Generate embeddings
+            if doc_id in _doc_progress:
+                _doc_progress[doc_id]["stage"] = "embedding"
             document.processing_stage = ProcessingStage.EMBEDDING.value
             await db.flush()
 
@@ -98,25 +117,78 @@ class DocumentProcessor:
             document.error_message = str(e)
             await db.flush()
             raise ValueError(f"Processing failed: {e!s}") from e
+        finally:
+            clear_doc_progress(doc_id)
 
-    async def _parse_document(self, document: Document) -> ParsedDocument:
-        """Parse a document to extract text.
+    async def _parse_document(self, document: Document, db: AsyncSession) -> ParsedDocument:
+        """Parse a document to extract text, reporting page-level progress.
 
-        Args:
-            document: Document to parse
-
-        Returns:
-            ParsedDocument with extracted content
+        Loads the org's parser config from DB, then offloads parsing to a thread
+        pool via asyncio.to_thread so the event loop stays free.
         """
-        # Load file from storage
+        import asyncio
+        import json
+
+        from sqlalchemy import select
+
+        from app.models.organization import Organization
+
+        # Load org-level parser config
+        result = await db.execute(
+            select(Organization).where(Organization.id == document.organization_id)
+        )
+        org = result.scalar_one_or_none()
+        parser_config: dict = {}
+        if org and org.settings:
+            try:
+                org_settings = json.loads(org.settings)
+                dp = org_settings.get("document_processing", {})
+                parser_config = {
+                    "provider": dp.get("provider", "docling"),
+                    "external_parser": dp.get("external_parser"),
+                }
+            except (json.JSONDecodeError, TypeError):
+                pass
+
         try:
             content = await self.storage.get(document.storage_path)
         except FileNotFoundError as e:
             raise ValueError(f"Document file not found: {document.storage_path}") from e
 
-        # Parse based on MIME type
+        doc_id = str(document.id)
+        started_at = time.monotonic()
+        _doc_progress[doc_id] = {
+            "stage": "parsing",
+            "pages_done": 0,
+            "total_pages": 0,
+            "started_at": started_at,
+        }
+
+        def on_progress(pages_done: int, total_pages: int) -> None:
+            _doc_progress[doc_id] = {
+                "stage": "parsing",
+                "pages_done": pages_done,
+                "total_pages": total_pages,
+                "started_at": started_at,
+            }
+
+        def _sync_parse() -> ParsedDocument:
+            # Limit PyTorch to 2 threads so the machine stays responsive
+            try:
+                import torch
+                torch.set_num_threads(2)
+            except Exception:
+                pass
+            return DocumentParser.parse(
+                content,
+                document.mime_type,
+                document.filename,
+                on_progress=on_progress,
+                parser_config=parser_config,
+            )
+
         try:
-            parsed = DocumentParser.parse(content, document.mime_type)
+            parsed = await asyncio.to_thread(_sync_parse)
         except ValueError as e:
             raise ValueError(f"Failed to parse document: {e!s}") from e
 
@@ -125,8 +197,9 @@ class DocumentProcessor:
     def _chunk_document(self, parsed: ParsedDocument) -> list[Chunk]:
         """Split parsed document into chunks.
 
-        Uses DoclingChunker when the document was parsed via docling
-        (markdown_text is populated). Falls back to TextChunker otherwise.
+        When pre_chunks is set (external GPU parser path), the chunks are
+        already compliance-aware — use them directly without re-chunking.
+        Otherwise uses DoclingChunker (markdown path) or TextChunker (legacy).
 
         Args:
             parsed: ParsedDocument to chunk
@@ -134,6 +207,24 @@ class DocumentProcessor:
         Returns:
             List of Chunk objects
         """
+        # External parser pre-chunked path — skip re-chunking
+        if parsed.pre_chunks is not None:
+            chunks = [
+                Chunk(
+                    content=c["content"],
+                    token_count=c.get("token_count") or len(c["content"].split()),
+                    chunk_index=i,
+                    page_number=c.get("page"),
+                    section_header=c.get("section_header"),
+                    metadata={"parser": "external_gpu"},
+                )
+                for i, c in enumerate(parsed.pre_chunks)
+                if c.get("content", "").strip()
+            ]
+            if chunks:
+                return chunks
+            # Empty result from external parser — fall through to docling/text
+
         if parsed.markdown_text:
             try:
                 docling_chunker = DoclingChunker(target_chunk_size=self.chunker.target_chunk_size)

@@ -20,6 +20,7 @@ from app.api.v1.endpoints import (
     export,
     integrations,
     monitoring,
+    organization,
     playbooks,
     query,
     remediation,
@@ -123,6 +124,11 @@ api_router.include_router(
     integrations.router, prefix="/integrations", tags=["Integration Hub"]
 )
 
+# Include organization settings router
+api_router.include_router(
+    organization.router, prefix="/organization", tags=["Organization"]
+)
+
 
 @api_router.get("/status", tags=["Status"])
 async def api_status() -> dict:
@@ -148,6 +154,7 @@ async def api_status() -> dict:
             "frameworks": "/api/v1/frameworks",
             "integrations": "/api/v1/integrations",
             "monitoring": "/api/v1/monitoring",
+            "organization": "/api/v1/organization",
             "playbooks": "/api/v1/playbooks",
             "query": "/api/v1/query",
             "remediation": "/api/v1/remediation",

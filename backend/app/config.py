@@ -71,7 +71,7 @@ class Settings(BaseSettings):
     # Security - JWT
     jwt_secret_key: str = "jwt-secret-change-me-in-production"
     jwt_algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
+    access_token_expire_minutes: int = 480  # 8 hours — prevents logout during long document processing
     refresh_token_expire_days: int = 7
 
     # CORS - Include all known production and development origins

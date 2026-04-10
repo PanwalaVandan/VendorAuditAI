@@ -148,3 +148,4 @@ ml_models/
 
 # Local Netlify folder
 .netlify
+parser-service/

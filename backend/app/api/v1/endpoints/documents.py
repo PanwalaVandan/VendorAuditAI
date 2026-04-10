@@ -1,13 +1,16 @@
 """Document management API endpoints."""
 
+import logging
+import time
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_active_user
 from app.db import get_db
+from app.db.session import async_session_factory
 from app.models import User
 from app.schemas.document import (
     DocumentCreate,
@@ -17,8 +20,24 @@ from app.schemas.document import (
 )
 from app.services import document as document_service
 from app.services import processing as processing_service
+from app.services.processing import get_doc_progress
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Documents"])
+
+
+async def _run_processing_background(document_id: str, org_id: str) -> None:
+    """Background task: process a document using its own DB session."""
+    async with async_session_factory() as db:
+        try:
+            document = await document_service.get_document_by_id(db, document_id, org_id)
+            if document:
+                await processing_service.process_document(db, document)
+                await db.commit()
+        except Exception as exc:
+            await db.rollback()
+            logger.error("Background processing failed for %s: %s", document_id, exc)
 
 # Allowed MIME types for document upload
 ALLOWED_MIME_TYPES = {
@@ -70,6 +89,7 @@ async def list_documents(
 async def upload_document(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(..., description="Document file to upload"),
     vendor_id: str | None = Query(None, description="Associated vendor ID"),
     document_type: str = Query("other", description="Document type"),
@@ -77,34 +97,30 @@ async def upload_document(
     """
     Upload a new document.
 
-    Accepts PDF and DOCX files up to 50MB.
-    The document will be queued for processing after upload.
+    Accepts PDF and DOCX files up to 50MB. Returns immediately with
+    status=processing; parsing and chunking run as a background task.
+    Poll GET /documents/{id}/progress for live progress.
     """
-    # Validate file type
     if file.content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid file type. Allowed types: PDF, DOCX",
         )
 
-    # Read file content
     content = await file.read()
 
-    # Validate file size
     if len(content) > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024 * 1024)}MB",
         )
 
-    # Validate filename
     if not file.filename:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Filename is required",
         )
 
-    # Create document metadata
     document_data = DocumentCreate(
         vendor_id=vendor_id,
         document_type=document_type,
@@ -122,29 +138,70 @@ async def upload_document(
         await db.commit()
         await db.refresh(document)
 
-        # Auto-process the document after upload
-        try:
-            processed_doc = await processing_service.process_document(db, document)
-            await db.commit()
-            await db.refresh(processed_doc)
-            return DocumentResponse.model_validate(processed_doc)
-        except Exception as process_error:
-            # If processing fails, still return the uploaded document
-            # User can manually retry via /documents/{id}/process
-            await db.rollback()
-            await db.refresh(document)
-            # Update status to indicate processing attempt failed
-            document.status = "pending"
-            document.error_message = str(process_error)
-            await db.commit()
-            await db.refresh(document)
-            return DocumentResponse.model_validate(document)
+        # Kick off processing in the background and return immediately
+        background_tasks.add_task(
+            _run_processing_background,
+            str(document.id),
+            str(current_user.organization_id),
+        )
+        return DocumentResponse.model_validate(document)
     except ValueError as e:
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         ) from e
+
+
+@router.get("/{document_id}/progress")
+async def get_document_progress(
+    document_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    """
+    Return live processing progress for a document.
+
+    While parsing: returns pages_done, total_pages, percent, eta_seconds.
+    After completion: returns stage=processed or stage=failed.
+    """
+    progress = get_doc_progress(document_id)
+
+    if progress:
+        pages_done = progress["pages_done"]
+        total_pages = progress["total_pages"]
+        elapsed = time.monotonic() - progress["started_at"]
+
+        if pages_done > 0 and total_pages > 0:
+            secs_per_page = elapsed / pages_done
+            eta_seconds = max(0, int((total_pages - pages_done) * secs_per_page))
+            percent = int((pages_done / total_pages) * 100)
+        else:
+            eta_seconds = 0
+            percent = 0
+
+        return {
+            "stage": progress["stage"],
+            "pages_done": pages_done,
+            "total_pages": total_pages,
+            "percent": percent,
+            "eta_seconds": eta_seconds,
+        }
+
+    # Not in memory — check DB for final status
+    document = await document_service.get_document_by_id(
+        db, document_id, current_user.organization_id
+    )
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    return {
+        "stage": document.processing_stage,
+        "pages_done": document.page_count or 0,
+        "total_pages": document.page_count or 0,
+        "percent": 100 if document.status == "processed" else 0,
+        "eta_seconds": 0,
+    }
 
 
 @router.get("/{document_id}", response_model=DocumentResponse)

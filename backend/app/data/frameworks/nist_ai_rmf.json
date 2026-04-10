@@ -1,8 +1,8 @@
 {
   "id": "nist_ai_rmf",
   "name": "NIST AI Risk Management Framework",
-  "version": "1.0",
-  "description": "The NIST AI Risk Management Framework (AI RMF) provides guidance for organizations to manage risks associated with AI systems throughout their lifecycle. It focuses on trustworthy AI characteristics: valid, reliable, safe, secure, resilient, accountable, transparent, explainable, interpretable, privacy-enhanced, and fair.",
+  "version": "1.0 + AI 600-1",
+  "description": "The NIST AI Risk Management Framework (AI RMF) provides guidance for organizations to manage risks associated with AI systems throughout their lifecycle. It focuses on trustworthy AI characteristics: valid, reliable, safe, secure, resilient, accountable, transparent, explainable, interpretable, privacy-enhanced, and fair. Supplemented by NIST AI 600-1 Generative AI Profile (July 2024), which identifies 12 unique risks of generative AI systems and provides 400+ recommended actions for governing and managing GenAI-specific risks.",
   "organization": "National Institute of Standards and Technology (NIST)",
   "categories": [
     {
@@ -496,6 +496,419 @@
               "id": "MANAGE-4.2",
               "description": "Plans are in place to monitor and manage residual risks over time.",
               "guidance": "Examine ongoing monitoring plans, reassessment schedules, and residual risk tracking."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GEN_AI",
+      "name": "Generative AI Risk Profile (AI 600-1)",
+      "description": "NIST AI 600-1 Generative AI Profile identifies 12 unique risks of generative AI systems requiring specific governance and technical controls beyond the core AI RMF.",
+      "controls": [
+        {
+          "id": "GEN-01",
+          "name": "CBRN Information",
+          "description": "Chemical, Biological, Radiological, Nuclear: Controls preventing GenAI systems from providing uplift to actors seeking to create or deploy CBRN weapons.",
+          "requirements": [
+            {
+              "id": "GEN-01.1",
+              "description": "Content filtering for CBRN queries — implement automated detection and blocking of queries seeking dangerous synthesis information or operational guidance for CBRN weapons.",
+              "guidance": "Deploy and maintain CBRN-specific content classifiers. Review and update filter coverage regularly against new threat scenarios."
+            },
+            {
+              "id": "GEN-01.2",
+              "description": "Red-teaming for CBRN scenarios — conduct structured adversarial testing specifically targeting CBRN uplift attempts including indirect and multi-turn elicitation strategies.",
+              "guidance": "Engage specialized red teams with domain expertise. Document findings and remediation actions. Conduct testing prior to deployment and on a regular cadence post-deployment."
+            },
+            {
+              "id": "GEN-01.3",
+              "description": "Output monitoring for dangerous synthesis information — monitor generated outputs for content that could provide meaningful uplift toward CBRN weapon development.",
+              "guidance": "Implement real-time output scanning. Establish escalation and incident response procedures for detected CBRN-related outputs."
+            }
+          ]
+        },
+        {
+          "id": "GEN-02",
+          "name": "Confabulation (Hallucination)",
+          "description": "Controls addressing GenAI systems generating false or misleading information presented as factual.",
+          "requirements": [
+            {
+              "id": "GEN-02.1",
+              "description": "Retrieval-augmented generation (RAG) for grounding — implement RAG or equivalent grounding mechanisms to anchor outputs to verified information sources for high-stakes use cases.",
+              "guidance": "Evaluate RAG implementation quality including retrieval accuracy and source freshness. Document the scope of use cases where RAG is applied."
+            },
+            {
+              "id": "GEN-02.2",
+              "description": "Confidence scoring — implement and surface confidence or uncertainty estimates to downstream users and systems to signal reliability of generated content.",
+              "guidance": "Validate calibration of confidence scores. Ensure scores are surfaced appropriately in user interfaces and APIs."
+            },
+            {
+              "id": "GEN-02.3",
+              "description": "Citation and source attribution — require the system to cite sources for factual claims and provide mechanisms to verify citations.",
+              "guidance": "Test citation accuracy and completeness. Assess whether citations correspond to actual source content."
+            },
+            {
+              "id": "GEN-02.4",
+              "description": "Human review for high-stakes outputs — mandate human review before acting on GenAI outputs in high-stakes domains such as medical, legal, financial, and safety-critical contexts.",
+              "guidance": "Define the inventory of high-stakes use cases. Verify that human review workflows are operational and documented."
+            },
+            {
+              "id": "GEN-02.5",
+              "description": "Disclaimer requirements for unverified content — display clear disclosures to users when content has not been verified or may be inaccurate.",
+              "guidance": "Review disclaimer placement, clarity, and whether users acknowledge limitations before relying on outputs."
+            }
+          ]
+        },
+        {
+          "id": "GEN-03",
+          "name": "Data Privacy",
+          "description": "Controls for GenAI systems that may memorize, reproduce, or infer personal information from training data or prompts.",
+          "requirements": [
+            {
+              "id": "GEN-03.1",
+              "description": "Training data PII scrubbing — implement automated detection and removal of personally identifiable information from training datasets prior to model training.",
+              "guidance": "Review PII detection methodology, coverage, and residual PII testing. Document deidentification techniques applied."
+            },
+            {
+              "id": "GEN-03.2",
+              "description": "Differential privacy techniques — apply differential privacy or equivalent privacy-preserving mechanisms during training to limit memorization of individual records.",
+              "guidance": "Document privacy budget parameters and tradeoffs with model utility. Validate implementation of differential privacy mechanisms."
+            },
+            {
+              "id": "GEN-03.3",
+              "description": "Membership inference attack testing — conduct testing to assess whether the model memorizes and can reproduce training data in response to adversarial queries.",
+              "guidance": "Use established membership inference attack frameworks. Document findings and remediation steps."
+            },
+            {
+              "id": "GEN-03.4",
+              "description": "Prompt injection monitoring for data exfiltration — monitor for prompt injection patterns that attempt to extract PII or sensitive data from the model or its context window.",
+              "guidance": "Review detection rules and alerting for exfiltration-oriented injection patterns. Test detection effectiveness."
+            },
+            {
+              "id": "GEN-03.5",
+              "description": "Data minimization in prompts — implement controls to prevent unnecessary inclusion of sensitive personal data in prompts sent to GenAI systems.",
+              "guidance": "Review prompt construction pipelines for unnecessary PII inclusion. Assess whether data minimization policies are enforced technically."
+            }
+          ]
+        },
+        {
+          "id": "GEN-04",
+          "name": "Environmental Impact",
+          "description": "Controls addressing energy consumption and carbon footprint of large-scale GenAI training and inference.",
+          "requirements": [
+            {
+              "id": "GEN-04.1",
+              "description": "Energy consumption monitoring — measure and track energy consumption for GenAI training runs and inference workloads.",
+              "guidance": "Review energy metering methodologies, data collection, and reporting cadence."
+            },
+            {
+              "id": "GEN-04.2",
+              "description": "Carbon footprint reporting — calculate and disclose carbon emissions associated with GenAI operations including Scope 2 and relevant Scope 3 emissions.",
+              "guidance": "Assess methodology for carbon accounting, use of renewable energy credits, and completeness of Scope 3 considerations."
+            },
+            {
+              "id": "GEN-04.3",
+              "description": "Efficiency benchmarks per inference — establish and monitor efficiency metrics such as energy per inference or tokens per watt to guide optimization.",
+              "guidance": "Review baseline benchmarks, trend monitoring, and optimization initiatives."
+            },
+            {
+              "id": "GEN-04.4",
+              "description": "Sustainable compute sourcing policy — establish a policy for prioritizing compute infrastructure powered by renewable or low-carbon energy sources.",
+              "guidance": "Review policy documentation and evidence of sustainable sourcing in procurement decisions."
+            },
+            {
+              "id": "GEN-04.5",
+              "description": "Model size optimization for deployment — evaluate and implement model compression, distillation, or quantization techniques to reduce inference footprint.",
+              "guidance": "Document optimization techniques applied and their impact on model performance and energy consumption."
+            }
+          ]
+        },
+        {
+          "id": "GEN-05",
+          "name": "Human-AI Configuration",
+          "description": "Controls ensuring appropriate human oversight and preventing over-reliance on GenAI outputs.",
+          "requirements": [
+            {
+              "id": "GEN-05.1",
+              "description": "Human-in-the-loop for critical decisions — require human review and approval before GenAI outputs are used to drive consequential decisions affecting individuals or operations.",
+              "guidance": "Define and document the inventory of critical decision types. Verify that human-in-the-loop controls are enforced in workflows."
+            },
+            {
+              "id": "GEN-05.2",
+              "description": "Automation bias assessment — assess the degree to which users and operators over-rely on or uncritically accept GenAI outputs, and implement countermeasures.",
+              "guidance": "Review user research, usability studies, and any audit findings related to automation bias. Assess interface design choices that promote appropriate skepticism."
+            },
+            {
+              "id": "GEN-05.3",
+              "description": "Operator override capabilities — ensure operators and users have reliable mechanisms to override, reject, or escalate GenAI outputs.",
+              "guidance": "Test override and escalation pathways. Verify they are accessible and effective."
+            },
+            {
+              "id": "GEN-05.4",
+              "description": "User awareness of AI limitations — communicate system limitations, known failure modes, and appropriate use boundaries to users.",
+              "guidance": "Review user-facing documentation, onboarding materials, and in-product disclosures."
+            },
+            {
+              "id": "GEN-05.5",
+              "description": "Deployment context appropriateness review — assess whether the level of human oversight configured for the system is appropriate for the deployment context and risk level.",
+              "guidance": "Examine deployment context risk assessments and alignment between oversight levels and risk classifications."
+            }
+          ]
+        },
+        {
+          "id": "GEN-06",
+          "name": "Intellectual Property",
+          "description": "Controls addressing copyright, patent, and trade secret risks from GenAI training data and outputs.",
+          "requirements": [
+            {
+              "id": "GEN-06.1",
+              "description": "Training data licensing review — conduct legal review of training data licenses to assess permissibility of use for model training.",
+              "guidance": "Review license inventory, legal opinions, and data provenance documentation."
+            },
+            {
+              "id": "GEN-06.2",
+              "description": "Output copyright screening — implement or evaluate mechanisms to detect when generated outputs may reproduce copyrighted material.",
+              "guidance": "Assess output screening tools, coverage, and processes for handling detected reproductions."
+            },
+            {
+              "id": "GEN-06.3",
+              "description": "IP risk disclosure to users — disclose IP-related limitations and risks to users, including guidance on reviewing outputs for potential copyright issues.",
+              "guidance": "Review user-facing disclosures and terms of service regarding IP risk."
+            },
+            {
+              "id": "GEN-06.4",
+              "description": "Takedown request handling — establish a process for receiving, evaluating, and acting on IP takedown requests related to training data or system outputs.",
+              "guidance": "Review takedown request procedures, response timelines, and documented outcomes."
+            },
+            {
+              "id": "GEN-06.5",
+              "description": "Fair use assessment process — establish a legal process for assessing fair use considerations in training data usage and output reproduction.",
+              "guidance": "Examine legal review procedures and documentation of fair use determinations."
+            }
+          ]
+        },
+        {
+          "id": "GEN-07",
+          "name": "Obscene/Harmful Content",
+          "description": "Controls preventing generation of child sexual abuse material (CSAM), non-consensual intimate imagery, and other harmful content.",
+          "requirements": [
+            {
+              "id": "GEN-07.1",
+              "description": "CSAM detection and filtering — implement PhotoDNA or equivalent hash-matching and classifier-based detection to prevent generation or output of CSAM.",
+              "guidance": "Review implementation of CSAM detection technology, coverage, and testing. Verify integration with content moderation pipeline."
+            },
+            {
+              "id": "GEN-07.2",
+              "description": "Harmful content classifiers — deploy classifiers to detect and block generation of non-consensual intimate imagery, graphic violence, and other harmful content categories.",
+              "guidance": "Review classifier taxonomy, accuracy metrics, and threshold settings. Assess coverage of relevant harmful content categories."
+            },
+            {
+              "id": "GEN-07.3",
+              "description": "Mandatory content moderation — implement mandatory content moderation for all user-facing GenAI outputs with defined escalation procedures.",
+              "guidance": "Review moderation pipeline architecture, coverage, and escalation workflows."
+            },
+            {
+              "id": "GEN-07.4",
+              "description": "Platform-level reporting obligations — ensure compliance with applicable legal reporting obligations for CSAM and other harmful content detected by the system.",
+              "guidance": "Review reporting procedures, legal compliance documentation, and evidence of required reports to authorities."
+            },
+            {
+              "id": "GEN-07.5",
+              "description": "Zero-tolerance policy enforcement — establish and enforce a zero-tolerance policy for CSAM generation with documented technical and procedural controls.",
+              "guidance": "Review policy documentation, enforcement mechanisms, and audit evidence."
+            }
+          ]
+        },
+        {
+          "id": "GEN-08",
+          "name": "Psychosocial Harms",
+          "description": "Controls addressing manipulation, addiction, radicalization, and psychological harm from GenAI interactions.",
+          "requirements": [
+            {
+              "id": "GEN-08.1",
+              "description": "Persuasion and manipulation detection — implement controls to detect and limit outputs that employ manipulative persuasion techniques targeting users.",
+              "guidance": "Review detection methodology for manipulative content patterns. Assess coverage of known persuasion and dark pattern techniques."
+            },
+            {
+              "id": "GEN-08.2",
+              "description": "Engagement addiction pattern monitoring — monitor for system behaviors or output patterns that may foster excessive engagement or dependency.",
+              "guidance": "Review metrics for engagement patterns, escalation thresholds, and any interventions implemented."
+            },
+            {
+              "id": "GEN-08.3",
+              "description": "Crisis intervention protocols — implement protocols to detect user crisis indicators and provide appropriate mental health resources and escalation pathways.",
+              "guidance": "Review crisis detection triggers, resource provision procedures, and escalation paths. Test effectiveness in simulated scenarios."
+            },
+            {
+              "id": "GEN-08.4",
+              "description": "Radicalization content detection — implement detection for outputs that may promote extremist ideologies or facilitate radicalization.",
+              "guidance": "Review classifier coverage for extremist content categories. Assess false positive and false negative rates."
+            },
+            {
+              "id": "GEN-08.5",
+              "description": "Personalization limits for vulnerable users — establish limits on personalization and behavioral targeting for users identified as potentially vulnerable.",
+              "guidance": "Review policies for vulnerable user identification and associated personalization restrictions."
+            }
+          ]
+        },
+        {
+          "id": "GEN-09",
+          "name": "Security (Cybersecurity Risks from GenAI)",
+          "description": "Controls addressing how GenAI systems can be exploited to generate malware, phishing content, or attack code.",
+          "requirements": [
+            {
+              "id": "GEN-09.1",
+              "description": "Code generation security scanning — scan generated code for security vulnerabilities, malicious patterns, and dangerous functionality before delivery to users.",
+              "guidance": "Review scanning tool coverage, integration points in the code generation pipeline, and remediation procedures."
+            },
+            {
+              "id": "GEN-09.2",
+              "description": "Malicious use case detection — implement detection for requests seeking to generate malware, phishing templates, exploit code, or attack tooling.",
+              "guidance": "Assess classifier coverage for malicious use case patterns. Review false positive management procedures."
+            },
+            {
+              "id": "GEN-09.3",
+              "description": "Output filtering for attack signatures — filter outputs for known attack signatures, shellcode patterns, and malicious payload indicators.",
+              "guidance": "Review signature coverage and update cadence. Assess integration with threat intelligence feeds."
+            },
+            {
+              "id": "GEN-09.4",
+              "description": "Responsible disclosure process — establish a responsible disclosure program for security researchers to report misuse capabilities or vulnerabilities.",
+              "guidance": "Review disclosure program documentation, response procedures, and evidence of researcher engagement."
+            },
+            {
+              "id": "GEN-09.5",
+              "description": "Red-teaming for security misuse — conduct structured red-team exercises targeting cybersecurity misuse scenarios including malware generation and attack assistance.",
+              "guidance": "Review red-team scope, methodology, findings, and remediation tracking."
+            }
+          ]
+        },
+        {
+          "id": "GEN-10",
+          "name": "Value Chain and Component Integration",
+          "description": "Controls for risks introduced through third-party foundation models, APIs, and AI supply chain components.",
+          "requirements": [
+            {
+              "id": "GEN-10.1",
+              "description": "Foundation model provenance documentation — document the provenance, training data lineage, and known limitations of all foundation models used in the system.",
+              "guidance": "Review model cards, vendor documentation, and provenance records for all integrated foundation models."
+            },
+            {
+              "id": "GEN-10.2",
+              "description": "Third-party AI vendor security assessment — conduct security assessments of third-party AI vendors and foundation model providers.",
+              "guidance": "Review vendor assessment questionnaires, audit reports, and security certifications."
+            },
+            {
+              "id": "GEN-10.3",
+              "description": "API dependency risk assessment — assess security and reliability risks introduced by dependencies on third-party AI APIs.",
+              "guidance": "Review API dependency inventory, risk assessments, and contingency plans for API unavailability."
+            },
+            {
+              "id": "GEN-10.4",
+              "description": "Model update notification process — establish a process to receive and evaluate notifications of updates, changes, or known issues with integrated third-party models.",
+              "guidance": "Review notification procedures, evaluation workflows, and change management records."
+            },
+            {
+              "id": "GEN-10.5",
+              "description": "Supply chain AI bill of materials (AI-SBOM) — maintain an AI-SBOM documenting all AI components, models, datasets, and third-party services in the system.",
+              "guidance": "Review AI-SBOM completeness, update cadence, and integration with risk management processes."
+            }
+          ]
+        },
+        {
+          "id": "GEN-11",
+          "name": "AI System Security (Adversarial ML Attacks)",
+          "description": "Controls against prompt injection, jailbreaking, model inversion, and adversarial attacks specific to GenAI.",
+          "requirements": [
+            {
+              "id": "GEN-11.1",
+              "description": "Prompt injection detection and sanitization — implement detection and sanitization controls for prompt injection attempts targeting system prompts or privileged instructions.",
+              "guidance": "Review injection detection coverage, sanitization techniques, and bypass testing results."
+            },
+            {
+              "id": "GEN-11.2",
+              "description": "Jailbreak testing in red-teaming — include structured jailbreak attempt scenarios in red-team exercises covering known and novel techniques.",
+              "guidance": "Review jailbreak test coverage, methodology, findings, and remediation actions."
+            },
+            {
+              "id": "GEN-11.3",
+              "description": "Adversarial robustness testing — test model robustness against adversarial inputs designed to cause unexpected or harmful outputs.",
+              "guidance": "Review adversarial testing frameworks used, coverage, and documented robustness metrics."
+            },
+            {
+              "id": "GEN-11.4",
+              "description": "Model inversion attack assessment — assess susceptibility of the model to model inversion attacks that may extract training data or sensitive information.",
+              "guidance": "Review model inversion testing methodology and findings. Document mitigations implemented."
+            },
+            {
+              "id": "GEN-11.5",
+              "description": "Input validation and sandboxing — implement input validation controls and execution sandboxing to limit the impact of adversarial inputs.",
+              "guidance": "Review input validation rules, sandboxing architecture, and escape testing results."
+            }
+          ]
+        },
+        {
+          "id": "GEN-12",
+          "name": "Data Poisoning",
+          "description": "Controls preventing malicious manipulation of training data that corrupts model behavior.",
+          "requirements": [
+            {
+              "id": "GEN-12.1",
+              "description": "Training data integrity validation — implement integrity checks on training data to detect unauthorized modifications, insertions, or deletions.",
+              "guidance": "Review integrity validation mechanisms, cryptographic controls, and anomaly detection applied to training datasets."
+            },
+            {
+              "id": "GEN-12.2",
+              "description": "Data provenance tracking — maintain chain-of-custody records for all training data documenting origin, transformations, and access history.",
+              "guidance": "Review provenance documentation systems, completeness, and auditability."
+            },
+            {
+              "id": "GEN-12.3",
+              "description": "Poisoning detection techniques — apply statistical and ML-based techniques to detect poisoning artifacts in training data or model behavior.",
+              "guidance": "Review poisoning detection methodology, tool coverage, and integration into the training pipeline."
+            },
+            {
+              "id": "GEN-12.4",
+              "description": "Model behavior monitoring post-training — monitor deployed model behavior for anomalies that may indicate successful poisoning attacks.",
+              "guidance": "Review behavioral monitoring metrics, alerting thresholds, and incident response procedures."
+            },
+            {
+              "id": "GEN-12.5",
+              "description": "Training pipeline access controls — implement strict access controls over training infrastructure, data stores, and pipeline components.",
+              "guidance": "Review access control policies, least-privilege enforcement, and audit logs for training pipeline components."
+            }
+          ]
+        },
+        {
+          "id": "GEN-13",
+          "name": "Prompt Injection",
+          "description": "Controls specifically addressing direct and indirect prompt injection attacks that manipulate GenAI behavior through malicious inputs.",
+          "requirements": [
+            {
+              "id": "GEN-13.1",
+              "description": "Input sanitization for system prompt protection — sanitize user inputs to prevent injection of instructions that override or manipulate system prompts.",
+              "guidance": "Review sanitization techniques, coverage, and bypass testing results."
+            },
+            {
+              "id": "GEN-13.2",
+              "description": "Indirect injection detection — implement detection for indirect prompt injection delivered through retrieved documents, URLs, tool outputs, or other external content processed by the model.",
+              "guidance": "Review indirect injection detection coverage across all external content ingestion pathways."
+            },
+            {
+              "id": "GEN-13.3",
+              "description": "Privilege separation in multi-agent systems — enforce privilege separation between agent roles and restrict the ability of lower-trust agents or content to issue instructions to higher-trust system components.",
+              "guidance": "Review multi-agent architecture trust boundaries, privilege enforcement, and isolation controls."
+            },
+            {
+              "id": "GEN-13.4",
+              "description": "Prompt injection test suite — maintain and execute a dedicated prompt injection test suite covering direct, indirect, and multi-turn injection scenarios.",
+              "guidance": "Review test suite coverage, update cadence, and integration into CI/CD or release processes."
+            },
+            {
+              "id": "GEN-13.5",
+              "description": "Output monitoring for injection success indicators — monitor system outputs for behavioral indicators that suggest a prompt injection attack has succeeded.",
+              "guidance": "Review output monitoring rules, alerting mechanisms, and incident response procedures for suspected injection success."
             }
           ]
         }

@@ -1,685 +1,2078 @@
 {
   "id": "hecvat",
-  "name": "HECVAT (Higher Education Community Vendor Assessment Toolkit)",
-  "version": "3.06",
-  "description": "The Higher Education Community Vendor Assessment Toolkit (HECVAT) is a questionnaire framework designed for assessing vendors in higher education environments. It addresses unique requirements for protecting student data, research information, and compliance with regulations like FERPA.",
-  "organization": "EDUCAUSE/Internet2",
+  "name": "HECVAT v4",
+  "version": "4.1.5",
+  "description": "The Higher Education Community Vendor Assessment Toolkit (HECVAT) v4 rev 4.1.5 (February 10, 2025) is a major structural overhaul consolidating the Full, Lite, and On-Premise variants into a single unified questionnaire. HECVAT v4 introduces 321 questions across 7 sections, including 32 new AI governance questions and 69 new privacy questions. The Cross-Border Information (CBI) section has been retired. HECVAT is designed to help higher education institutions assess vendor security, privacy, and AI governance practices in a consistent and efficient manner.",
+  "organization": "EDUCAUSE",
   "categories": [
     {
-      "id": "COMP",
-      "name": "Company Information",
-      "description": "General company and product information.",
+      "id": "IIP",
+      "name": "Institutional Information and Policies",
+      "description": "Vendor institutional profile, security governance, certifications, insurance, and overarching policies that form the foundation of the security program.",
       "controls": [
         {
-          "id": "COMP.01",
-          "name": "Company Overview",
-          "description": "Basic company information and structure.",
+          "id": "IIP-01",
+          "name": "Vendor Profile",
+          "description": "Basic organizational information about the vendor including legal structure, ownership, and primary services.",
           "requirements": [
             {
-              "id": "COMP.01.1",
-              "description": "Company legal name, headquarters location, and ownership structure are documented.",
-              "guidance": "Request company registration documents and organizational chart."
+              "id": "IIP-01.1",
+              "description": "Vendor provides their legal entity name, headquarters address, primary business address, and corporate ownership structure.",
+              "guidance": "Request a copy of the vendor's corporate registration and organizational chart. Verify that the entity signing contracts matches the entity providing services."
             },
             {
-              "id": "COMP.01.2",
-              "description": "Key contacts for security, privacy, and support are identified.",
-              "guidance": "Review contact list and escalation procedures."
+              "id": "IIP-01.2",
+              "description": "Vendor describes the product or service being assessed, including deployment model (SaaS, PaaS, IaaS, on-premise, hybrid), primary use case, and typical data processed.",
+              "guidance": "Review the vendor's product documentation, data sheet, and service description. Confirm the deployment model aligns with your institution's intended use."
+            },
+            {
+              "id": "IIP-01.3",
+              "description": "Vendor discloses any mergers, acquisitions, or ownership changes within the past 24 months and describes the impact on security program continuity.",
+              "guidance": "Evaluate whether changes in ownership affect data handling, security commitments, or contractual obligations. Request documentation of any transitions and continuity plans."
             }
           ]
         },
         {
-          "id": "COMP.02",
-          "name": "Service Description",
-          "description": "Description of the product or service being assessed.",
+          "id": "IIP-02",
+          "name": "Security Policies",
+          "description": "Existence, currency, and governance of the vendor's information security policy suite.",
           "requirements": [
             {
-              "id": "COMP.02.1",
-              "description": "A clear description of the product/service and its functionality is provided.",
-              "guidance": "Review product documentation and use cases."
+              "id": "IIP-02.1",
+              "description": "Vendor maintains a formal, board- or executive-approved information security policy that is reviewed and updated at least annually.",
+              "guidance": "Request the information security policy (or a summary where full disclosure is restricted). Verify the last review date and approving authority are documented."
             },
             {
-              "id": "COMP.02.2",
-              "description": "The deployment model (SaaS, on-premise, hybrid) is clearly defined.",
-              "guidance": "Examine deployment architecture and options."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "DOC",
-      "name": "Documentation",
-      "description": "Security and compliance documentation.",
-      "controls": [
-        {
-          "id": "DOC.01",
-          "name": "Security Documentation",
-          "description": "Availability of security-related documentation.",
-          "requirements": [
-            {
-              "id": "DOC.01.1",
-              "description": "Security whitepapers or technical documentation are available.",
-              "guidance": "Request security architecture documentation."
+              "id": "IIP-02.2",
+              "description": "Vendor's security policy suite covers at minimum: access control, data classification, incident response, acceptable use, and vendor/third-party management.",
+              "guidance": "Ask for a policy index or list of in-scope policies. If the full text is confidential, request attestation that each domain is covered and available for audit review."
             },
             {
-              "id": "DOC.01.2",
-              "description": "SOC 2 Type II or equivalent audit reports are available.",
-              "guidance": "Review latest audit reports and findings."
-            },
-            {
-              "id": "DOC.01.3",
-              "description": "Penetration test summaries are available upon request.",
-              "guidance": "Request executive summary of recent penetration tests."
+              "id": "IIP-02.3",
+              "description": "Vendor communicates security policies to all employees, contractors, and relevant third parties, and maintains training completion records.",
+              "guidance": "Request evidence of policy distribution, acknowledgment procedures, and training completion metrics."
             }
           ]
         },
         {
-          "id": "DOC.02",
-          "name": "Certifications and Attestations",
-          "description": "Third-party certifications and compliance attestations.",
+          "id": "IIP-03",
+          "name": "Certifications and Third-Party Audits",
+          "description": "Third-party security and compliance certifications maintained by the vendor.",
           "requirements": [
             {
-              "id": "DOC.02.1",
-              "description": "Relevant certifications (ISO 27001, SOC 2, etc.) are maintained.",
-              "guidance": "Review current certification status and expiration dates."
+              "id": "IIP-03.1",
+              "description": "Vendor holds or is actively pursuing a SOC 2 Type II report covering Security and, where applicable, Availability, Confidentiality, Processing Integrity, and Privacy trust service criteria.",
+              "guidance": "Request the most recent SOC 2 Type II report, including the bridge letter if the report is more than six months old. Review the auditor's opinion, scope, and any noted exceptions."
             },
             {
-              "id": "DOC.02.2",
-              "description": "FedRAMP authorization is achieved if processing federal data.",
-              "guidance": "Examine FedRAMP status if applicable."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "IT_ACC",
-      "name": "IT Accessibility",
-      "description": "Accessibility compliance and support.",
-      "controls": [
-        {
-          "id": "ACC.01",
-          "name": "Accessibility Compliance",
-          "description": "Compliance with accessibility standards.",
-          "requirements": [
-            {
-              "id": "ACC.01.1",
-              "description": "Product conforms to WCAG 2.1 Level AA standards.",
-              "guidance": "Request VPAT (Voluntary Product Accessibility Template) documentation."
+              "id": "IIP-03.2",
+              "description": "Vendor discloses current status of ISO/IEC 27001 certification, PCI DSS compliance, FedRAMP authorization, HITRUST, or other relevant third-party certifications, including scope and expiration dates.",
+              "guidance": "Verify certificates are current and that the scope covers the systems and services your institution will use. Request copies or confirmation from the certifying body where possible."
             },
             {
-              "id": "ACC.01.2",
-              "description": "Accessibility testing is performed regularly.",
-              "guidance": "Review accessibility testing procedures and results."
-            },
-            {
-              "id": "ACC.01.3",
-              "description": "A process exists to address accessibility issues.",
-              "guidance": "Examine accessibility issue reporting and remediation."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "USEC",
-      "name": "User Security",
-      "description": "User authentication and access controls.",
-      "controls": [
-        {
-          "id": "USEC.01",
-          "name": "Authentication",
-          "description": "User authentication mechanisms.",
-          "requirements": [
-            {
-              "id": "USEC.01.1",
-              "description": "The application supports single sign-on (SSO) via SAML 2.0 or OIDC.",
-              "guidance": "Review SSO integration capabilities and documentation."
-            },
-            {
-              "id": "USEC.01.2",
-              "description": "Multi-factor authentication is supported for all users.",
-              "guidance": "Examine MFA options and configuration."
-            },
-            {
-              "id": "USEC.01.3",
-              "description": "Password policies meet industry standards (complexity, length, expiration).",
-              "guidance": "Review password policy configuration options."
+              "id": "IIP-03.3",
+              "description": "Vendor commits to providing updated audit reports or certifications within 30 days of issuance and to notifying customers of material changes in certification status.",
+              "guidance": "Confirm this commitment is reflected in the contract or DPA. Establish a process to receive and review updated reports."
             }
           ]
         },
         {
-          "id": "USEC.02",
-          "name": "Authorization",
-          "description": "Access control and authorization mechanisms.",
-          "requirements": [
-            {
-              "id": "USEC.02.1",
-              "description": "Role-based access control (RBAC) is implemented.",
-              "guidance": "Review role definitions and permission structures."
-            },
-            {
-              "id": "USEC.02.2",
-              "description": "Administrative access is segregated from end-user access.",
-              "guidance": "Examine administrative access controls and separation."
-            },
-            {
-              "id": "USEC.02.3",
-              "description": "Access can be provisioned and deprovisioned via API or SCIM.",
-              "guidance": "Review automated provisioning capabilities."
-            }
-          ]
-        },
-        {
-          "id": "USEC.03",
-          "name": "Session Management",
-          "description": "User session security controls.",
-          "requirements": [
-            {
-              "id": "USEC.03.1",
-              "description": "Sessions time out after a configurable period of inactivity.",
-              "guidance": "Review session timeout settings and configuration options."
-            },
-            {
-              "id": "USEC.03.2",
-              "description": "Concurrent session limits can be enforced.",
-              "guidance": "Examine concurrent session controls."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "DSEC",
-      "name": "Data Security",
-      "description": "Protection of data at rest and in transit.",
-      "controls": [
-        {
-          "id": "DSEC.01",
-          "name": "Data Encryption",
-          "description": "Encryption of data at rest and in transit.",
-          "requirements": [
-            {
-              "id": "DSEC.01.1",
-              "description": "Data is encrypted at rest using AES-256 or equivalent.",
-              "guidance": "Review encryption standards and key management."
-            },
-            {
-              "id": "DSEC.01.2",
-              "description": "Data is encrypted in transit using TLS 1.2 or higher.",
-              "guidance": "Examine TLS configuration and certificate management."
-            },
-            {
-              "id": "DSEC.01.3",
-              "description": "Customer can manage their own encryption keys (BYOK) if required.",
-              "guidance": "Review BYOK capabilities and implementation."
-            }
-          ]
-        },
-        {
-          "id": "DSEC.02",
-          "name": "Data Classification and Handling",
-          "description": "Classification and handling of sensitive data.",
-          "requirements": [
-            {
-              "id": "DSEC.02.1",
-              "description": "Data classification is performed to identify sensitive information.",
-              "guidance": "Review data classification scheme and implementation."
-            },
-            {
-              "id": "DSEC.02.2",
-              "description": "FERPA-protected student data is handled according to requirements.",
-              "guidance": "Examine FERPA compliance documentation and controls."
-            },
-            {
-              "id": "DSEC.02.3",
-              "description": "Research data can be segregated and protected as required.",
-              "guidance": "Review research data handling capabilities."
-            }
-          ]
-        },
-        {
-          "id": "DSEC.03",
-          "name": "Data Retention and Deletion",
-          "description": "Data lifecycle management.",
-          "requirements": [
-            {
-              "id": "DSEC.03.1",
-              "description": "Data retention periods are documented and configurable.",
-              "guidance": "Request data retention policy and configuration options."
-            },
-            {
-              "id": "DSEC.03.2",
-              "description": "Secure data deletion is performed upon request or contract termination.",
-              "guidance": "Examine data deletion procedures and verification."
-            },
-            {
-              "id": "DSEC.03.3",
-              "description": "Customer data can be exported in a standard format.",
-              "guidance": "Review data export capabilities and formats."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "APPSEC",
-      "name": "Application Security",
-      "description": "Security of application development and deployment.",
-      "controls": [
-        {
-          "id": "APPSEC.01",
-          "name": "Secure Development",
-          "description": "Security in the software development lifecycle.",
-          "requirements": [
-            {
-              "id": "APPSEC.01.1",
-              "description": "A secure software development lifecycle (SSDLC) is followed.",
-              "guidance": "Request SDLC documentation and security integration."
-            },
-            {
-              "id": "APPSEC.01.2",
-              "description": "Code is reviewed for security vulnerabilities.",
-              "guidance": "Review code review procedures and security checklists."
-            },
-            {
-              "id": "APPSEC.01.3",
-              "description": "OWASP Top 10 vulnerabilities are tested for and mitigated.",
-              "guidance": "Examine OWASP compliance testing and results."
-            }
-          ]
-        },
-        {
-          "id": "APPSEC.02",
-          "name": "Security Testing",
-          "description": "Application security testing.",
-          "requirements": [
-            {
-              "id": "APPSEC.02.1",
-              "description": "Vulnerability scanning is performed regularly.",
-              "guidance": "Review vulnerability scanning procedures and tools."
-            },
-            {
-              "id": "APPSEC.02.2",
-              "description": "Penetration testing is performed at least annually.",
-              "guidance": "Request penetration test reports and remediation."
-            },
-            {
-              "id": "APPSEC.02.3",
-              "description": "Vulnerabilities are remediated within defined SLAs.",
-              "guidance": "Examine vulnerability remediation SLAs and compliance."
-            }
-          ]
-        },
-        {
-          "id": "APPSEC.03",
-          "name": "Change Management",
-          "description": "Control of application changes.",
-          "requirements": [
-            {
-              "id": "APPSEC.03.1",
-              "description": "Changes are tested in non-production before deployment.",
-              "guidance": "Review testing and deployment procedures."
-            },
-            {
-              "id": "APPSEC.03.2",
-              "description": "Customers are notified of significant changes in advance.",
-              "guidance": "Examine change notification procedures."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "INFRA",
-      "name": "Infrastructure Security",
-      "description": "Security of hosting infrastructure.",
-      "controls": [
-        {
-          "id": "INFRA.01",
-          "name": "Hosting Environment",
-          "description": "Security of the hosting environment.",
-          "requirements": [
-            {
-              "id": "INFRA.01.1",
-              "description": "Infrastructure is hosted in SOC 2 compliant data centers.",
-              "guidance": "Review data center certifications and locations."
-            },
-            {
-              "id": "INFRA.01.2",
-              "description": "Data residency options are available (US-only, specific regions).",
-              "guidance": "Examine data residency options and configuration."
-            },
-            {
-              "id": "INFRA.01.3",
-              "description": "Multi-tenant environments provide logical separation between customers.",
-              "guidance": "Review tenant isolation architecture."
-            }
-          ]
-        },
-        {
-          "id": "INFRA.02",
-          "name": "Network Security",
-          "description": "Network protection and segmentation.",
-          "requirements": [
-            {
-              "id": "INFRA.02.1",
-              "description": "Firewalls and network segmentation protect the environment.",
-              "guidance": "Review network architecture and security controls."
-            },
-            {
-              "id": "INFRA.02.2",
-              "description": "Intrusion detection/prevention systems are implemented.",
-              "guidance": "Examine IDS/IPS deployment and monitoring."
-            },
-            {
-              "id": "INFRA.02.3",
-              "description": "DDoS protection is implemented.",
-              "guidance": "Review DDoS mitigation capabilities."
-            }
-          ]
-        },
-        {
-          "id": "INFRA.03",
-          "name": "System Security",
-          "description": "Security of systems and endpoints.",
-          "requirements": [
-            {
-              "id": "INFRA.03.1",
-              "description": "Systems are hardened according to industry standards.",
-              "guidance": "Request hardening standards and compliance."
-            },
-            {
-              "id": "INFRA.03.2",
-              "description": "Endpoint protection is deployed on all systems.",
-              "guidance": "Review endpoint protection deployment."
-            },
-            {
-              "id": "INFRA.03.3",
-              "description": "Patches are applied within defined timeframes.",
-              "guidance": "Examine patch management policy and compliance."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "AVAIL",
-      "name": "Availability",
-      "description": "Service availability and continuity.",
-      "controls": [
-        {
-          "id": "AVAIL.01",
-          "name": "Service Level",
-          "description": "Service availability commitments.",
-          "requirements": [
-            {
-              "id": "AVAIL.01.1",
-              "description": "Uptime SLA of 99.9% or better is provided.",
-              "guidance": "Review SLA documentation and historical performance."
-            },
-            {
-              "id": "AVAIL.01.2",
-              "description": "A public status page shows real-time and historical availability.",
-              "guidance": "Examine status page and incident history."
-            },
-            {
-              "id": "AVAIL.01.3",
-              "description": "Planned maintenance is communicated in advance.",
-              "guidance": "Review maintenance notification procedures."
-            }
-          ]
-        },
-        {
-          "id": "AVAIL.02",
-          "name": "Backup and Recovery",
-          "description": "Data backup and disaster recovery.",
-          "requirements": [
-            {
-              "id": "AVAIL.02.1",
-              "description": "Data is backed up regularly with defined RPO.",
-              "guidance": "Request backup frequency and RPO documentation."
-            },
-            {
-              "id": "AVAIL.02.2",
-              "description": "Disaster recovery plans exist with defined RTO.",
-              "guidance": "Review DR plan and RTO commitments."
-            },
-            {
-              "id": "AVAIL.02.3",
-              "description": "DR testing is performed at least annually.",
-              "guidance": "Examine DR test results and findings."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "PRIV",
-      "name": "Privacy",
-      "description": "Data privacy and regulatory compliance.",
-      "controls": [
-        {
-          "id": "PRIV.01",
+          "id": "IIP-04",
           "name": "Privacy Program",
-          "description": "Privacy program and policies.",
+          "description": "Existence and maturity of the vendor's enterprise privacy program.",
           "requirements": [
             {
-              "id": "PRIV.01.1",
-              "description": "A privacy policy is published and maintained.",
-              "guidance": "Request current privacy policy and review scope."
+              "id": "IIP-04.1",
+              "description": "Vendor maintains a formal privacy program led by a designated privacy officer or equivalent role, with documented responsibilities and authority.",
+              "guidance": "Request the name and title of the privacy officer and a summary of their responsibilities. Evaluate whether the privacy program is adequately resourced for the volume and sensitivity of data processed."
             },
             {
-              "id": "PRIV.01.2",
-              "description": "A Data Protection Officer or equivalent role exists.",
-              "guidance": "Identify privacy leadership and contact information."
+              "id": "IIP-04.2",
+              "description": "Vendor's privacy program addresses compliance with applicable regulations including FERPA, GDPR, CCPA/CPRA, COPPA, HIPAA, and applicable state privacy laws.",
+              "guidance": "Request a compliance matrix mapping each applicable regulation to the vendor's controls. Identify any gaps and evaluate the vendor's remediation roadmap."
             },
             {
-              "id": "PRIV.01.3",
-              "description": "Privacy impact assessments are performed for new processing.",
-              "guidance": "Review PIA process and recent assessments."
+              "id": "IIP-04.3",
+              "description": "Vendor conducts annual privacy program reviews and can provide a summary of program maturity, recent improvements, and known gaps.",
+              "guidance": "Use program review documentation to benchmark vendor maturity. Evaluate whether the vendor demonstrates a culture of continuous privacy improvement."
             }
           ]
         },
         {
-          "id": "PRIV.02",
-          "name": "Regulatory Compliance",
-          "description": "Compliance with privacy regulations.",
+          "id": "IIP-05",
+          "name": "Incident Notification",
+          "description": "Vendor's commitment to notify affected institutions following a security or privacy incident.",
           "requirements": [
             {
-              "id": "PRIV.02.1",
-              "description": "FERPA compliance is maintained for student data.",
-              "guidance": "Review FERPA compliance documentation and training."
+              "id": "IIP-05.1",
+              "description": "Vendor commits to notifying affected institutions of confirmed security or privacy incidents within 72 hours of vendor's discovery, or sooner where required by law.",
+              "guidance": "Verify the notification commitment is included in the contract or DPA. Evaluate whether 72 hours is adequate for your institution's incident response obligations."
             },
             {
-              "id": "PRIV.02.2",
-              "description": "GDPR compliance is maintained for EU data subjects.",
-              "guidance": "Examine GDPR compliance measures and DPA."
+              "id": "IIP-05.2",
+              "description": "Vendor's incident notification includes the nature of the incident, types of data affected, estimated number of individuals impacted, remediation steps taken, and a dedicated point of contact.",
+              "guidance": "Review the vendor's incident notification template or procedure. Confirm that notifications will be sufficient to satisfy your institution's own breach reporting obligations."
             },
             {
-              "id": "PRIV.02.3",
-              "description": "CCPA/CPRA compliance is maintained for California residents.",
-              "guidance": "Review state privacy law compliance."
-            },
-            {
-              "id": "PRIV.02.4",
-              "description": "HIPAA compliance is maintained if handling health data.",
-              "guidance": "Examine HIPAA compliance if applicable."
+              "id": "IIP-05.3",
+              "description": "Vendor maintains a documented post-incident review process and shares lessons-learned summaries with affected customers upon request.",
+              "guidance": "Request examples of past incident notifications (redacted) or a description of the post-incident process to evaluate vendor transparency and continuous improvement."
             }
           ]
         },
         {
-          "id": "PRIV.03",
-          "name": "Data Subject Rights",
-          "description": "Support for individual privacy rights.",
+          "id": "IIP-06",
+          "name": "Subprocessors and Fourth-Party Risk",
+          "description": "Vendor disclosure and management of subcontractors and fourth-party service providers.",
           "requirements": [
             {
-              "id": "PRIV.03.1",
-              "description": "Data subject access requests can be fulfilled.",
-              "guidance": "Review DSAR process and response times."
+              "id": "IIP-06.1",
+              "description": "Vendor maintains and publishes a current list of subprocessors that access, store, or process institutional data, including their function, data types handled, and country of processing.",
+              "guidance": "Review the subprocessor list and assess each subprocessor's risk level. Verify that critical subprocessors hold relevant certifications and are subject to contractual data protection obligations."
             },
             {
-              "id": "PRIV.03.2",
-              "description": "Data deletion requests can be fulfilled.",
-              "guidance": "Examine data deletion procedures."
+              "id": "IIP-06.2",
+              "description": "Vendor provides at least 30 days advance notice before adding or changing a subprocessor that will have access to institutional data, and allows the institution to object.",
+              "guidance": "Confirm the notification period and objection mechanism are contractually guaranteed. Understand the vendor's process for resolving objections."
             },
             {
-              "id": "PRIV.03.3",
-              "description": "Data portability is supported.",
-              "guidance": "Review data export capabilities."
+              "id": "IIP-06.3",
+              "description": "Vendor conducts at least annual security assessments of critical subprocessors and provides summary results upon request.",
+              "guidance": "Evaluate whether fourth-party risk management is proportionate to the risk. Request evidence of subprocessor assessments or attestations for the highest-risk subprocessors."
+            }
+          ]
+        },
+        {
+          "id": "IIP-07",
+          "name": "Security Contact",
+          "description": "Availability and responsiveness of vendor security and privacy contacts.",
+          "requirements": [
+            {
+              "id": "IIP-07.1",
+              "description": "Vendor provides dedicated security and privacy contact information for institutional use, including email address, phone number, and escalation path.",
+              "guidance": "Test contact responsiveness before contract signing. Verify that the contacts provided are active and monitored during business hours at minimum."
+            },
+            {
+              "id": "IIP-07.2",
+              "description": "Vendor operates or has access to a 24/7 security operations capability for incident triage and response.",
+              "guidance": "Ask whether SOC coverage is in-house or managed by a third party. Confirm that after-hours incident escalation is possible for severity-1 events."
+            },
+            {
+              "id": "IIP-07.3",
+              "description": "Vendor participates in relevant Information Sharing and Analysis Organizations (ISACs) or equivalent threat intelligence communities.",
+              "guidance": "Participation in REN-ISAC or equivalent demonstrates commitment to the higher education security community. Evaluate whether threat intelligence sharing is relevant to your institution's risk profile."
+            }
+          ]
+        },
+        {
+          "id": "IIP-08",
+          "name": "Penetration Testing Frequency",
+          "description": "Frequency, scope, and third-party independence of penetration testing.",
+          "requirements": [
+            {
+              "id": "IIP-08.1",
+              "description": "Vendor conducts external network and application penetration tests at least annually using a qualified third-party firm.",
+              "guidance": "Request the penetration test executive summary or letter of attestation from the most recent test. Verify the scope covers systems that will process institutional data."
+            },
+            {
+              "id": "IIP-08.2",
+              "description": "Vendor remediates critical and high findings from penetration tests within 30 days and medium findings within 90 days, with documented remediation verification.",
+              "guidance": "Request evidence of remediation tracking and closure verification. Evaluate whether any open critical or high findings represent unacceptable risk."
+            },
+            {
+              "id": "IIP-08.3",
+              "description": "Vendor conducts red team or adversarial simulation exercises at least every two years in addition to standard penetration testing.",
+              "guidance": "Distinguish between penetration testing and red team exercises. Advanced adversarial simulations provide higher assurance for higher-risk vendors."
+            }
+          ]
+        },
+        {
+          "id": "IIP-09",
+          "name": "Vulnerability Disclosure",
+          "description": "Vendor's coordinated vulnerability disclosure and bug bounty program.",
+          "requirements": [
+            {
+              "id": "IIP-09.1",
+              "description": "Vendor maintains a publicly accessible coordinated vulnerability disclosure (CVD) policy that describes how external researchers may report vulnerabilities.",
+              "guidance": "Review the CVD policy for clarity, responsiveness commitments, and safe harbor provisions. The existence of a CVD policy indicates a mature security posture."
+            },
+            {
+              "id": "IIP-09.2",
+              "description": "Vendor acknowledges vulnerability reports within five business days and provides a timeline for investigation and remediation.",
+              "guidance": "Evaluate whether the vendor's CVD commitments are realistic and whether historical response times are available. A transparent CVD program is a positive indicator."
+            },
+            {
+              "id": "IIP-09.3",
+              "description": "Vendor notifies affected customers when a vulnerability in vendor software or infrastructure could expose institutional data, even if the vendor has not confirmed exploitation.",
+              "guidance": "Confirm proactive notification obligations are in the contract. Vendors that wait for confirmed exploitation before notifying customers create unnecessary risk for institutions."
+            }
+          ]
+        },
+        {
+          "id": "IIP-10",
+          "name": "Cyber Liability Insurance",
+          "description": "Vendor's cyber liability and errors and omissions insurance coverage.",
+          "requirements": [
+            {
+              "id": "IIP-10.1",
+              "description": "Vendor maintains cyber liability insurance with minimum coverage of $5 million per occurrence and $10 million aggregate, and will provide a certificate of insurance upon request.",
+              "guidance": "Review the certificate of insurance and confirm coverage types, limits, and the named insured entity. Evaluate whether coverage limits are commensurate with the risk."
+            },
+            {
+              "id": "IIP-10.2",
+              "description": "Vendor's cyber liability policy covers first-party losses, third-party liability, regulatory fines, and breach notification and remediation costs.",
+              "guidance": "Request a summary of covered perils and exclusions. Identify whether ransomware and supply chain attacks are included or excluded."
+            },
+            {
+              "id": "IIP-10.3",
+              "description": "Vendor notifies institutional customers within 30 days of any material change to or cancellation of their cyber liability coverage.",
+              "guidance": "Confirm this notification obligation is in the contract. Loss of coverage is a material risk event that institutions need to know about promptly."
             }
           ]
         }
       ]
     },
     {
-      "id": "IR",
-      "name": "Incident Response",
-      "description": "Security incident detection and response.",
+      "id": "DM",
+      "name": "Data Management",
+      "description": "Data classification, handling, retention, disposal, encryption, segregation, backups, and data subject rights across the full data lifecycle.",
       "controls": [
         {
-          "id": "IR.01",
-          "name": "Incident Management",
-          "description": "Incident detection and response capabilities.",
+          "id": "DM-01",
+          "name": "Data Classification",
+          "description": "Vendor's data classification scheme and its application to institutional data.",
           "requirements": [
             {
-              "id": "IR.01.1",
-              "description": "An incident response plan is documented and tested.",
-              "guidance": "Request incident response plan documentation."
+              "id": "DM-01.1",
+              "description": "Vendor maintains a formal data classification policy that defines categories (e.g., Public, Internal, Confidential, Restricted/Highly Sensitive) with handling requirements for each.",
+              "guidance": "Request the data classification policy and verify that institutional data types (student records, research data, PII, financial data) are mapped to appropriate classification levels."
             },
             {
-              "id": "IR.01.2",
-              "description": "Security events are monitored 24/7.",
-              "guidance": "Review SOC coverage and monitoring procedures."
+              "id": "DM-01.2",
+              "description": "Vendor applies classification labels to institutional data at ingestion and maintains classification throughout the data lifecycle.",
+              "guidance": "Ask how classification is implemented technically (labels, tags, metadata). Evaluate whether classification is enforced through automated controls or relies solely on manual processes."
             },
             {
-              "id": "IR.01.3",
-              "description": "Incident response exercises are conducted regularly.",
-              "guidance": "Examine tabletop exercise history and results."
+              "id": "DM-01.3",
+              "description": "Vendor can describe the specific data types, classifications, and data flows associated with the service being assessed.",
+              "guidance": "Request a data flow diagram and data inventory specific to your institution's use case. Use this to validate that classification and handling controls are appropriate."
             }
           ]
         },
         {
-          "id": "IR.02",
-          "name": "Breach Notification",
-          "description": "Notification of security incidents.",
+          "id": "DM-02",
+          "name": "Data Flow Mapping",
+          "description": "Documentation of how institutional data flows within and outside vendor systems.",
           "requirements": [
             {
-              "id": "IR.02.1",
-              "description": "Customers are notified of security incidents within 72 hours or sooner.",
-              "guidance": "Review notification SLAs and procedures."
+              "id": "DM-02.1",
+              "description": "Vendor maintains current data flow diagrams showing the movement of institutional data between systems, services, and geographic regions.",
+              "guidance": "Review data flow diagrams for completeness. Confirm that all third-party integrations, subprocessors, and cloud services are represented."
             },
             {
-              "id": "IR.02.2",
-              "description": "Notification includes nature of breach and data affected.",
-              "guidance": "Examine notification templates and content."
+              "id": "DM-02.2",
+              "description": "Vendor identifies all locations (countries, cloud regions) where institutional data may be stored, processed, or transmitted.",
+              "guidance": "Map vendor data locations against your institution's data residency requirements and cross-border transfer restrictions."
             },
             {
-              "id": "IR.02.3",
-              "description": "Support is provided for institution's own breach notification obligations.",
-              "guidance": "Review breach support procedures."
+              "id": "DM-02.3",
+              "description": "Vendor updates data flow documentation within 30 days of any material change to data processing architecture.",
+              "guidance": "Ask about the process for maintaining data flow documentation currency. Outdated diagrams are a common gap in vendor risk management."
+            }
+          ]
+        },
+        {
+          "id": "DM-03",
+          "name": "Data Minimization",
+          "description": "Vendor practices for collecting only necessary data and limiting data exposure.",
+          "requirements": [
+            {
+              "id": "DM-03.1",
+              "description": "Vendor collects only the minimum data necessary to deliver the contracted service and can articulate the business purpose for each data element collected.",
+              "guidance": "Review the data inventory and challenge any data elements that appear excessive relative to the service purpose. Evaluate whether data minimization is a design principle."
+            },
+            {
+              "id": "DM-03.2",
+              "description": "Vendor does not use institutional data for secondary purposes (analytics, product improvement, marketing, training AI models) without explicit written consent.",
+              "guidance": "Review the contract and privacy policy for secondary use restrictions. This is a critical control for FERPA compliance."
+            },
+            {
+              "id": "DM-03.3",
+              "description": "Vendor provides configuration options allowing institutions to disable or limit data collection features that are not required for the institution's use case.",
+              "guidance": "Confirm that data minimization is technically enforceable through product configuration, not merely policy."
+            }
+          ]
+        },
+        {
+          "id": "DM-04",
+          "name": "Retention Policies",
+          "description": "Vendor data retention schedules and configurable retention controls.",
+          "requirements": [
+            {
+              "id": "DM-04.1",
+              "description": "Vendor maintains documented data retention schedules for all data types processed on behalf of institutions, aligned with applicable legal and contractual requirements.",
+              "guidance": "Request retention schedules and verify alignment with FERPA, HIPAA, and applicable state records retention laws. Identify data types subject to legal hold obligations."
+            },
+            {
+              "id": "DM-04.2",
+              "description": "Vendor allows institutions to configure retention periods for institutional data where operationally feasible, and supports institution-initiated early deletion.",
+              "guidance": "Evaluate whether retention settings are configurable by the institution or fixed by the vendor. Confirm the process for requesting early deletion of specific data sets."
+            },
+            {
+              "id": "DM-04.3",
+              "description": "Upon contract termination, vendor retains institutional data for no longer than 90 days unless a longer period is required by law, after which all data is securely disposed.",
+              "guidance": "Verify the post-termination retention and disposal commitment is in the contract. Confirm that the institution can export all data before the deletion window closes."
+            }
+          ]
+        },
+        {
+          "id": "DM-05",
+          "name": "Secure Disposal",
+          "description": "Methods used to destroy data when no longer needed.",
+          "requirements": [
+            {
+              "id": "DM-05.1",
+              "description": "Vendor uses NIST 800-88 compliant methods for media sanitization and data destruction, including cryptographic erasure for encrypted storage.",
+              "guidance": "Request the media sanitization policy and confirm that methods are appropriate for the storage media type (HDD, SSD, cloud storage). Cryptographic erasure is acceptable for encrypted cloud storage."
+            },
+            {
+              "id": "DM-05.2",
+              "description": "Vendor provides a certificate of destruction or written attestation confirming secure disposal of institutional data upon request or contract termination.",
+              "guidance": "Require certificates of destruction as a contractual obligation. Confirm they cover all storage locations including backups, archives, and subprocessor copies."
+            },
+            {
+              "id": "DM-05.3",
+              "description": "Vendor's disposal procedures address physical media destruction for decommissioned hardware, including third-party data center hardware.",
+              "guidance": "Ask how vendor manages physical media destruction at colocation facilities or cloud provider data centers. Evaluate the chain of custody for decommissioned hardware."
+            }
+          ]
+        },
+        {
+          "id": "DM-06",
+          "name": "Encryption at Rest",
+          "description": "Encryption of institutional data stored within vendor systems.",
+          "requirements": [
+            {
+              "id": "DM-06.1",
+              "description": "Vendor encrypts all institutional data at rest using AES-256 or equivalent algorithm, including databases, file storage, backups, and logs.",
+              "guidance": "Confirm the encryption standard and key length. Verify encryption covers all storage locations including cold storage and disaster recovery replicas."
+            },
+            {
+              "id": "DM-06.2",
+              "description": "Vendor uses a formal key management process including key rotation, key storage in a hardware security module (HSM) or equivalent, and separation of duties for key access.",
+              "guidance": "Request a description of key management practices. Keys stored in application code or alongside encrypted data are a critical finding."
+            },
+            {
+              "id": "DM-06.3",
+              "description": "Vendor offers customer-managed encryption keys (CMEK/BYOK) as an option for institutions with requirements to control their own keys.",
+              "guidance": "Evaluate whether CMEK/BYOK is required for your institution's risk profile. Confirm the vendor's CMEK implementation revokes access to data when the key is revoked."
+            }
+          ]
+        },
+        {
+          "id": "DM-07",
+          "name": "Encryption in Transit",
+          "description": "Encryption of data transmitted to, from, and within vendor systems.",
+          "requirements": [
+            {
+              "id": "DM-07.1",
+              "description": "All institutional data in transit is encrypted using TLS 1.2 or higher. TLS 1.0 and 1.1 are disabled. TLS 1.3 is preferred.",
+              "guidance": "Request a TLS configuration report or SSL/TLS scan results. Verify that weak cipher suites are disabled and forward secrecy is supported."
+            },
+            {
+              "id": "DM-07.2",
+              "description": "Vendor enforces HTTPS for all web-based interfaces and APIs with HTTP Strict Transport Security (HSTS) headers enabled.",
+              "guidance": "Test HTTPS enforcement and HSTS headers directly or request documentation. Mixed-content vulnerabilities should be absent."
+            },
+            {
+              "id": "DM-07.3",
+              "description": "Internal service-to-service communication within vendor infrastructure uses encrypted transport, including within cloud VPCs.",
+              "guidance": "Ask whether east-west traffic within the vendor's infrastructure is encrypted. Unencrypted internal traffic can expose data if a perimeter control is bypassed."
+            }
+          ]
+        },
+        {
+          "id": "DM-08",
+          "name": "Data Segregation",
+          "description": "Logical and physical segregation of institutional data from other customer data.",
+          "requirements": [
+            {
+              "id": "DM-08.1",
+              "description": "Vendor implements logical data segregation so that institutional data cannot be accessed by or commingled with another customer's data.",
+              "guidance": "Request an explanation of the multi-tenancy architecture. Evaluate whether tenant isolation relies on application-layer controls, database-level segregation, or separate infrastructure."
+            },
+            {
+              "id": "DM-08.2",
+              "description": "Vendor can offer dedicated single-tenant deployments for institutions with requirements for physical or stronger logical separation.",
+              "guidance": "Evaluate whether single-tenant deployment is required for your institution's risk profile or regulatory obligations. Confirm the cost and operational implications."
+            },
+            {
+              "id": "DM-08.3",
+              "description": "Vendor's multi-tenant isolation has been validated through penetration testing, and no cross-tenant data access vulnerabilities have been found in the last 12 months.",
+              "guidance": "Request confirmation that tenant isolation was in scope for recent penetration tests. Cross-tenant data leakage is one of the highest-risk vulnerabilities in SaaS environments."
+            }
+          ]
+        },
+        {
+          "id": "DM-09",
+          "name": "Backup and Recovery",
+          "description": "Data backup frequency, offsite storage, and recovery testing.",
+          "requirements": [
+            {
+              "id": "DM-09.1",
+              "description": "Vendor performs automated backups of institutional data at least daily, with backups stored in a geographically separate location from primary data.",
+              "guidance": "Confirm backup frequency and geographic separation. Verify that backups are encrypted using the same or equivalent standard as primary data."
+            },
+            {
+              "id": "DM-09.2",
+              "description": "Vendor tests backup restoration at least quarterly and maintains documented evidence of successful restoration tests.",
+              "guidance": "Request restoration test records and evaluate the scope of testing. Confirm that restoration tests cover full datasets, not just sample records."
+            },
+            {
+              "id": "DM-09.3",
+              "description": "Vendor publishes defined Recovery Point Objective (RPO) and Recovery Time Objective (RTO) commitments, and tracks actual recovery performance against these targets.",
+              "guidance": "Evaluate whether RPO and RTO commitments meet your institution's business continuity requirements. Request historical data on recovery performance."
+            }
+          ]
+        },
+        {
+          "id": "DM-10",
+          "name": "Database Activity Monitoring",
+          "description": "Monitoring and alerting on database access and anomalous activity.",
+          "requirements": [
+            {
+              "id": "DM-10.1",
+              "description": "Vendor deploys database activity monitoring (DAM) or equivalent tooling to detect unauthorized access, bulk data exports, and anomalous query patterns on databases containing institutional data.",
+              "guidance": "Request a description of DAM tooling and alerting thresholds. Evaluate whether monitoring covers both privileged user access and application-layer queries."
+            },
+            {
+              "id": "DM-10.2",
+              "description": "Database access logs are retained for at least 12 months and are available for forensic investigation in the event of an incident.",
+              "guidance": "Confirm log retention period and accessibility. Verify that logs are tamper-resistant and stored separately from the database they protect."
+            },
+            {
+              "id": "DM-10.3",
+              "description": "Vendor configures automated alerts for database access events that exceed defined thresholds or match known attack patterns, with response procedures for alert handling.",
+              "guidance": "Ask about alert tuning and false-positive management. Automated alerting without human review processes provides limited value."
+            }
+          ]
+        },
+        {
+          "id": "DM-11",
+          "name": "Data Loss Prevention",
+          "description": "Technical controls to prevent unauthorized exfiltration of institutional data.",
+          "requirements": [
+            {
+              "id": "DM-11.1",
+              "description": "Vendor implements data loss prevention (DLP) controls to detect and prevent unauthorized transmission of sensitive data via email, messaging, or external storage.",
+              "guidance": "Request a description of DLP tooling and coverage. Evaluate whether DLP is applied to employee endpoints, cloud storage, and email egress."
+            },
+            {
+              "id": "DM-11.2",
+              "description": "Vendor restricts the ability of employees to copy institutional data to personal devices or unauthorized cloud storage services.",
+              "guidance": "Ask about endpoint DLP and removable media controls. Evaluate whether cloud application restrictions are enforced via CASB or equivalent."
+            },
+            {
+              "id": "DM-11.3",
+              "description": "DLP policy violations trigger automated alerts and are reviewed by the security team, with escalation procedures for confirmed exfiltration events.",
+              "guidance": "Evaluate the DLP incident response process. High-severity DLP alerts should trigger immediate investigation given the potential for insider threat or compromised credentials."
+            }
+          ]
+        },
+        {
+          "id": "DM-12",
+          "name": "Rights Management",
+          "description": "Controls for managing information rights and access to sensitive documents.",
+          "requirements": [
+            {
+              "id": "DM-12.1",
+              "description": "Vendor implements information rights management (IRM) controls for sensitive documents to restrict unauthorized viewing, printing, forwarding, or copying.",
+              "guidance": "Evaluate whether IRM is applicable to the service being assessed. For document management or collaboration tools, IRM is a critical control."
+            },
+            {
+              "id": "DM-12.2",
+              "description": "Vendor maintains audit trails of document access and rights management events, available for institutional review upon request.",
+              "guidance": "Request a description of document-level audit logging. Confirm that institutions can retrieve access logs for their own documents."
+            },
+            {
+              "id": "DM-12.3",
+              "description": "Vendor supports institution-controlled access revocation for shared documents and data assets, effective immediately upon revocation request.",
+              "guidance": "Test revocation responsiveness in a proof-of-concept evaluation. Delayed revocation can leave sensitive data accessible after authorization changes."
+            }
+          ]
+        },
+        {
+          "id": "DM-13",
+          "name": "Data Subject Rights (GDPR/CCPA)",
+          "description": "Vendor capability to support institutional obligations to fulfill data subject rights requests.",
+          "requirements": [
+            {
+              "id": "DM-13.1",
+              "description": "Vendor supports fulfillment of data subject access requests (DSAR) within 30 days, providing a machine-readable export of all personal data held for a specific individual.",
+              "guidance": "Evaluate the DSAR fulfillment process. Confirm whether fulfillment requires manual intervention or is supported by automated tooling in the product."
+            },
+            {
+              "id": "DM-13.2",
+              "description": "Vendor supports right-to-erasure requests by deleting all personal data associated with a specific individual from production systems, backups, and archives within a defined timeframe.",
+              "guidance": "Confirm the erasure timeframe and verify it covers all storage locations. Ask how the vendor handles erasure requests for data in immutable logs."
+            },
+            {
+              "id": "DM-13.3",
+              "description": "Vendor supports data portability requests by providing personal data in a structured, commonly used, machine-readable format (e.g., JSON, CSV, XML).",
+              "guidance": "Request a demonstration or documentation of data portability export. Confirm the export format is suitable for re-import into alternative systems."
+            }
+          ]
+        },
+        {
+          "id": "DM-14",
+          "name": "Cross-Border Data Transfers",
+          "description": "Controls governing the transfer of institutional data across international borders.",
+          "requirements": [
+            {
+              "id": "DM-14.1",
+              "description": "Vendor identifies all countries where institutional data may be transferred or processed and describes the legal mechanism used to authorize each cross-border transfer (e.g., SCCs, adequacy decision, BCRs).",
+              "guidance": "Review the list of countries and transfer mechanisms. Confirm that Standard Contractual Clauses (SCCs) or equivalent are current and have been executed for EU personal data transfers."
+            },
+            {
+              "id": "DM-14.2",
+              "description": "Vendor supports institution-configurable data residency restrictions, allowing data to be confined to specified geographic regions.",
+              "guidance": "Evaluate whether data residency is technically enforced or a best-effort policy commitment. Request technical documentation of regional data confinement."
+            },
+            {
+              "id": "DM-14.3",
+              "description": "Vendor conducts Transfer Impact Assessments (TIAs) for transfers to countries lacking EU adequacy decisions and provides TIA summaries upon request.",
+              "guidance": "For GDPR-covered processing, TIAs are required when relying on SCCs. Evaluate whether the vendor's TIA methodology is sound and whether risk mitigations are adequate."
+            }
+          ]
+        },
+        {
+          "id": "DM-15",
+          "name": "Data Breach Notification",
+          "description": "Specific commitments for breach notification timing and content.",
+          "requirements": [
+            {
+              "id": "DM-15.1",
+              "description": "Vendor notifies institutions of actual or reasonably suspected data breaches without undue delay and no later than 72 hours after vendor becomes aware, via the institution's designated security contact.",
+              "guidance": "Confirm the 72-hour notification commitment is in the contract and applies to suspected as well as confirmed breaches."
+            },
+            {
+              "id": "DM-15.2",
+              "description": "Breach notifications include: date and time of discovery, nature and scope of the breach, categories and approximate number of data records and individuals affected, likely consequences, and measures taken to mitigate.",
+              "guidance": "Review the vendor's breach notification template. Confirm that notifications will enable your institution to meet its own regulatory reporting obligations."
+            },
+            {
+              "id": "DM-15.3",
+              "description": "Vendor cooperates with institution's breach investigation, provides forensic evidence upon request, and assists with regulatory notifications as required by applicable law.",
+              "guidance": "Confirm cooperation obligations are contractually binding. Vendor cooperation is essential to meet FERPA, state breach notification, and GDPR notification timelines."
             }
           ]
         }
       ]
     },
     {
-      "id": "HR",
-      "name": "Human Resources Security",
-      "description": "Personnel security controls.",
+      "id": "AC",
+      "name": "Access Control",
+      "description": "Authentication, authorization, privileged access management, access reviews, and identity controls across the vendor environment.",
       "controls": [
         {
-          "id": "HR.01",
-          "name": "Personnel Security",
-          "description": "Background checks and screening.",
+          "id": "AC-01",
+          "name": "Unique User Identifiers",
+          "description": "Assignment and management of individual user accounts.",
           "requirements": [
             {
-              "id": "HR.01.1",
-              "description": "Background checks are performed on employees with data access.",
-              "guidance": "Review background check policy and coverage."
+              "id": "AC-01.1",
+              "description": "All user access to systems processing institutional data is assigned unique, individual user IDs. Shared or generic accounts are prohibited.",
+              "guidance": "Request the account management policy. Verify that shared accounts do not exist for administrative or developer access to production systems."
             },
             {
-              "id": "HR.01.2",
-              "description": "Employees sign confidentiality agreements.",
-              "guidance": "Examine NDA and confidentiality requirements."
+              "id": "AC-01.2",
+              "description": "User accounts are provisioned using a formal approval workflow, and access is granted based on documented business justification.",
+              "guidance": "Review the provisioning workflow and approval records. Automated provisioning via SCIM or HR system integration reduces manual error risk."
             },
             {
-              "id": "HR.01.3",
-              "description": "Access is revoked promptly upon termination.",
-              "guidance": "Review offboarding procedures and timeliness."
+              "id": "AC-01.3",
+              "description": "Terminated or transferred employees have access revoked within one business day for privileged accounts and within 24 hours for standard accounts.",
+              "guidance": "Request deprovisioning SLA documentation and recent evidence of deprovisioning timeliness. Delayed deprovisioning is a leading cause of insider threat."
             }
           ]
         },
         {
-          "id": "HR.02",
-          "name": "Security Awareness",
-          "description": "Security training and awareness.",
+          "id": "AC-02",
+          "name": "Multi-Factor Authentication",
+          "description": "MFA enforcement across user populations and access scenarios.",
           "requirements": [
             {
-              "id": "HR.02.1",
-              "description": "Security awareness training is provided to all employees.",
-              "guidance": "Request training curriculum and completion records."
+              "id": "AC-02.1",
+              "description": "MFA is enforced for all employee, contractor, and vendor staff access to systems, applications, and infrastructure that process institutional data.",
+              "guidance": "Confirm MFA coverage is universal, not optional or limited to privileged users. Evaluate supported MFA factors (TOTP, hardware token, push notification, FIDO2/WebAuthn)."
             },
             {
-              "id": "HR.02.2",
-              "description": "Role-specific security training is provided as needed.",
-              "guidance": "Review specialized training programs."
+              "id": "AC-02.2",
+              "description": "Vendor supports MFA integration for institutional users via SAML 2.0, OIDC/OAuth 2.0, or equivalent federation protocols, deferring authentication to the institution's identity provider.",
+              "guidance": "Test SSO integration in a proof-of-concept. Verify that institution-enforced MFA policies are honored when users authenticate through the institutional IdP."
+            },
+            {
+              "id": "AC-02.3",
+              "description": "SMS-based one-time passwords are not used as the sole MFA factor for privileged or sensitive access due to SIM-swapping risks. Phishing-resistant MFA (FIDO2/WebAuthn) is preferred for administrative accounts.",
+              "guidance": "Evaluate the MFA factor options available. For high-risk access scenarios, phishing-resistant MFA provides significantly stronger assurance."
+            }
+          ]
+        },
+        {
+          "id": "AC-03",
+          "name": "Privileged Access Management",
+          "description": "Controls governing privileged and administrative access to systems.",
+          "requirements": [
+            {
+              "id": "AC-03.1",
+              "description": "Vendor implements a formal privileged access management (PAM) program covering all administrative, root, and service accounts with access to production systems.",
+              "guidance": "Request documentation of PAM tooling and coverage. Privileged accounts should be managed in a PAM vault with session recording and just-in-time access."
+            },
+            {
+              "id": "AC-03.2",
+              "description": "Privileged access to production systems is granted on a just-in-time (JIT) basis, with access expiring automatically and requiring re-authorization for each session.",
+              "guidance": "Evaluate whether standing privileged access exists or whether JIT access is enforced. Standing privileged access is a significant attack surface."
+            },
+            {
+              "id": "AC-03.3",
+              "description": "All privileged sessions on systems processing institutional data are recorded and logs are retained for at least 12 months for audit and forensic purposes.",
+              "guidance": "Request evidence of session recording capability. Confirm that recordings are tamper-resistant and accessible for incident investigation."
+            }
+          ]
+        },
+        {
+          "id": "AC-04",
+          "name": "Role-Based Access Control",
+          "description": "Implementation of least-privilege access through role-based controls.",
+          "requirements": [
+            {
+              "id": "AC-04.1",
+              "description": "Vendor implements role-based access control (RBAC) aligned with the principle of least privilege, ensuring users and services have only the access required for their function.",
+              "guidance": "Request the RBAC model and role definitions. Evaluate whether roles are fine-grained enough to enforce least privilege or whether overly broad roles exist."
+            },
+            {
+              "id": "AC-04.2",
+              "description": "Institutions can configure granular access permissions for their users, including field-level and record-level access controls where applicable.",
+              "guidance": "Test administrative access controls in a proof-of-concept. Confirm that institutions have sufficient control over their users' access within the vendor's platform."
+            },
+            {
+              "id": "AC-04.3",
+              "description": "Access to institutional data by vendor support and engineering staff is restricted to the minimum necessary and requires explicit institutional authorization except in emergency circumstances.",
+              "guidance": "Evaluate the process for vendor staff access to institutional data. Confirm that emergency access is logged, auditable, and subject to post-hoc review."
+            }
+          ]
+        },
+        {
+          "id": "AC-05",
+          "name": "Access Reviews",
+          "description": "Periodic recertification of user access rights.",
+          "requirements": [
+            {
+              "id": "AC-05.1",
+              "description": "Vendor conducts formal access reviews of all user accounts with access to systems processing institutional data at least quarterly for privileged accounts and annually for standard accounts.",
+              "guidance": "Request access review records and evidence of remediation for revoked or modified access. Infrequent access reviews allow privilege creep to accumulate."
+            },
+            {
+              "id": "AC-05.2",
+              "description": "Access reviews are performed by account owners or business unit managers, not by IT staff who manage the accounts, to ensure independent attestation.",
+              "guidance": "Evaluate the independence of the review process. Self-certification by IT administrators reduces the effectiveness of access reviews."
+            },
+            {
+              "id": "AC-05.3",
+              "description": "Dormant accounts that have not been used for 90 days are automatically disabled pending review, with exceptions requiring documented business justification.",
+              "guidance": "Confirm the dormant account policy and automation. Ask about exceptions management for service accounts and break-glass accounts."
+            }
+          ]
+        },
+        {
+          "id": "AC-06",
+          "name": "Separation of Duties",
+          "description": "Controls to prevent conflicts of interest and unauthorized actions.",
+          "requirements": [
+            {
+              "id": "AC-06.1",
+              "description": "Vendor implements separation of duties controls so that no single individual can independently perform security-sensitive actions such as creating and approving access, or writing and deploying code to production.",
+              "guidance": "Request examples of SOD controls in key processes. Evaluate whether compensating controls exist where strict SOD cannot be enforced due to staff size."
+            },
+            {
+              "id": "AC-06.2",
+              "description": "Development, staging, and production environments are strictly separated, with developers unable to directly access or modify production systems.",
+              "guidance": "Confirm production access is restricted to operations staff. Developer access to production is a common insider threat risk."
+            },
+            {
+              "id": "AC-06.3",
+              "description": "Financial and billing functions are separated from technical access administration to prevent fraud and unauthorized system changes.",
+              "guidance": "Evaluate SOD in finance-adjacent processes. This is particularly relevant for vendors that manage subscription billing with access to institutional payment data."
+            }
+          ]
+        },
+        {
+          "id": "AC-07",
+          "name": "Remote Access Controls",
+          "description": "Security controls for remote and off-site access to vendor systems.",
+          "requirements": [
+            {
+              "id": "AC-07.1",
+              "description": "All remote access to vendor systems and infrastructure requires MFA and is channeled through a corporate VPN or Zero Trust Network Access (ZTNA) solution.",
+              "guidance": "Confirm that no split-tunneling or bypass mechanisms exist for traffic destined to production systems. ZTNA is preferred over traditional VPN."
+            },
+            {
+              "id": "AC-07.2",
+              "description": "Remote access sessions are monitored, logged, and subject to behavioral analytics to detect anomalous activity.",
+              "guidance": "Evaluate whether UEBA or equivalent tooling is applied to remote access sessions. Anomalous remote access patterns are a key indicator of compromised credentials."
+            },
+            {
+              "id": "AC-07.3",
+              "description": "Vendor prohibits the use of personal devices for remote access to production systems processing institutional data, or enforces device compliance checks via mobile device management (MDM).",
+              "guidance": "Ask about BYOD policies and device compliance enforcement. Unmanaged personal devices represent a significant risk if used to access sensitive systems."
+            }
+          ]
+        },
+        {
+          "id": "AC-08",
+          "name": "Password Policies",
+          "description": "Password complexity, length, storage, and management requirements.",
+          "requirements": [
+            {
+              "id": "AC-08.1",
+              "description": "Vendor enforces password policies requiring minimum 12-character passwords with complexity requirements or 16-character passphrases without complexity requirements, aligned with NIST SP 800-63B guidance.",
+              "guidance": "Review the password policy configuration. Confirm that passwords are not subject to arbitrary rotation schedules, which NIST guidance no longer recommends absent evidence of compromise."
+            },
+            {
+              "id": "AC-08.2",
+              "description": "Vendor stores passwords using a salted, adaptive hashing algorithm (e.g., bcrypt, scrypt, Argon2) and does not store passwords in plaintext or reversible encryption.",
+              "guidance": "Request confirmation of password storage methodology. MD5 or SHA-1 without salting is unacceptable for password storage."
+            },
+            {
+              "id": "AC-08.3",
+              "description": "Vendor screens new passwords against known-breached password lists (e.g., Have I Been Pwned) and blocks use of compromised credentials.",
+              "guidance": "Evaluate whether the vendor implements credential stuffing defenses. Blocking known-breached passwords significantly reduces account takeover risk."
+            }
+          ]
+        },
+        {
+          "id": "AC-09",
+          "name": "Session Management",
+          "description": "Security controls for user session lifecycle management.",
+          "requirements": [
+            {
+              "id": "AC-09.1",
+              "description": "Vendor enforces configurable session timeout after a period of inactivity, with the default set to 30 minutes or less for applications handling sensitive data.",
+              "guidance": "Confirm session timeout is configurable by the institution. Evaluate whether the timeout applies to all access methods including API sessions."
+            },
+            {
+              "id": "AC-09.2",
+              "description": "Session tokens are generated using a cryptographically secure random number generator, have sufficient entropy, and are invalidated immediately upon logout.",
+              "guidance": "Request documentation of session management implementation. Predictable session tokens are a common web application vulnerability."
+            },
+            {
+              "id": "AC-09.3",
+              "description": "Vendor supports concurrent session controls, allowing institutions to limit or prohibit simultaneous sessions from different devices or locations.",
+              "guidance": "Evaluate whether concurrent session controls are available and configurable. This control is particularly relevant for licensed access management."
+            }
+          ]
+        },
+        {
+          "id": "AC-10",
+          "name": "Zero Trust Architecture",
+          "description": "Vendor's adoption of zero trust principles in network and access architecture.",
+          "requirements": [
+            {
+              "id": "AC-10.1",
+              "description": "Vendor has adopted or is on a documented roadmap to adopt Zero Trust Architecture (ZTA) principles, eliminating implicit trust based on network location.",
+              "guidance": "Evaluate the maturity and timeline of the vendor's ZTA adoption. Vendors operating flat internal networks with perimeter-only security represent elevated risk."
+            },
+            {
+              "id": "AC-10.2",
+              "description": "Vendor implements continuous authentication and authorization, verifying identity and device posture on an ongoing basis rather than only at initial login.",
+              "guidance": "Ask about continuous verification mechanisms. This includes re-authentication for high-privilege operations and device health checks for each access request."
+            },
+            {
+              "id": "AC-10.3",
+              "description": "Vendor applies microsegmentation within infrastructure to limit lateral movement in the event of a compromise.",
+              "guidance": "Request documentation of microsegmentation implementation. Evaluate whether workloads are isolated at the individual service or application level."
+            }
+          ]
+        },
+        {
+          "id": "AC-11",
+          "name": "API Access Controls",
+          "description": "Authentication and authorization controls for API access.",
+          "requirements": [
+            {
+              "id": "AC-11.1",
+              "description": "All vendor APIs require authentication using OAuth 2.0, API keys, or equivalent mechanisms. Unauthenticated API endpoints do not expose institutional data.",
+              "guidance": "Request API security documentation and test authentication enforcement in a proof-of-concept. Unauthenticated endpoints are a critical vulnerability."
+            },
+            {
+              "id": "AC-11.2",
+              "description": "API access is governed by least-privilege scopes, and tokens are issued with the minimum permissions required for the specific integration.",
+              "guidance": "Evaluate OAuth scope granularity. Overly broad API scopes create unnecessary exposure if a token is compromised."
+            },
+            {
+              "id": "AC-11.3",
+              "description": "API rate limiting and abuse detection are implemented to prevent credential stuffing, scraping, and denial-of-service attacks via API endpoints.",
+              "guidance": "Confirm rate limiting thresholds and abuse detection capabilities. Evaluate whether API activity logs are available for institution review."
+            }
+          ]
+        },
+        {
+          "id": "AC-12",
+          "name": "Shared Account Prohibition",
+          "description": "Policy and technical controls prohibiting shared accounts.",
+          "requirements": [
+            {
+              "id": "AC-12.1",
+              "description": "Vendor's acceptable use and access control policies explicitly prohibit the use of shared accounts for any human user access to systems processing institutional data.",
+              "guidance": "Request policy documentation and confirm technical enforcement. Audit log review should confirm that all access events are attributable to individual users."
+            },
+            {
+              "id": "AC-12.2",
+              "description": "Service accounts and non-human identities are inventoried, have unique identifiers, are governed by ownership assignments, and are reviewed for necessity at least annually.",
+              "guidance": "Request the service account inventory. Orphaned service accounts with broad permissions are a common attack vector."
+            },
+            {
+              "id": "AC-12.3",
+              "description": "Vendor employs technical controls to detect and alert on use of shared credentials, including failed authentication patterns consistent with credential sharing.",
+              "guidance": "Ask about credential sharing detection. Behavioral analytics can identify anomalous login patterns indicative of credential sharing."
             }
           ]
         }
       ]
     },
     {
-      "id": "CONTRACT",
-      "name": "Contractual",
-      "description": "Contractual and legal requirements.",
+      "id": "IOS",
+      "name": "Infrastructure and Operations Security",
+      "description": "Network security, endpoint protection, cloud security, vulnerability management, patch management, and physical security across vendor infrastructure.",
       "controls": [
         {
-          "id": "CONTRACT.01",
-          "name": "Contract Terms",
-          "description": "Required contractual provisions.",
+          "id": "IOS-01",
+          "name": "Asset Inventory",
+          "description": "Comprehensive inventory of hardware and software assets.",
           "requirements": [
             {
-              "id": "CONTRACT.01.1",
-              "description": "Data processing addendum (DPA) is available.",
-              "guidance": "Request DPA and review terms."
+              "id": "IOS-01.1",
+              "description": "Vendor maintains a comprehensive, continuously updated inventory of all hardware and software assets, including cloud instances, containers, and virtual machines in scope for systems processing institutional data.",
+              "guidance": "Request the asset inventory methodology and tooling. Evaluate whether the inventory is maintained automatically or through manual processes."
             },
             {
-              "id": "CONTRACT.01.2",
-              "description": "Audit rights are included in the contract.",
-              "guidance": "Examine audit rights provisions."
+              "id": "IOS-01.2",
+              "description": "Asset inventory includes ownership, classification, network location, operating system and version, and patch status for each asset.",
+              "guidance": "Review sample asset inventory records to verify completeness. Assets without owners or current patch status represent vulnerability management gaps."
             },
             {
-              "id": "CONTRACT.01.3",
-              "description": "Data return/deletion upon termination is guaranteed.",
-              "guidance": "Review termination and data handling clauses."
-            },
-            {
-              "id": "CONTRACT.01.4",
-              "description": "Limitation of liability terms are reasonable.",
-              "guidance": "Examine liability provisions and caps."
+              "id": "IOS-01.3",
+              "description": "Vendor has a process to detect and remediate unauthorized assets within 24 hours of discovery.",
+              "guidance": "Ask about rogue asset detection tooling. Network access control (NAC) or continuous discovery tools should detect unauthorized assets."
             }
           ]
         },
         {
-          "id": "CONTRACT.02",
-          "name": "Subcontractors",
-          "description": "Management of subcontractors.",
+          "id": "IOS-02",
+          "name": "Network Segmentation",
+          "description": "Segmentation of production, development, and administrative networks.",
           "requirements": [
             {
-              "id": "CONTRACT.02.1",
-              "description": "Subcontractors/subprocessors are disclosed.",
-              "guidance": "Request list of subprocessors."
+              "id": "IOS-02.1",
+              "description": "Vendor segments production, staging, and development environments into separate network zones with controlled access between zones.",
+              "guidance": "Request network architecture documentation. Confirm that production data is not accessible from development or testing environments."
             },
             {
-              "id": "CONTRACT.02.2",
-              "description": "Notification is provided before adding new subprocessors.",
-              "guidance": "Review subprocessor change notification process."
+              "id": "IOS-02.2",
+              "description": "Administrative and management networks are isolated from user-facing production networks, with access restricted to authorized operations staff.",
+              "guidance": "Evaluate management plane isolation. Unrestricted access to management interfaces from general production networks increases attack surface."
             },
             {
-              "id": "CONTRACT.02.3",
-              "description": "Subcontractors are bound to equivalent security obligations.",
-              "guidance": "Examine flow-down requirements in subcontracts."
+              "id": "IOS-02.3",
+              "description": "Network segmentation is enforced through technical controls (firewalls, security groups, VLANs) rather than relying on policy alone.",
+              "guidance": "Confirm that segmentation is technically enforced. Policy-only segmentation is ineffective against insider threats and misconfigurations."
+            }
+          ]
+        },
+        {
+          "id": "IOS-03",
+          "name": "Firewall, IDS, and IPS",
+          "description": "Perimeter and internal network security controls.",
+          "requirements": [
+            {
+              "id": "IOS-03.1",
+              "description": "Vendor deploys stateful firewalls with default-deny rules at network perimeters and between network segments, with rules reviewed and certified at least semi-annually.",
+              "guidance": "Request firewall architecture documentation and evidence of rule review. Firewall rules that have grown without cleanup are a common security debt issue."
+            },
+            {
+              "id": "IOS-03.2",
+              "description": "Intrusion detection and prevention systems (IDS/IPS) are deployed to monitor network traffic for known attack signatures and anomalous behavior.",
+              "guidance": "Confirm IDS/IPS placement and signature update frequency. Evaluate whether behavioral detection supplements signature-based detection."
+            },
+            {
+              "id": "IOS-03.3",
+              "description": "Web Application Firewall (WAF) is deployed in front of all web-facing applications, with rules tuned to the specific application and regularly updated.",
+              "guidance": "Confirm WAF deployment and configuration. A WAF in detection-only mode or with overly permissive rules provides limited protection."
+            }
+          ]
+        },
+        {
+          "id": "IOS-04",
+          "name": "Endpoint Protection",
+          "description": "Security controls for endpoints including servers, workstations, and mobile devices.",
+          "requirements": [
+            {
+              "id": "IOS-04.1",
+              "description": "Vendor deploys next-generation endpoint detection and response (EDR) on all endpoints, including servers, workstations, and developer devices with access to production systems.",
+              "guidance": "Confirm EDR coverage and vendor. Evaluate whether EDR includes behavioral detection, not only signature-based antivirus."
+            },
+            {
+              "id": "IOS-04.2",
+              "description": "All vendor endpoints are enrolled in a mobile device management (MDM) or unified endpoint management (UEM) platform enforcing baseline security configurations.",
+              "guidance": "Request MDM coverage reports. Unmanaged endpoints with access to institutional data are a significant risk."
+            },
+            {
+              "id": "IOS-04.3",
+              "description": "Vendor enforces full-disk encryption on all endpoints, including laptops and portable storage devices used to access or process institutional data.",
+              "guidance": "Confirm full-disk encryption requirements and enforcement verification. Lost or stolen unencrypted laptops are a leading cause of data breaches."
+            }
+          ]
+        },
+        {
+          "id": "IOS-05",
+          "name": "Patch Management",
+          "description": "Timeliness and coverage of security patch application.",
+          "requirements": [
+            {
+              "id": "IOS-05.1",
+              "description": "Vendor applies critical security patches to internet-facing systems within 14 days of release and to internal systems within 30 days, with exceptions documented and tracked.",
+              "guidance": "Request patch management policy and recent compliance metrics. Confirm patch SLAs are measured and reported."
+            },
+            {
+              "id": "IOS-05.2",
+              "description": "Vendor maintains a vulnerability and patch tracking system that associates CVEs with affected assets and tracks remediation status to closure.",
+              "guidance": "Evaluate the vulnerability tracking workflow. Confirm that CVE-to-asset mapping is automated through integration with the asset inventory."
+            },
+            {
+              "id": "IOS-05.3",
+              "description": "End-of-life operating systems and software components that no longer receive security updates are replaced or isolated, with a formal EOL risk acceptance process for exceptions.",
+              "guidance": "Request EOL software inventory. EOL software in production is a critical risk factor. Formally accepted exceptions should have compensating controls."
+            }
+          ]
+        },
+        {
+          "id": "IOS-06",
+          "name": "Vulnerability Scanning",
+          "description": "Automated vulnerability scanning of infrastructure and applications.",
+          "requirements": [
+            {
+              "id": "IOS-06.1",
+              "description": "Vendor performs authenticated vulnerability scanning of all internet-facing systems at least weekly and internal systems at least monthly.",
+              "guidance": "Confirm scanning frequency and scope. Unauthenticated scans miss a significant proportion of vulnerabilities; confirm authenticated scanning is used."
+            },
+            {
+              "id": "IOS-06.2",
+              "description": "Vulnerability scan results feed into a remediation tracking workflow with defined SLAs based on severity (Critical: 14 days, High: 30 days, Medium: 90 days).",
+              "guidance": "Request vulnerability aging metrics. A large backlog of unresolved high and critical vulnerabilities is a significant risk indicator."
+            },
+            {
+              "id": "IOS-06.3",
+              "description": "Vendor subscribes to relevant threat intelligence feeds and incorporates emerging vulnerability information into scanning and patching workflows without waiting for scheduled scan cycles.",
+              "guidance": "Ask about out-of-band patching procedures for zero-day vulnerabilities. Confirm that high-profile CVEs trigger immediate response outside normal patch cycles."
+            }
+          ]
+        },
+        {
+          "id": "IOS-07",
+          "name": "Penetration Testing",
+          "description": "Third-party penetration testing of vendor infrastructure and applications.",
+          "requirements": [
+            {
+              "id": "IOS-07.1",
+              "description": "Vendor engages a qualified third-party penetration testing firm to conduct annual external and internal penetration tests covering network, application, and API layers.",
+              "guidance": "Request the penetration test executive summary. Confirm scope covers all systems processing institutional data and includes both authenticated and unauthenticated testing."
+            },
+            {
+              "id": "IOS-07.2",
+              "description": "Penetration test scope includes social engineering and phishing simulations to test human security controls alongside technical controls.",
+              "guidance": "Evaluate the breadth of testing methodology. Social engineering testing is critical for assessing human layer defenses."
+            },
+            {
+              "id": "IOS-07.3",
+              "description": "Vendor provides institutions with executive summaries of penetration test findings, scoped to the systems relevant to the institution's use case, upon request or under NDA.",
+              "guidance": "Confirm the vendor's willingness to share penetration test results. Refusal to share any results, even under NDA, is a yellow flag."
+            }
+          ]
+        },
+        {
+          "id": "IOS-08",
+          "name": "Cloud Security Posture",
+          "description": "Security controls for cloud-hosted infrastructure.",
+          "requirements": [
+            {
+              "id": "IOS-08.1",
+              "description": "Vendor uses cloud security posture management (CSPM) tooling to continuously monitor cloud configurations for drift from security baselines and compliance benchmarks (e.g., CIS Benchmarks).",
+              "guidance": "Request CSPM tooling and coverage. Misconfigured cloud storage (e.g., publicly accessible S3 buckets) is a leading cause of data exposure incidents."
+            },
+            {
+              "id": "IOS-08.2",
+              "description": "Vendor's cloud environment is configured according to the shared responsibility model, with clear documentation of which security controls are the vendor's responsibility versus the cloud provider's.",
+              "guidance": "Review the shared responsibility model documentation. Misunderstanding of cloud provider vs. vendor responsibilities is a common gap."
+            },
+            {
+              "id": "IOS-08.3",
+              "description": "Vendor restricts public access to all cloud storage buckets, databases, and management interfaces by default, with any exceptions requiring documented business justification and compensating controls.",
+              "guidance": "Ask about public access prevention policies. Automated policy enforcement through CSPM should prevent accidental public exposure of storage resources."
+            }
+          ]
+        },
+        {
+          "id": "IOS-09",
+          "name": "Container Security",
+          "description": "Security controls for containerized workloads.",
+          "requirements": [
+            {
+              "id": "IOS-09.1",
+              "description": "Vendor scans container images for known vulnerabilities before deployment and on a scheduled basis, blocking deployment of images with critical vulnerabilities.",
+              "guidance": "Request container scanning tooling and policy. Confirm that base image updates and dependency updates are part of the container lifecycle."
+            },
+            {
+              "id": "IOS-09.2",
+              "description": "Vendor runs containers with least-privilege configurations, avoiding privileged mode, using read-only file systems where possible, and restricting capabilities.",
+              "guidance": "Request container security standards documentation. Privileged containers significantly expand the blast radius of a container escape."
+            },
+            {
+              "id": "IOS-09.3",
+              "description": "Container runtime security tooling monitors for anomalous process execution, network connections, and file system modifications within containers at runtime.",
+              "guidance": "Evaluate runtime security tooling. Static scanning catches known vulnerabilities but runtime security is needed to detect exploits and zero-days."
+            }
+          ]
+        },
+        {
+          "id": "IOS-10",
+          "name": "Code Scanning (SAST/DAST)",
+          "description": "Static and dynamic application security testing in the development pipeline.",
+          "requirements": [
+            {
+              "id": "IOS-10.1",
+              "description": "Vendor integrates static application security testing (SAST) into the CI/CD pipeline, automatically scanning code commits for security vulnerabilities before merge.",
+              "guidance": "Request SAST tooling and policy. Confirm that SAST gates prevent deployment of code with critical security findings."
+            },
+            {
+              "id": "IOS-10.2",
+              "description": "Vendor performs dynamic application security testing (DAST) against running applications in staging or pre-production environments at least quarterly.",
+              "guidance": "Evaluate DAST frequency and scope. DAST supplements SAST by identifying runtime vulnerabilities not detectable through static analysis."
+            },
+            {
+              "id": "IOS-10.3",
+              "description": "Security findings from SAST and DAST are tracked through the vulnerability management workflow with defined remediation SLAs, and developers receive security-focused feedback.",
+              "guidance": "Evaluate the developer security feedback loop. SAST/DAST is most effective when developers understand and learn from findings."
+            }
+          ]
+        },
+        {
+          "id": "IOS-11",
+          "name": "Software Composition Analysis",
+          "description": "Management of open source and third-party software component risks.",
+          "requirements": [
+            {
+              "id": "IOS-11.1",
+              "description": "Vendor maintains a software bill of materials (SBOM) for products and services, tracking all open source and third-party components and their versions.",
+              "guidance": "Request SBOM generation capability. SBOMs enable rapid impact assessment when new CVEs affecting common libraries are disclosed."
+            },
+            {
+              "id": "IOS-11.2",
+              "description": "Vendor uses software composition analysis (SCA) tooling to continuously monitor third-party dependencies for newly disclosed vulnerabilities and license compliance issues.",
+              "guidance": "Confirm SCA tooling and monitoring frequency. Log4Shell-type incidents demonstrate the importance of continuous dependency monitoring."
+            },
+            {
+              "id": "IOS-11.3",
+              "description": "Vendor evaluates and addresses critical vulnerabilities in open source dependencies within 14 days of disclosure, with priority given to internet-exposed components.",
+              "guidance": "Request SCA remediation SLAs and recent compliance metrics. Ask how the vendor handled recent high-profile supply chain vulnerabilities."
+            }
+          ]
+        },
+        {
+          "id": "IOS-12",
+          "name": "Secrets Management",
+          "description": "Secure storage and management of credentials, API keys, and certificates.",
+          "requirements": [
+            {
+              "id": "IOS-12.1",
+              "description": "Vendor uses a dedicated secrets management solution (e.g., HashiCorp Vault, AWS Secrets Manager) to store and rotate application credentials, API keys, certificates, and database passwords.",
+              "guidance": "Confirm that secrets are not stored in code repositories, configuration files, environment variables, or other insecure locations."
+            },
+            {
+              "id": "IOS-12.2",
+              "description": "Vendor scans code repositories for accidentally committed secrets using automated tooling and responds immediately to any discovered credential exposure.",
+              "guidance": "Ask about pre-commit secret scanning. Historically committed secrets are a common source of credential exposure incidents."
+            },
+            {
+              "id": "IOS-12.3",
+              "description": "Service account credentials and API keys are rotated on a defined schedule and immediately upon any suspected exposure.",
+              "guidance": "Request credential rotation policies. Long-lived credentials that are never rotated remain a persistent risk if previously exposed."
+            }
+          ]
+        },
+        {
+          "id": "IOS-13",
+          "name": "Configuration Management",
+          "description": "Baseline configuration management and drift detection.",
+          "requirements": [
+            {
+              "id": "IOS-13.1",
+              "description": "Vendor maintains documented secure configuration baselines for all system types (servers, network devices, cloud services) aligned with CIS Benchmarks or equivalent.",
+              "guidance": "Request configuration baseline documentation. Confirm baselines are reviewed and updated at least annually."
+            },
+            {
+              "id": "IOS-13.2",
+              "description": "Vendor uses automated configuration management tooling (e.g., Ansible, Puppet, Terraform) to enforce consistent configurations and detect drift.",
+              "guidance": "Evaluate infrastructure-as-code maturity. Automated configuration enforcement reduces the risk of configuration drift and misconfigurations."
+            },
+            {
+              "id": "IOS-13.3",
+              "description": "Configuration changes to production systems are made only through the formal change management process; direct manual changes are prohibited and detected through drift monitoring.",
+              "guidance": "Confirm that out-of-band configuration changes are prevented or detected. Unauthorized configuration changes are a key risk in regulated environments."
+            }
+          ]
+        },
+        {
+          "id": "IOS-14",
+          "name": "Change Management",
+          "description": "Controls governing changes to production systems and services.",
+          "requirements": [
+            {
+              "id": "IOS-14.1",
+              "description": "All changes to production systems, including infrastructure, application code, and configuration, follow a formal change management process including review, approval, testing, and rollback planning.",
+              "guidance": "Request change management policy and examples of recent change records. Evaluate whether security review is a required step in the approval workflow."
+            },
+            {
+              "id": "IOS-14.2",
+              "description": "Emergency changes follow an expedited process with retroactive formal review and approval within 24 hours, with all emergency changes logged and reviewed.",
+              "guidance": "Evaluate the emergency change process. Emergency changes that bypass standard controls without retroactive review are a governance gap."
+            },
+            {
+              "id": "IOS-14.3",
+              "description": "Customers are notified at least 7 days in advance of significant changes that may affect service functionality, security controls, or data handling.",
+              "guidance": "Confirm advance notice periods for planned changes. Distinguish between minor updates and material changes that may require institution-side action."
+            }
+          ]
+        },
+        {
+          "id": "IOS-15",
+          "name": "Capacity Management",
+          "description": "Planning and monitoring of system capacity to ensure availability.",
+          "requirements": [
+            {
+              "id": "IOS-15.1",
+              "description": "Vendor monitors system resource utilization and has automated scaling or capacity expansion procedures to maintain performance under increased load.",
+              "guidance": "Evaluate auto-scaling capabilities and capacity planning processes. Unplanned capacity exhaustion can cause service disruptions during peak usage periods."
+            },
+            {
+              "id": "IOS-15.2",
+              "description": "Vendor conducts load testing at least annually to validate that systems can handle projected peak load, including load from all customer institutions simultaneously.",
+              "guidance": "Request load test results and methodology. Confirm that test scenarios reflect realistic peak loads such as semester start or registration periods."
+            },
+            {
+              "id": "IOS-15.3",
+              "description": "Capacity incidents and near-misses are tracked and used to improve capacity planning and scaling procedures.",
+              "guidance": "Ask about historical capacity incidents. Vendors that have experienced capacity-related outages should demonstrate improvements made."
+            }
+          ]
+        },
+        {
+          "id": "IOS-16",
+          "name": "DDoS Protection",
+          "description": "Distributed denial-of-service mitigation capabilities.",
+          "requirements": [
+            {
+              "id": "IOS-16.1",
+              "description": "Vendor employs DDoS mitigation services capable of absorbing or filtering volumetric attacks, including through a CDN or cloud-based DDoS protection provider.",
+              "guidance": "Request documentation of DDoS protection architecture. Confirm mitigation capacity (Gbps/Mpps) relative to the threat environment."
+            },
+            {
+              "id": "IOS-16.2",
+              "description": "Application-layer (Layer 7) DDoS protection is implemented in addition to volumetric (Layer 3/4) mitigation, including rate limiting and bot detection.",
+              "guidance": "Evaluate application-layer protection capabilities. Volumetric DDoS protection alone is insufficient against sophisticated application-layer attacks."
+            },
+            {
+              "id": "IOS-16.3",
+              "description": "Vendor has a defined DDoS response playbook and can demonstrate historical response times and mitigation effectiveness for past DDoS events.",
+              "guidance": "Request DDoS response runbooks and past incident metrics. Understanding the vendor's DDoS response history helps calibrate risk."
+            }
+          ]
+        },
+        {
+          "id": "IOS-17",
+          "name": "Physical Security",
+          "description": "Physical security controls at vendor-operated and third-party data center facilities.",
+          "requirements": [
+            {
+              "id": "IOS-17.1",
+              "description": "Data center facilities used to process institutional data have physical access controls including badge access, biometric authentication, video surveillance, and security personnel.",
+              "guidance": "Request data center security documentation or third-party attestations (e.g., SOC 2 physical security controls). Confirm these controls are in place at all locations where institutional data resides."
+            },
+            {
+              "id": "IOS-17.2",
+              "description": "Data center access is restricted to authorized personnel with a documented access list reviewed quarterly.",
+              "guidance": "Evaluate physical access management rigor. Quarterly reviews help ensure terminated employees and unauthorized individuals are promptly removed."
+            },
+            {
+              "id": "IOS-17.3",
+              "description": "Visitor access to data center facilities is logged, escorted, and reviewed, with no unescorted access by external parties.",
+              "guidance": "Request visitor access log procedures. Unescorted vendor access to data centers is a risk that should be addressed contractually."
+            }
+          ]
+        },
+        {
+          "id": "IOS-18",
+          "name": "Media Controls",
+          "description": "Controls for physical and digital media containing institutional data.",
+          "requirements": [
+            {
+              "id": "IOS-18.1",
+              "description": "Vendor inventories all media (physical and digital) containing institutional data and applies appropriate access and handling controls based on data classification.",
+              "guidance": "Request media management policy. Confirm that removable media is restricted and controlled in environments with sensitive data."
+            },
+            {
+              "id": "IOS-18.2",
+              "description": "Vendor restricts the use of removable media (USB drives, external hard drives) in environments processing institutional data and monitors for unauthorized media connections.",
+              "guidance": "Evaluate technical enforcement of removable media restrictions. Policy-only restrictions without technical enforcement are ineffective."
+            },
+            {
+              "id": "IOS-18.3",
+              "description": "Physical media shipped off-site for backups or decommissioning is tracked with a chain of custody log and sanitized before disposal in accordance with NIST 800-88.",
+              "guidance": "Request media disposal and transport procedures. Off-site media transport without tracking and sanitization is a significant data exposure risk."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "IRBC",
+      "name": "Incident Response and Business Continuity",
+      "description": "Incident response planning, BCP/DR capabilities, testing, redundancy architecture, and ransomware response.",
+      "controls": [
+        {
+          "id": "IRBC-01",
+          "name": "Incident Response Plan",
+          "description": "Documentation and currency of the vendor's incident response plan.",
+          "requirements": [
+            {
+              "id": "IRBC-01.1",
+              "description": "Vendor maintains a documented incident response plan (IRP) that is reviewed and updated at least annually, covering detection, containment, eradication, recovery, and post-incident review phases.",
+              "guidance": "Request the IRP table of contents or executive summary. Evaluate whether the plan addresses the specific threats most relevant to higher education data."
+            },
+            {
+              "id": "IRBC-01.2",
+              "description": "The IRP includes specific procedures for security incidents involving higher education data types, including student records, research data, and financial information.",
+              "guidance": "Ask whether the IRP has been customized for higher education context. Generic plans that do not address FERPA or research data obligations may leave gaps."
+            },
+            {
+              "id": "IRBC-01.3",
+              "description": "The IRP is reviewed after each significant incident and updated based on lessons learned within 30 days of incident closure.",
+              "guidance": "Evaluate the post-incident review process. Plans that are not updated after incidents fail to incorporate operational lessons."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-02",
+          "name": "IR Team and Contact",
+          "description": "Composition and availability of the vendor's incident response team.",
+          "requirements": [
+            {
+              "id": "IRBC-02.1",
+              "description": "Vendor has a designated incident response team with defined roles, responsibilities, and escalation paths, available 24/7 for severity-1 incidents.",
+              "guidance": "Request the IR team structure. Confirm that the IR team has authority to make containment decisions without requiring executive approval for time-sensitive actions."
+            },
+            {
+              "id": "IRBC-02.2",
+              "description": "Vendor provides institutional customers with a dedicated incident reporting contact, separate from general support, with a confirmed response SLA of four hours or less for critical incidents.",
+              "guidance": "Test the incident reporting contact before contract signing. Confirm SLA commitments are in the contract."
+            },
+            {
+              "id": "IRBC-02.3",
+              "description": "Vendor retains a third-party incident response retainer with a qualified cybersecurity firm to supplement internal capabilities for large-scale incidents.",
+              "guidance": "Ask about IR retainer arrangements. Vendors that have not pre-arranged third-party IR support may face significant delays in large incident response."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-03",
+          "name": "Tabletop and Simulation Exercises",
+          "description": "Scheduled testing of IR plans through exercises.",
+          "requirements": [
+            {
+              "id": "IRBC-03.1",
+              "description": "Vendor conducts tabletop IR exercises at least annually, involving all key stakeholders including legal, communications, and executive leadership.",
+              "guidance": "Request tabletop exercise records. Evaluate whether exercises test realistic scenarios including ransomware, data breach, and supply chain incidents."
+            },
+            {
+              "id": "IRBC-03.2",
+              "description": "Vendor conducts live simulation or red team exercises at least every two years, testing actual detection and response capabilities.",
+              "guidance": "Distinguish between tabletop exercises and live simulations. Live simulations provide higher assurance but tabletops are a reasonable baseline."
+            },
+            {
+              "id": "IRBC-03.3",
+              "description": "Exercise findings are tracked, remediated, and incorporated into updated IRP procedures within 60 days of exercise completion.",
+              "guidance": "Request evidence of exercise findings and remediation. Exercises without follow-up remediation provide limited value."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-04",
+          "name": "Forensic Investigation Capability",
+          "description": "Vendor capability to conduct digital forensics following an incident.",
+          "requirements": [
+            {
+              "id": "IRBC-04.1",
+              "description": "Vendor retains forensic investigation capability (in-house or through retainer) capable of conducting root cause analysis and evidence preservation for security incidents.",
+              "guidance": "Ask about forensic tooling and capability. Forensic evidence collection must begin promptly after an incident to preserve chain of custody."
+            },
+            {
+              "id": "IRBC-04.2",
+              "description": "Vendor preserves forensic evidence for security incidents involving institutional data for at least 12 months, or longer if litigation or regulatory investigation is anticipated.",
+              "guidance": "Confirm evidence preservation periods and procedures. Evidence destroyed before investigation completion can prevent full understanding of incident scope."
+            },
+            {
+              "id": "IRBC-04.3",
+              "description": "Forensic investigation results are shared with affected institutions, including root cause analysis, timeline of events, and scope of data accessed or exfiltrated.",
+              "guidance": "Confirm that forensic results will be shared with institutions. Institutions need this information to fulfill their own regulatory obligations."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-05",
+          "name": "RTO and RPO Commitments",
+          "description": "Contractual recovery time and recovery point objectives.",
+          "requirements": [
+            {
+              "id": "IRBC-05.1",
+              "description": "Vendor publishes and contractually commits to Recovery Time Objective (RTO) and Recovery Point Objective (RPO) for all services processing institutional data.",
+              "guidance": "Evaluate whether vendor RTO/RPO commitments meet your institution's business continuity requirements. RTO and RPO should be differentiated by service tier."
+            },
+            {
+              "id": "IRBC-05.2",
+              "description": "Vendor tracks actual recovery time and recovery point performance against RTO/RPO targets for each incident requiring recovery, and reports deviations.",
+              "guidance": "Request historical RTO/RPO performance data. Commitments that are never tested or reported against provide limited assurance."
+            },
+            {
+              "id": "IRBC-05.3",
+              "description": "RTO/RPO commitments are differentiated for different failure scenarios (single system failure, data center failure, regional disaster) with documented assumptions.",
+              "guidance": "Evaluate the granularity of RTO/RPO commitments. Single RTO/RPO values without scenario differentiation may be overly optimistic for worst-case events."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-06",
+          "name": "BCP and DR Testing",
+          "description": "Testing frequency and rigor of business continuity and disaster recovery plans.",
+          "requirements": [
+            {
+              "id": "IRBC-06.1",
+              "description": "Vendor tests business continuity and disaster recovery plans at least annually through live failover or system recovery exercises, not only documentation reviews.",
+              "guidance": "Confirm that DR testing involves actual system recovery, not just tabletop reviews of the plan. Request test result summaries."
+            },
+            {
+              "id": "IRBC-06.2",
+              "description": "DR test results are documented and reviewed against RTO/RPO targets, with gaps identified and remediated.",
+              "guidance": "Request DR test records and remediation tracking. Tests that consistently miss RTO/RPO targets indicate a maturity gap."
+            },
+            {
+              "id": "IRBC-06.3",
+              "description": "Key customer systems or a representative sample are included in DR tests to validate recovery in a realistic context.",
+              "guidance": "Evaluate whether DR testing covers the systems processing your institution's data. Ask whether institutions can observe or participate in DR tests."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-07",
+          "name": "Redundancy Architecture",
+          "description": "Infrastructure redundancy to support availability SLAs.",
+          "requirements": [
+            {
+              "id": "IRBC-07.1",
+              "description": "Vendor's infrastructure is designed with N+1 or higher redundancy for all components in the critical path, including compute, storage, networking, and power.",
+              "guidance": "Request architecture documentation. Identify single points of failure and evaluate whether redundancy is adequate for the SLA commitments made."
+            },
+            {
+              "id": "IRBC-07.2",
+              "description": "Production systems are deployed across multiple availability zones or data centers to survive single facility failures without service interruption.",
+              "guidance": "Confirm multi-AZ or multi-site deployment. Single-site deployments cannot survive facility-level outages."
+            },
+            {
+              "id": "IRBC-07.3",
+              "description": "Vendor has a documented and tested multi-region failover capability for disaster scenarios affecting an entire cloud region or geographic area.",
+              "guidance": "Evaluate multi-region recovery capabilities. Single-region cloud deployments remain vulnerable to regional outage events."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-08",
+          "name": "Communication Plan",
+          "description": "Communication procedures during and after incidents.",
+          "requirements": [
+            {
+              "id": "IRBC-08.1",
+              "description": "Vendor maintains a documented communication plan for security and availability incidents, covering internal stakeholders, affected customers, regulators, and media.",
+              "guidance": "Request the communication plan. Confirm that customer notification procedures are clearly defined with responsibilities assigned."
+            },
+            {
+              "id": "IRBC-08.2",
+              "description": "Vendor uses multiple communication channels (email, phone, status page, in-product notifications) to reach institutional contacts during incidents.",
+              "guidance": "Evaluate the diversity of communication channels. Single-channel notification can fail if the primary channel is itself affected by the incident."
+            },
+            {
+              "id": "IRBC-08.3",
+              "description": "Vendor provides regular status updates at least every four hours during active incidents affecting institutional data, until the incident is resolved.",
+              "guidance": "Confirm update frequency commitments. Infrequent updates during active incidents force institutions to make operational decisions without current information."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-09",
+          "name": "Ransomware Response",
+          "description": "Specific capabilities and planning for ransomware incident response.",
+          "requirements": [
+            {
+              "id": "IRBC-09.1",
+              "description": "Vendor has a documented ransomware-specific incident response playbook covering detection, isolation, eradication, and recovery procedures.",
+              "guidance": "Request the ransomware response playbook. Ransomware is the highest-impact threat facing higher education vendors and requires specific preparation."
+            },
+            {
+              "id": "IRBC-09.2",
+              "description": "Vendor maintains offline, air-gapped, or immutable backups that cannot be encrypted by ransomware, with tested recovery capability from these backups.",
+              "guidance": "Confirm backup immutability or isolation. Online backups that are accessible from production systems can be encrypted along with primary data."
+            },
+            {
+              "id": "IRBC-09.3",
+              "description": "Vendor's ransomware response policy does not require payment of ransom as a standard recovery mechanism, and vendor has demonstrated recovery without ransom payment.",
+              "guidance": "Ask about the vendor's ransomware payment policy. Ransom payment does not guarantee data recovery and may violate OFAC regulations."
+            }
+          ]
+        },
+        {
+          "id": "IRBC-10",
+          "name": "Post-Incident Review",
+          "description": "Structured review and improvement process following incidents.",
+          "requirements": [
+            {
+              "id": "IRBC-10.1",
+              "description": "Vendor conducts a formal post-incident review (blameless postmortem) within 14 days of each significant security or availability incident, documenting root cause, contributing factors, and remediation actions.",
+              "guidance": "Request post-incident review methodology and example reports (redacted). A blameless culture improves incident learning without penalizing individuals."
+            },
+            {
+              "id": "IRBC-10.2",
+              "description": "Post-incident remediation actions are tracked to completion with ownership assigned and due dates defined.",
+              "guidance": "Evaluate the remediation tracking process. Post-incident reviews without follow-through on action items do not improve security posture."
+            },
+            {
+              "id": "IRBC-10.3",
+              "description": "Vendor shares post-incident summary reports with affected institutions, including root cause, remediation actions, and preventive measures, within 30 days of incident closure.",
+              "guidance": "Confirm willingness to share post-incident summaries. Transparency about incidents and responses builds trust and enables institutions to assess residual risk."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AIG",
+      "name": "AI Governance",
+      "description": "AI and ML risk management, bias and fairness testing, model transparency, AI security, human oversight, and generative AI governance. HECVAT v4 introduces 32 new AI governance controls reflecting the growing role of AI in vendor products and services.",
+      "controls": [
+        {
+          "id": "AIG-01",
+          "name": "AI Inventory and Use Case Documentation",
+          "description": "Inventory and documentation of AI and ML models used in vendor products and services.",
+          "requirements": [
+            {
+              "id": "AIG-01.1",
+              "description": "Vendor maintains an inventory of all AI and ML models deployed in products or services that process institutional data, including model type, purpose, training data sources, and deployment context.",
+              "guidance": "Request the AI inventory or a summary of AI capabilities. Evaluate whether the inventory is current and covers all AI-powered features in the assessed product."
+            },
+            {
+              "id": "AIG-01.2",
+              "description": "Vendor documents specific use cases for each AI model, including intended users, decision types supported, and potential impact on individuals if the model produces incorrect outputs.",
+              "guidance": "Review use case documentation. Pay particular attention to AI features that inform decisions about students (admissions, grades, financial aid eligibility) due to FERPA implications."
+            },
+            {
+              "id": "AIG-01.3",
+              "description": "Vendor notifies institutional customers at least 30 days in advance before deploying new AI capabilities or materially changing existing AI models that process institutional data.",
+              "guidance": "Confirm advance notification procedures for AI changes. Material AI model changes may require institutional re-evaluation of risk."
+            }
+          ]
+        },
+        {
+          "id": "AIG-02",
+          "name": "AI Risk Assessment",
+          "description": "Formal risk assessment process for AI systems prior to deployment.",
+          "requirements": [
+            {
+              "id": "AIG-02.1",
+              "description": "Vendor conducts formal AI risk assessments before deploying new AI models or significantly updating existing models, evaluating technical, ethical, legal, and societal risks.",
+              "guidance": "Request the AI risk assessment methodology. Evaluate whether risk assessments are proportionate to the potential impact of the AI system."
+            },
+            {
+              "id": "AIG-02.2",
+              "description": "AI risk assessments specifically evaluate privacy risks, including the potential for AI models to reveal sensitive information about individuals or reconstruct training data.",
+              "guidance": "Evaluate whether privacy-specific AI risks (model inversion, membership inference attacks) are addressed in risk assessments."
+            },
+            {
+              "id": "AIG-02.3",
+              "description": "AI risk assessment results are reviewed by senior leadership and appropriate subject matter experts before model deployment, with residual risks formally accepted by an accountable executive.",
+              "guidance": "Confirm governance of AI risk acceptance. Risk acceptance for high-impact AI systems should require senior executive sign-off, not just technical team approval."
+            }
+          ]
+        },
+        {
+          "id": "AIG-03",
+          "name": "Bias and Fairness Testing",
+          "description": "Testing AI models for demographic bias and disparate impact.",
+          "requirements": [
+            {
+              "id": "AIG-03.1",
+              "description": "Vendor tests AI models for demographic bias and disparate impact before deployment and at least annually thereafter, using recognized bias evaluation frameworks.",
+              "guidance": "Request bias testing methodology and results summaries. Bias testing should evaluate protected characteristics including race, gender, age, and disability status."
+            },
+            {
+              "id": "AIG-03.2",
+              "description": "Vendor defines acceptable thresholds for model bias and takes corrective action when testing reveals bias levels that exceed defined thresholds.",
+              "guidance": "Evaluate the rigor of bias thresholds and corrective action procedures. Vague commitments to reduce bias without defined metrics are insufficient."
+            },
+            {
+              "id": "AIG-03.3",
+              "description": "Vendor makes bias testing results available to institutional customers upon request, with sufficient detail to evaluate potential impact on the institution's specific student population.",
+              "guidance": "Confirm willingness to share bias testing results. Higher education institutions have particular obligations to avoid disparate impact on student populations."
+            }
+          ]
+        },
+        {
+          "id": "AIG-04",
+          "name": "Model Explainability and Transparency",
+          "description": "Vendor's ability to explain AI model decisions to institutional users.",
+          "requirements": [
+            {
+              "id": "AIG-04.1",
+              "description": "Vendor provides model cards or equivalent documentation for AI models that make or inform decisions about individuals, describing model purpose, performance metrics, limitations, and known biases.",
+              "guidance": "Request model cards for AI features relevant to the institution. Model cards should be sufficiently detailed for technical evaluation."
+            },
+            {
+              "id": "AIG-04.2",
+              "description": "For AI models that make or significantly inform individual-level decisions, vendor provides human-interpretable explanations of the factors contributing to each decision upon request.",
+              "guidance": "Evaluate explanation capabilities for decision-support AI. FERPA and due process considerations may require explainability for student-affecting decisions."
+            },
+            {
+              "id": "AIG-04.3",
+              "description": "Vendor discloses to institutional users when they are interacting with AI-generated content or AI-assisted responses, rather than human-generated content.",
+              "guidance": "Confirm AI disclosure practices. Failure to disclose AI involvement in institutional communications may create legal or reputational risk."
+            }
+          ]
+        },
+        {
+          "id": "AIG-05",
+          "name": "AI Training Data Provenance",
+          "description": "Documentation and governance of data used to train AI models.",
+          "requirements": [
+            {
+              "id": "AIG-05.1",
+              "description": "Vendor documents the provenance of all training data used for AI models that process institutional data, including data sources, collection methods, and any personal data included.",
+              "guidance": "Request training data provenance documentation. Evaluate whether institutional data is used to train AI models and whether this use is disclosed and consented."
+            },
+            {
+              "id": "AIG-05.2",
+              "description": "Vendor explicitly discloses whether and how institutional data (including student data) is used to train, fine-tune, or improve AI models, and obtains written consent before using institutional data for AI training.",
+              "guidance": "Confirm that institutional data is not used for AI training without explicit written consent. Use of student data for AI training may violate FERPA."
+            },
+            {
+              "id": "AIG-05.3",
+              "description": "Vendor's AI training data governance program addresses data quality, representativeness, and the removal of biased or inappropriate training examples.",
+              "guidance": "Evaluate training data governance maturity. Poor training data quality is a root cause of many AI performance and bias issues."
+            }
+          ]
+        },
+        {
+          "id": "AIG-06",
+          "name": "Model Security",
+          "description": "Security controls protecting AI models from adversarial attacks and prompt injection.",
+          "requirements": [
+            {
+              "id": "AIG-06.1",
+              "description": "Vendor tests AI models for adversarial vulnerabilities including adversarial examples, model evasion, and model inversion attacks, with documented mitigations for identified vulnerabilities.",
+              "guidance": "Request adversarial robustness testing documentation. AI models used in security-relevant contexts require specific robustness testing."
+            },
+            {
+              "id": "AIG-06.2",
+              "description": "For generative AI and LLM-based features, vendor implements prompt injection defenses to prevent malicious user inputs from hijacking model behavior or exfiltrating system prompts.",
+              "guidance": "Evaluate prompt injection defenses for any LLM-based features. Prompt injection is a critical vulnerability for LLM applications handling sensitive data."
+            },
+            {
+              "id": "AIG-06.3",
+              "description": "Vendor monitors AI model behavior in production for anomalies, drift, and potential misuse or adversarial manipulation, with alerting and response procedures.",
+              "guidance": "Confirm that AI model monitoring is in place in production. AI models can degrade or be manipulated without human oversight."
+            }
+          ]
+        },
+        {
+          "id": "AIG-07",
+          "name": "AI Output Validation",
+          "description": "Processes to validate the accuracy and appropriateness of AI model outputs.",
+          "requirements": [
+            {
+              "id": "AIG-07.1",
+              "description": "Vendor implements output validation procedures to detect and filter harmful, inaccurate, or inappropriate AI-generated content before delivery to institutional users.",
+              "guidance": "Request output validation methodology. Automated output filtering is particularly important for generative AI features."
+            },
+            {
+              "id": "AIG-07.2",
+              "description": "Vendor maintains performance benchmarks for AI model accuracy, precision, recall, and other relevant metrics, with automated alerts when production metrics fall below thresholds.",
+              "guidance": "Evaluate whether performance monitoring is in place. Degraded AI model performance can have direct impact on institutional users and decisions."
+            },
+            {
+              "id": "AIG-07.3",
+              "description": "Vendor provides institutions with the ability to report inaccurate or inappropriate AI outputs, with a defined review and correction process.",
+              "guidance": "Confirm reporting and feedback mechanisms. User feedback loops help improve model quality and catch systemic issues."
+            }
+          ]
+        },
+        {
+          "id": "AIG-08",
+          "name": "Human Oversight Requirements",
+          "description": "Human review and oversight requirements for AI-assisted decisions.",
+          "requirements": [
+            {
+              "id": "AIG-08.1",
+              "description": "For AI features that inform decisions about individuals (students, employees), vendor's product design requires meaningful human review before any decision is finalized.",
+              "guidance": "Evaluate whether human oversight is technically enforced or merely recommended. Fully automated decisions about individuals may create legal obligations under GDPR Art. 22 or FERPA."
+            },
+            {
+              "id": "AIG-08.2",
+              "description": "Vendor provides institutional administrators with controls to configure the level of human oversight required for AI-assisted decisions, including the ability to disable fully automated decisions.",
+              "guidance": "Confirm institution-configurable oversight settings. Institutions should be able to enforce human review requirements that match their own policies and legal obligations."
+            },
+            {
+              "id": "AIG-08.3",
+              "description": "Vendor trains institutional users on the limitations of AI outputs and the importance of critical human review, and provides guidance on appropriate reliance on AI-generated recommendations.",
+              "guidance": "Evaluate vendor training materials on AI limitations. Users who over-rely on AI recommendations without understanding limitations may make poor decisions."
+            }
+          ]
+        },
+        {
+          "id": "AIG-09",
+          "name": "AI Ethics Policy",
+          "description": "Vendor's formal commitments to ethical AI development and deployment.",
+          "requirements": [
+            {
+              "id": "AIG-09.1",
+              "description": "Vendor maintains a publicly accessible AI ethics policy describing their commitments to fairness, accountability, transparency, privacy, and avoidance of harmful uses of AI.",
+              "guidance": "Review the AI ethics policy for specificity and enforceability. Generic ethics statements without specific commitments or accountability mechanisms provide limited assurance."
+            },
+            {
+              "id": "AIG-09.2",
+              "description": "Vendor has an internal AI ethics review process, including review by diverse stakeholders, for AI features that could have significant impact on individuals or communities.",
+              "guidance": "Evaluate the internal AI ethics review process. Diversity of perspectives in ethics review is associated with better identification of potential harms."
+            },
+            {
+              "id": "AIG-09.3",
+              "description": "Vendor has published use cases for which AI will not be used, and enforces these restrictions through product controls and employee training.",
+              "guidance": "Review the AI use restrictions list. Vendors with well-defined prohibited use cases demonstrate thoughtful AI governance."
+            }
+          ]
+        },
+        {
+          "id": "AIG-10",
+          "name": "Generative AI Policy",
+          "description": "Governance of large language model (LLM) and generative AI features.",
+          "requirements": [
+            {
+              "id": "AIG-10.1",
+              "description": "Vendor discloses which generative AI or LLM models (including third-party models such as GPT-4, Claude, Gemini) are used in the product, including whether institutional data is sent to third-party AI providers.",
+              "guidance": "Confirm disclosure of all AI model providers. Data sent to third-party LLM APIs represents a subprocessor relationship requiring DPA coverage."
+            },
+            {
+              "id": "AIG-10.2",
+              "description": "Vendor implements controls to prevent institutional data input into generative AI features from being used to train third-party foundation models, and obtains written confirmation from LLM providers.",
+              "guidance": "Request the LLM provider data use commitments. Most commercial LLM APIs have options to opt out of training data use; confirm vendor has exercised these options."
+            },
+            {
+              "id": "AIG-10.3",
+              "description": "Vendor implements output review and content safety filtering for generative AI features, including controls to prevent generation of harmful, discriminatory, or factually incorrect content.",
+              "guidance": "Evaluate content safety measures for generative AI features. Outputs that violate content policies or contain hallucinations can create institutional liability."
+            }
+          ]
+        },
+        {
+          "id": "AIG-11",
+          "name": "AI Incident Response",
+          "description": "Procedures for detecting, reporting, and remediating AI-specific incidents.",
+          "requirements": [
+            {
+              "id": "AIG-11.1",
+              "description": "Vendor has defined AI-specific incident types (model failure, bias incident, AI misuse, adversarial attack, data poisoning) and has documented response procedures for each.",
+              "guidance": "Request the AI incident response procedures. AI incidents require different response procedures than traditional security incidents."
+            },
+            {
+              "id": "AIG-11.2",
+              "description": "Vendor notifies affected institutions within 48 hours of discovering an AI incident that has produced materially incorrect outputs, caused harm to individuals, or exposed sensitive data.",
+              "guidance": "Confirm AI incident notification commitments. AI incidents affecting student-facing decisions require prompt notification."
+            },
+            {
+              "id": "AIG-11.3",
+              "description": "Vendor maintains a log of AI incidents, including near-misses, and conducts post-incident reviews to identify systemic issues and improve model governance.",
+              "guidance": "Request AI incident tracking metrics. Organizations that track near-misses demonstrate proactive AI risk management."
+            }
+          ]
+        },
+        {
+          "id": "AIG-12",
+          "name": "AI Vendor and Third-Party Assessment",
+          "description": "Assessment of AI components and models sourced from third parties.",
+          "requirements": [
+            {
+              "id": "AIG-12.1",
+              "description": "Vendor assesses the security, privacy, and ethical practices of all third-party AI model providers before integration, including evaluation of the provider's AI governance program.",
+              "guidance": "Request the AI vendor assessment methodology. Third-party AI models introduce risks that differ from traditional software dependencies."
+            },
+            {
+              "id": "AIG-12.2",
+              "description": "Vendor's agreements with third-party AI providers include data protection, confidentiality, and usage restriction provisions at least as protective as those in the vendor's institutional customer contracts.",
+              "guidance": "Request confirmation that AI provider agreements include equivalent data protection obligations. Flow-down requirements are critical for AI subprocessors."
+            },
+            {
+              "id": "AIG-12.3",
+              "description": "Vendor reassesses third-party AI providers at least annually and has a process to transition away from AI providers that fail to meet required security or privacy standards.",
+              "guidance": "Evaluate AI vendor lifecycle management. Vendors without a process to exit problematic AI providers cannot effectively manage AI supply chain risk."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PRV",
+      "name": "Privacy",
+      "description": "Comprehensive privacy program controls covering privacy by design, consent management, data subject rights, sensitive data handling, cross-border transfers, and privacy incident response. HECVAT v4 introduces 69 new privacy questions across these controls.",
+      "controls": [
+        {
+          "id": "PRV-01",
+          "name": "Privacy by Design",
+          "description": "Integration of privacy principles into product and service design.",
+          "requirements": [
+            {
+              "id": "PRV-01.1",
+              "description": "Vendor's product development process formally incorporates Privacy by Design (PbD) principles, including data minimization, purpose limitation, and privacy as the default setting.",
+              "guidance": "Request documentation of how PbD is implemented in the SDLC. Evaluate whether privacy engineers or privacy champions are embedded in development teams."
+            },
+            {
+              "id": "PRV-01.2",
+              "description": "Privacy requirements are defined as acceptance criteria in user stories and product specifications, with privacy-related defects tracked through the standard issue management process.",
+              "guidance": "Ask for examples of privacy requirements in product specifications. Privacy as an afterthought is a leading cause of privacy incidents."
+            },
+            {
+              "id": "PRV-01.3",
+              "description": "New product features that involve collecting, processing, or sharing personal data require privacy review and sign-off before release.",
+              "guidance": "Evaluate the privacy review process for new features. Privacy sign-off should be a release gate, not an optional step."
+            }
+          ]
+        },
+        {
+          "id": "PRV-02",
+          "name": "Privacy Impact Assessments",
+          "description": "Formal privacy impact assessments for new processing activities.",
+          "requirements": [
+            {
+              "id": "PRV-02.1",
+              "description": "Vendor conducts Privacy Impact Assessments (PIAs) for all new or materially changed data processing activities, using a documented methodology aligned with NIST Privacy Framework or ISO/IEC 29134.",
+              "guidance": "Request PIA templates and examples. Evaluate whether PIAs are proportionate to the risk and cover all relevant privacy harms."
+            },
+            {
+              "id": "PRV-02.2",
+              "description": "For processing activities that are likely to result in high risk to data subjects (large-scale processing, special category data, automated decision-making), vendor conducts a Data Protection Impact Assessment (DPIA) meeting GDPR Article 35 requirements.",
+              "guidance": "Confirm DPIA procedures for high-risk processing. DPIAs are a legal requirement under GDPR for certain processing activities."
+            },
+            {
+              "id": "PRV-02.3",
+              "description": "PIA/DPIA results are reviewed by the Privacy Officer and relevant stakeholders, with findings tracked and remediated before processing begins.",
+              "guidance": "Evaluate the PIA/DPIA governance process. Assessments completed but not acted upon provide no privacy benefit."
+            }
+          ]
+        },
+        {
+          "id": "PRV-03",
+          "name": "Lawful Basis for Processing",
+          "description": "Documentation of legal basis for each processing activity.",
+          "requirements": [
+            {
+              "id": "PRV-03.1",
+              "description": "Vendor maintains a Record of Processing Activities (RoPA) documenting the lawful basis for each personal data processing activity, as required by GDPR Article 30.",
+              "guidance": "Request a RoPA summary or confirm its existence. The RoPA should be specific enough to identify the lawful basis for each type of institutional data processed."
+            },
+            {
+              "id": "PRV-03.2",
+              "description": "For processing institutional data, vendor relies on contractual necessity or legitimate interest as the primary lawful basis, and does not rely on consent for processing that institutions cannot meaningfully withhold.",
+              "guidance": "Evaluate the appropriateness of lawful basis claims. Consent is not an appropriate lawful basis for most vendor data processing of student data."
+            },
+            {
+              "id": "PRV-03.3",
+              "description": "Vendor provides a mapping of processing activities to lawful bases upon request, enabling institutions to verify GDPR compliance obligations.",
+              "guidance": "Request the lawful basis mapping. This documentation enables institutions to assess their own GDPR compliance when using vendor services."
+            }
+          ]
+        },
+        {
+          "id": "PRV-04",
+          "name": "Consent Management",
+          "description": "Platform and procedures for managing end-user consent.",
+          "requirements": [
+            {
+              "id": "PRV-04.1",
+              "description": "Vendor provides a consent management platform or capability that allows institutions to configure, collect, record, and manage end-user consent for processing activities that require it.",
+              "guidance": "Evaluate consent management tooling. Confirm that consent is collected in a GDPR-compliant manner (freely given, specific, informed, unambiguous)."
+            },
+            {
+              "id": "PRV-04.2",
+              "description": "Vendor records consent with a timestamp, version of the privacy notice consented to, and the mechanism by which consent was given, and retains these records for at least three years.",
+              "guidance": "Request consent record retention policies. Consent records must be auditable and retained for the duration of any regulatory inquiry."
+            },
+            {
+              "id": "PRV-04.3",
+              "description": "Vendor supports consent withdrawal at any time without penalty to the user, and implements withdrawal within 72 hours by ceasing the consented-to processing.",
+              "guidance": "Test consent withdrawal procedures. Consent that cannot be meaningfully withdrawn is not valid under GDPR."
+            }
+          ]
+        },
+        {
+          "id": "PRV-05",
+          "name": "Cookie and Tracking Compliance",
+          "description": "Compliance with cookie consent and tracking regulations.",
+          "requirements": [
+            {
+              "id": "PRV-05.1",
+              "description": "Vendor's product implements a cookie consent management platform that presents users with granular consent options by cookie category (necessary, functional, analytics, marketing) before setting non-essential cookies.",
+              "guidance": "Test cookie consent implementation. Confirm that non-essential cookies are not set before consent is obtained, including on first page load."
+            },
+            {
+              "id": "PRV-05.2",
+              "description": "Vendor maintains a current cookie inventory documenting all cookies set by the product, their purpose, duration, and whether they involve third-party data sharing.",
+              "guidance": "Request the cookie inventory. Undisclosed third-party tracking cookies are a common compliance gap."
+            },
+            {
+              "id": "PRV-05.3",
+              "description": "Vendor complies with the IAB TCF or equivalent industry standard for programmatic advertising consent where the product serves advertising, and does not serve behavioral advertising to known minors.",
+              "guidance": "Evaluate whether advertising-related tracking is applicable. For student-facing products, behavioral advertising without appropriate consent is a FERPA and COPPA risk."
+            }
+          ]
+        },
+        {
+          "id": "PRV-06",
+          "name": "Children's Data Protection",
+          "description": "Protections for data of minors including compliance with COPPA and FERPA.",
+          "requirements": [
+            {
+              "id": "PRV-06.1",
+              "description": "Vendor has implemented specific controls for products used by or with individuals under 18, including under-13 controls required by COPPA and protections for student records under FERPA.",
+              "guidance": "Evaluate the vendor's COPPA and FERPA compliance posture. Products used in K-12 or with student populations require specific technical and policy controls."
+            },
+            {
+              "id": "PRV-06.2",
+              "description": "Vendor does not serve behavioral advertising to users of K-12 or student-facing products, and does not build behavioral profiles on minors for commercial purposes.",
+              "guidance": "Confirm behavioral advertising restrictions for minors. Commercial use of student data is prohibited under FERPA and many state student privacy laws."
+            },
+            {
+              "id": "PRV-06.3",
+              "description": "Vendor has signed or is willing to sign a Student Data Privacy Consortium (SDPC) Data Privacy Agreement or equivalent state-specific student data privacy agreement.",
+              "guidance": "Evaluate readiness to sign state student data privacy agreements. Many states require signed agreements before vendors can process student data."
+            }
+          ]
+        },
+        {
+          "id": "PRV-07",
+          "name": "Sensitive Data Categories",
+          "description": "Handling of special categories of sensitive personal data.",
+          "requirements": [
+            {
+              "id": "PRV-07.1",
+              "description": "Vendor identifies and applies enhanced protections to special categories of personal data including health/medical data, biometric data, financial account data, race/ethnicity, religious beliefs, and sexual orientation.",
+              "guidance": "Request the sensitive data handling policy. Confirm that enhanced protections include encryption, access restriction, audit logging, and DPIA requirements."
+            },
+            {
+              "id": "PRV-07.2",
+              "description": "Vendor collects biometric data only with explicit consent and in compliance with applicable biometric privacy laws (e.g., Illinois BIPA, Texas CUBI, Washington My Health MY Data Act).",
+              "guidance": "Evaluate biometric data collection practices and legal compliance. Biometric privacy law violations carry significant statutory damages."
+            },
+            {
+              "id": "PRV-07.3",
+              "description": "Vendor does not collect or process health data covered by HIPAA without executing a Business Associate Agreement (BAA) and does not combine FERPA-protected student data with health data without appropriate authorization.",
+              "guidance": "Confirm BAA requirements and execution for HIPAA-covered data. The intersection of FERPA and HIPAA in higher education requires careful analysis."
+            }
+          ]
+        },
+        {
+          "id": "PRV-08",
+          "name": "Right to Access, Erasure, and Portability",
+          "description": "Technical and operational support for data subject rights requests.",
+          "requirements": [
+            {
+              "id": "PRV-08.1",
+              "description": "Vendor provides a documented process for institutions to fulfill data subject access requests (DSAR) on behalf of their users, including a machine-readable export of all personal data within 30 days.",
+              "guidance": "Test DSAR fulfillment capabilities. Evaluate whether fulfillment requires manual effort or is supported by self-service tooling."
+            },
+            {
+              "id": "PRV-08.2",
+              "description": "Vendor supports right-to-erasure requests by providing a verified deletion process that removes personal data from all production systems, backups, and archives within a defined and disclosed timeframe.",
+              "guidance": "Confirm erasure scope and timeframes. Erasure from backups typically takes longer than production systems; ensure this is disclosed."
+            },
+            {
+              "id": "PRV-08.3",
+              "description": "Vendor supports data portability by exporting all personal data associated with an individual in a structured, machine-readable format (JSON, CSV, XML) upon authenticated request.",
+              "guidance": "Request documentation of portability export formats. Confirm that exported data is complete and includes all data types held by the vendor."
+            }
+          ]
+        },
+        {
+          "id": "PRV-09",
+          "name": "Automated Decision-Making",
+          "description": "Controls for automated decisions that significantly affect individuals.",
+          "requirements": [
+            {
+              "id": "PRV-09.1",
+              "description": "Vendor identifies all automated decision-making processes in its products that produce legal or similarly significant effects on individuals, and discloses these to institutions.",
+              "guidance": "Request a list of automated decision-making processes. GDPR Article 22 and analogous state laws restrict fully automated decisions affecting individuals."
+            },
+            {
+              "id": "PRV-09.2",
+              "description": "For automated decision-making covered by GDPR Article 22 or equivalent laws, vendor provides data subjects with the right to request human review of the decision, contest the decision, and obtain an explanation.",
+              "guidance": "Evaluate human review mechanisms. Confirm that these rights are technically supported and not merely aspirational policy commitments."
+            },
+            {
+              "id": "PRV-09.3",
+              "description": "Vendor regularly audits automated decision-making processes for disparate impact on protected groups and provides audit results to institutions upon request.",
+              "guidance": "Evaluate the frequency and rigor of disparate impact audits for automated decisions. Higher education institutions have particular obligations under Title VI and Title IX."
+            }
+          ]
+        },
+        {
+          "id": "PRV-10",
+          "name": "Marketing Consent",
+          "description": "Controls governing use of institutional data for marketing purposes.",
+          "requirements": [
+            {
+              "id": "PRV-10.1",
+              "description": "Vendor does not use institutional user data for direct marketing, cross-selling, or retargeting without explicit opt-in consent from the institution and each individual user.",
+              "guidance": "Review the contract and privacy policy for marketing use restrictions. Use of student data for vendor marketing is generally prohibited under FERPA."
+            },
+            {
+              "id": "PRV-10.2",
+              "description": "Vendor provides institutions with controls to disable all marketing communications to institutional users through the vendor's product, separate from security and operational notices.",
+              "guidance": "Confirm that marketing opt-out is configurable at the institutional level. Institutions should be able to completely block vendor marketing to students."
+            },
+            {
+              "id": "PRV-10.3",
+              "description": "Vendor maintains email marketing lists in compliance with CAN-SPAM, CASL, and GDPR email marketing requirements, including suppression list management.",
+              "guidance": "Request marketing compliance documentation. Confirm that unsubscribe requests are honored promptly and consistently across all marketing systems."
+            }
+          ]
+        },
+        {
+          "id": "PRV-11",
+          "name": "Data Sharing Agreements",
+          "description": "Agreements governing sharing of institutional data with third parties.",
+          "requirements": [
+            {
+              "id": "PRV-11.1",
+              "description": "Vendor does not share institutional data with third parties outside the scope of contracted services without explicit written authorization from the institution.",
+              "guidance": "Confirm the non-disclosure and restricted sharing provisions in the DPA. Request a list of all third parties with whom institutional data is currently shared."
+            },
+            {
+              "id": "PRV-11.2",
+              "description": "For any authorized sharing of institutional data with third parties, vendor executes data sharing agreements that require the recipient to maintain equivalent privacy and security protections.",
+              "guidance": "Review data sharing agreement templates. Flow-down protections should be at least as strong as those in the institutional customer contract."
+            },
+            {
+              "id": "PRV-11.3",
+              "description": "Vendor maintains an audit trail of all instances of institutional data shared with third parties and provides this log to institutions upon request.",
+              "guidance": "Request data sharing audit log capabilities. Institutions need visibility into who has received their data to comply with FERPA disclosure requirements."
+            }
+          ]
+        },
+        {
+          "id": "PRV-12",
+          "name": "Privacy Training",
+          "description": "Privacy training for vendor staff handling institutional data.",
+          "requirements": [
+            {
+              "id": "PRV-12.1",
+              "description": "All vendor employees and contractors with access to institutional personal data complete annual privacy training covering applicable laws (FERPA, GDPR, CCPA), data handling requirements, and incident reporting.",
+              "guidance": "Request training curriculum and completion metrics. Evaluate whether training is specific to the types of data handled or generic corporate compliance training."
+            },
+            {
+              "id": "PRV-12.2",
+              "description": "Vendor provides role-specific privacy training to engineers, product managers, and customer-facing staff, covering relevant privacy requirements for their specific function.",
+              "guidance": "Evaluate role-specific training depth. Engineers need training on PbD and secure coding; customer success staff need training on data handling and DSAR procedures."
+            },
+            {
+              "id": "PRV-12.3",
+              "description": "Vendor tracks privacy training completion and enforces mandatory completion as a condition of maintaining access to systems processing institutional data.",
+              "guidance": "Confirm enforcement of training completion. Training that is optional or not enforced has limited effect on privacy culture."
+            }
+          ]
+        },
+        {
+          "id": "PRV-13",
+          "name": "Cross-Border Transfer Mechanisms",
+          "description": "Legal mechanisms for cross-border transfers of personal data.",
+          "requirements": [
+            {
+              "id": "PRV-13.1",
+              "description": "For transfers of EU personal data to countries without EU adequacy decisions, vendor relies on current Standard Contractual Clauses (SCCs) incorporating the EU-approved 2021 modules, with a completed Annex I describing the specific transfer.",
+              "guidance": "Request executed SCCs and completed Annexes. Confirm that SCCs use the 2021 version and cover all transfer scenarios (controller-to-processor, processor-to-processor)."
+            },
+            {
+              "id": "PRV-13.2",
+              "description": "Vendor has executed or will execute the EU-US Data Privacy Framework certification, UK International Data Transfer Agreement (IDTA), or equivalent mechanism for transfers to US-based processors.",
+              "guidance": "Evaluate transfer mechanism options. The EU-US DPF provides a streamlined transfer mechanism for certified vendors. Verify current certification status."
+            },
+            {
+              "id": "PRV-13.3",
+              "description": "Vendor provides a Transfer Impact Assessment (TIA) for any transfer to a country where surveillance laws could undermine the protections of SCCs, assessing the risk and describing supplementary measures.",
+              "guidance": "Request TIAs for non-adequate country transfers. TIAs should be recent (within 12 months) and reflect current legal landscape."
+            }
+          ]
+        },
+        {
+          "id": "PRV-14",
+          "name": "Privacy Incident Response",
+          "description": "Specific procedures for responding to privacy incidents and regulatory complaints.",
+          "requirements": [
+            {
+              "id": "PRV-14.1",
+              "description": "Vendor maintains a privacy incident response plan separate from or integrated into the security incident response plan, with specific procedures for privacy breaches, regulatory complaints, and data subject rights disputes.",
+              "guidance": "Request the privacy incident response procedures. Privacy incidents (e.g., wrongful disclosure, consent violations) require different handling than security incidents."
+            },
+            {
+              "id": "PRV-14.2",
+              "description": "Vendor notifies affected institutions within 48 hours of discovering a privacy incident involving institutional personal data, including details of the nature of the incident, categories of data affected, and remediation steps.",
+              "guidance": "Confirm privacy incident notification commitments. Some privacy incidents trigger regulatory notification obligations with tight deadlines."
+            },
+            {
+              "id": "PRV-14.3",
+              "description": "Vendor cooperates with institutional responses to regulatory inquiries and data subject complaints, including providing evidence of compliance and corrective action plans within requested timeframes.",
+              "guidance": "Confirm cooperation obligations for regulatory inquiries. Institutions may face regulatory action if vendors fail to support timely responses."
+            }
+          ]
+        },
+        {
+          "id": "PRV-15",
+          "name": "Privacy Program Metrics",
+          "description": "Measurement and reporting on privacy program performance.",
+          "requirements": [
+            {
+              "id": "PRV-15.1",
+              "description": "Vendor tracks and can report privacy program performance metrics including DSAR volume and response times, privacy incident frequency, training completion rates, and PIA completion rates.",
+              "guidance": "Request privacy metrics summaries. Quantitative metrics demonstrate privacy program operational maturity beyond policy documentation."
+            },
+            {
+              "id": "PRV-15.2",
+              "description": "Privacy program metrics are reviewed by the Privacy Officer and executive leadership at least quarterly, with trends and gaps reported to the board or equivalent governance body annually.",
+              "guidance": "Evaluate governance oversight of privacy metrics. Board-level privacy reporting indicates executive accountability for privacy program performance."
+            },
+            {
+              "id": "PRV-15.3",
+              "description": "Vendor benchmarks its privacy program against industry standards (NIST Privacy Framework, ISO/IEC 29100, or equivalent) and can describe its current maturity level and improvement roadmap.",
+              "guidance": "Request privacy program maturity assessment or self-evaluation. Vendors that benchmark against established frameworks are more likely to have systematic privacy programs."
             }
           ]
         }

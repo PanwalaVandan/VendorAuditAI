@@ -1,8 +1,8 @@
 {
   "id": "caiq",
   "name": "CSA Cloud Controls Matrix (CAIQ)",
-  "version": "4.0",
-  "description": "The Consensus Assessments Initiative Questionnaire (CAIQ) v4 provides a set of Yes/No questions for cloud consumers and auditors to assess cloud providers across 17 control domains aligned with the Cloud Controls Matrix (CCM).",
+  "version": "4.1",
+  "description": "The Consensus Assessments Initiative Questionnaire (CAIQ) v4.1 provides a set of Yes/No questions for cloud consumers and auditors to assess cloud providers across 17 control domains aligned with the Cloud Controls Matrix (CCM). Version 4.1 (released December 2, 2025) expands coverage to 283 questions, adding new Datacenter Security operational resilience requirements and an Audit Logs Sanitization control in the Logging & Monitoring domain.",
   "organization": "Cloud Security Alliance (CSA)",
   "categories": [
     {
@@ -387,6 +387,38 @@
               "id": "DCS-03.2",
               "description": "Maintain backup generator capabilities.",
               "guidance": "Examine generator testing and fuel management."
+            }
+          ]
+        },
+        {
+          "id": "DCS-12",
+          "name": "Operational Resilience",
+          "description": "Cloud service providers SHALL implement operational resilience controls ensuring datacenter redundancy, geographic failover capability, and automated recovery for critical infrastructure components.",
+          "requirements": [
+            {
+              "id": "DCS-12.1",
+              "description": "Implement redundant power systems including dual utility feeds, UPS, and generator backup with automatic transfer capability.",
+              "guidance": "Review power redundancy architecture diagrams and failover test records. Verify N+1 or better redundancy for all critical power components."
+            },
+            {
+              "id": "DCS-12.2",
+              "description": "Implement network redundancy with multiple diverse upstream providers and automatic failover to prevent single points of failure.",
+              "guidance": "Examine network topology documentation, BGP configurations, and failover test results."
+            },
+            {
+              "id": "DCS-12.3",
+              "description": "Deploy hardware failure detection and alerting mechanisms for critical infrastructure components.",
+              "guidance": "Review monitoring tool configurations, alert thresholds, and mean-time-to-detect metrics for hardware failures."
+            },
+            {
+              "id": "DCS-12.4",
+              "description": "Perform automated failover testing at least semi-annually to validate geographic failover capability and recovery time objectives.",
+              "guidance": "Examine automated failover test schedules, results, and RTO/RPO compliance records."
+            },
+            {
+              "id": "DCS-12.5",
+              "description": "Establish supply chain resilience controls for critical hardware components, including approved vendor lists, secondary sourcing, and strategic spare parts inventory.",
+              "guidance": "Review supply chain risk assessments, vendor diversity documentation, and critical spare parts inventory."
             }
           ]
         }
@@ -880,6 +912,38 @@
               "id": "LOG-04.1",
               "description": "Retain logs for minimum 12 months (or as required by regulation).",
               "guidance": "Review log retention configurations and compliance."
+            }
+          ]
+        },
+        {
+          "id": "LOG-14",
+          "name": "Audit Logs Sanitization",
+          "description": "Audit logs SHALL be sanitized to remove or mask sensitive data (credentials, PII, secrets) before storage, transmission, or sharing with third parties, while maintaining forensic integrity.",
+          "requirements": [
+            {
+              "id": "LOG-14.1",
+              "description": "Implement automated PII detection and masking in audit log pipelines prior to storage or transmission.",
+              "guidance": "Review automated PII detection tooling, masking rules, and coverage across all log sources. Verify patterns include email addresses, phone numbers, national identifiers, and financial data."
+            },
+            {
+              "id": "LOG-14.2",
+              "description": "Implement credential scrubbing to prevent passwords, API keys, tokens, and secrets from appearing in audit logs.",
+              "guidance": "Examine credential scrubbing configurations, regex patterns, and evidence of testing. Verify coverage for common secret formats including bearer tokens and connection strings."
+            },
+            {
+              "id": "LOG-14.3",
+              "description": "Maintain log integrity verification mechanisms (e.g., cryptographic hashing) to demonstrate that sanitization has not compromised forensic completeness.",
+              "guidance": "Review integrity verification procedures, hash chain configurations, and tamper-evident logging controls."
+            },
+            {
+              "id": "LOG-14.4",
+              "description": "Maintain a sanitization audit trail recording what data was removed or masked, when, and by which process, without retaining the original sensitive values.",
+              "guidance": "Examine sanitization audit trail configuration, retention policy, and access controls. Verify the trail itself does not re-expose sensitive data."
+            },
+            {
+              "id": "LOG-14.5",
+              "description": "Establish regulatory compliance procedures for log sharing with third parties, ensuring sanitization meets applicable data protection regulations (GDPR, HIPAA, PCI-DSS) before disclosure.",
+              "guidance": "Review log-sharing agreements, sanitization verification steps prior to third-party disclosure, and evidence of regulatory compliance mapping."
             }
           ]
         }

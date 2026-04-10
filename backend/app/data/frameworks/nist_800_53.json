@@ -1,7 +1,8 @@
 {
   "id": "nist_800_53",
   "name": "NIST SP 800-53 Rev 5",
-  "version": "Rev 5",
+  "version": "5.2.0",
+  "release_date": "2025-08-27",
   "description": "NIST Special Publication 800-53 provides a catalog of security and privacy controls for federal information systems and organizations. It is widely adopted as a baseline for enterprise security programs.",
   "organization": "NIST",
   "categories": [
@@ -215,6 +216,152 @@
       ]
     },
     {
+      "id": "SA",
+      "name": "System and Services Acquisition",
+      "description": "Controls related to system development, acquisition, and supply chain risk management.",
+      "controls": [
+        {
+          "id": "SA-4",
+          "name": "Acquisition Process",
+          "description": "Include the following requirements, descriptions, and criteria, explicitly or by reference, in the acquisition contract for the system, system component, or information system service: security and privacy functional requirements; strength of mechanism requirements; security and privacy assurance requirements; controls needed to satisfy security and privacy requirements; security and privacy documentation requirements; requirements for protecting security and privacy documentation; description of the information system development environment and environment in which the system is intended to operate; allocation of responsibility or identification of parties responsible for information security, privacy, and supply chain risk management; and acceptance criteria.",
+          "requirements": [
+            {
+              "id": "SA-4.1",
+              "description": "Include security and privacy functional requirements in acquisition contracts.",
+              "guidance": "Reference applicable security standards, frameworks, and regulatory requirements in acquisition documentation."
+            },
+            {
+              "id": "SA-4.2",
+              "description": "Include supply chain risk management documentation requirements in acquisition contracts, specifying obligations for vendors to disclose component provenance, third-party software inventory, and known vulnerabilities in delivered products.",
+              "guidance": "Review acquisition contracts for SCRM clauses covering software bill of materials (SBOM) delivery, component origin disclosure, and vulnerability disclosure obligations. Verify alignment with executive orders and NIST SCRM guidance."
+            }
+          ]
+        },
+        {
+          "id": "SA-5",
+          "name": "System Documentation",
+          "description": "Obtain or develop administrator documentation for the system, system component, or information system service that describes secure configuration, installation, and operation of the system; effective use and maintenance of security and privacy functions; and known vulnerabilities regarding the configuration and use of administrative and privileged functions.",
+          "requirements": [
+            {
+              "id": "SA-5.1",
+              "description": "Obtain or develop user documentation describing user-accessible security and privacy functions and how to effectively use those functions.",
+              "guidance": "Review documentation completeness for all system components including third-party and open-source elements."
+            },
+            {
+              "id": "SA-5.2",
+              "description": "Obtain or develop documentation for AI/ML system components, including model cards, training data provenance, known bias characteristics, explainability limitations, and operational constraints specific to AI/ML-driven functions.",
+              "guidance": "Verify that AI/ML documentation covers model version, training data description, performance metrics, known failure modes, monitoring requirements, and human oversight provisions."
+            }
+          ]
+        },
+        {
+          "id": "SA-8",
+          "name": "Security and Privacy Engineering Principles",
+          "description": "Apply the following systems security and privacy engineering principles in the specification, design, development, implementation, and modification of the system and system components.",
+          "requirements": [
+            {
+              "id": "SA-8.1",
+              "description": "Apply established security engineering principles including least privilege, fail-safe defaults, complete mediation, separation of privilege, and economy of mechanism.",
+              "guidance": "Review system design documentation for evidence of applied security engineering principles."
+            },
+            {
+              "id": "SA-8.2",
+              "description": "Apply cyber resiliency engineering principles as a security engineering principle, incorporating design patterns that anticipate adversarial conditions, enable graceful degradation, support reconstitution after attack, and reduce attack surface throughout the system lifecycle.",
+              "guidance": "Review system architecture for cyber resiliency design patterns such as redundancy, diversity, segmentation, adaptive response, and deception techniques aligned with NIST SP 800-160 Volume 2."
+            }
+          ]
+        },
+        {
+          "id": "SA-8(14)",
+          "name": "Security and Privacy Engineering Principles | Supplier Diversity",
+          "description": "Apply the principle of supplier diversity by diversifying supply chain sources to reduce single-point-of-dependency risk for critical system components and services.",
+          "requirements": [
+            {
+              "id": "SA-8(14).1",
+              "description": "Identify critical system components and services with single-source supply chain dependencies and implement strategies to diversify those sources.",
+              "guidance": "Review supply chain dependency mapping, critical component inventory, and approved alternative vendor lists. Verify that procurement policies require multi-source qualification for components above defined criticality thresholds."
+            },
+            {
+              "id": "SA-8(14).2",
+              "description": "Monitor supply chain concentration risk and reassess supplier diversity posture at least annually or following significant supply chain disruption events.",
+              "guidance": "Examine supply chain risk assessments, concentration risk metrics, and documented contingency plans for single-source component failure scenarios."
+            }
+          ]
+        },
+        {
+          "id": "SA-15",
+          "name": "Development Process, Standards, and Tools",
+          "description": "Require the developer of the system, system component, or information system service to follow a documented development process that explicitly addresses security and privacy requirements; identifies the standards and tools used in the development process; documents the specific tool options and tool configurations used in the development process; and documents, manages, and ensures the integrity of changes to the process and/or tools used in development.",
+          "requirements": [
+            {
+              "id": "SA-15.1",
+              "description": "Require the developer to use documented and approved development standards and tools.",
+              "guidance": "Review developer documentation of tools, configurations, and process adherence."
+            }
+          ]
+        },
+        {
+          "id": "SA-15(13)",
+          "name": "Development Process, Standards, and Tools | Logging Syntax",
+          "description": "Require the developer of the information system, system component, or information system service to use a standardized logging syntax for all system-generated log records to enable automated log analysis and correlation.",
+          "requirements": [
+            {
+              "id": "SA-15(13).1",
+              "description": "Require developers to implement a standardized log format (JSON, CEF, or LEEF) for all system-generated log records.",
+              "guidance": "Review developer logging standards documentation and verify that delivered systems produce logs conforming to the required format. Validate against log schema specifications."
+            },
+            {
+              "id": "SA-15(13).2",
+              "description": "Require developers to implement structured logging with consistent field names, data types, and timestamp formats across all log-producing components.",
+              "guidance": "Examine structured logging implementation evidence, including sample log records and automated parsing validation test results."
+            },
+            {
+              "id": "SA-15(13).3",
+              "description": "Require developers to provide log schema documentation describing all log record fields, their semantics, and permissible values.",
+              "guidance": "Review log schema documentation for completeness and verify the schema is kept current with system changes."
+            },
+            {
+              "id": "SA-15(13).4",
+              "description": "Require developers to demonstrate automated parsing validation, confirming that log records produced by the system are correctly consumed by the organization's log analysis tooling.",
+              "guidance": "Examine automated parsing validation test results and verify integration with the organization's SIEM or log management platform."
+            }
+          ]
+        },
+        {
+          "id": "SA-24",
+          "name": "Design for Cyber Resiliency",
+          "description": "Apply cyber resiliency design principles to the information system in accordance with the organization's cyber resiliency strategy and implementation plan.",
+          "requirements": [
+            {
+              "id": "SA-24.1",
+              "description": "Design system capabilities to anticipate adversarial conditions, including degraded-mode operations when components are compromised or unavailable.",
+              "guidance": "Review system architecture for graceful degradation design patterns and documented fallback operational modes."
+            },
+            {
+              "id": "SA-24.2",
+              "description": "Design system capabilities to withstand cyberattacks while maintaining mission-essential functions at an acceptable reduced level.",
+              "guidance": "Examine mission-essential function identification, minimum operational thresholds, and design decisions that support continued operation under attack."
+            },
+            {
+              "id": "SA-24.3",
+              "description": "Design system capabilities to recover from successful cyberattacks, restoring full mission capability within defined recovery objectives.",
+              "guidance": "Review recovery design features including backup and restore capabilities, clean reconstitution paths, and documented recovery time and recovery point objectives."
+            },
+            {
+              "id": "SA-24.4",
+              "description": "Design system capabilities to adapt to evolving threats through configuration changes, updates, and architectural modifications without requiring full system replacement.",
+              "guidance": "Examine modular architecture documentation, update mechanisms, and evidence that adaptive response capabilities are incorporated in the design."
+            },
+            {
+              "id": "SA-24.5",
+              "description": "Align the system design with the organization's cyber resiliency engineering framework, referencing applicable techniques and approaches from NIST SP 800-160 Volume 2.",
+              "guidance": "Review system security plan and design documentation for explicit traceability to the organization's cyber resiliency strategy and NIST SP 800-160 Vol. 2 cyber resiliency techniques."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "SC",
       "name": "System and Communications Protection",
       "description": "Controls related to protecting system and communications channels.",
@@ -253,7 +400,7 @@
         {
           "id": "SI-2",
           "name": "Flaw Remediation",
-          "description": "Identify, report, and correct information system flaws; test software updates before installation; and incorporate flaw remediation into organizational configuration management processes.",
+          "description": "Identify, report, and correct information system flaws; test software updates before installation; incorporate flaw remediation into organizational configuration management processes; and employ automated patch management systems to facilitate timely and consistent remediation of flaws across all system components.",
           "requirements": [
             {
               "id": "SI-2.1",
@@ -262,8 +409,52 @@
             },
             {
               "id": "SI-2.2",
-              "description": "Employ automated mechanisms to determine whether system components are current.",
-              "guidance": "Run vulnerability scans at least monthly."
+              "description": "Employ automated patch management systems to facilitate timely detection and remediation of flaws across all system components, including operating systems, applications, firmware, and container images.",
+              "guidance": "Review automated patch management system configurations, coverage scope, and evidence of automated deployment pipelines for security patches."
+            }
+          ]
+        },
+        {
+          "id": "SI-2(05)",
+          "name": "Flaw Remediation | Automatic Software Updates",
+          "description": "Install security-relevant software updates automatically, including updates delivered via cloud-based software update services and container image patching, to system components.",
+          "requirements": [
+            {
+              "id": "SI-2(05).1",
+              "description": "Configure automatic installation of security-relevant software updates from vendor and cloud-delivered update services.",
+              "guidance": "Review automatic update configurations for operating systems, applications, and cloud-managed components. Verify update channels are authenticated and integrity-verified."
+            },
+            {
+              "id": "SI-2(05).2",
+              "description": "Implement container image patching processes to ensure base images and application container images are updated promptly when security-relevant patches are released.",
+              "guidance": "Review container image rebuild pipelines, base image update schedules, and automated scanning that triggers rebuilds upon patch availability."
+            }
+          ]
+        },
+        {
+          "id": "SI-2(07)",
+          "name": "Flaw Remediation | Root Cause Analysis",
+          "description": "Require the organization to perform root cause analysis on flaws discovered during flaw remediation to identify systemic weaknesses and prevent recurrence.",
+          "requirements": [
+            {
+              "id": "SI-2(07).1",
+              "description": "Establish and execute a formal root cause analysis process for significant flaws identified during flaw remediation activities.",
+              "guidance": "Review root cause analysis procedures, triggering criteria (e.g., severity thresholds), and documented RCA reports for recent significant vulnerabilities."
+            },
+            {
+              "id": "SI-2(07).2",
+              "description": "Perform trend analysis across identified vulnerabilities to detect patterns indicative of systemic weaknesses in development, configuration, or operational practices.",
+              "guidance": "Examine vulnerability trend reports, recurrence metrics, and evidence that trend data informs security improvement initiatives."
+            },
+            {
+              "id": "SI-2(07).3",
+              "description": "Identify systemic weaknesses revealed through root cause analysis and implement preventive actions to address underlying causes rather than only the immediate flaw.",
+              "guidance": "Review preventive action plans, their implementation status, and evidence of follow-up verification that systemic weaknesses have been addressed."
+            },
+            {
+              "id": "SI-2(07).4",
+              "description": "Document and report root cause analysis findings and preventive actions to relevant stakeholders, including system owners and security leadership.",
+              "guidance": "Examine RCA documentation, reporting procedures, and distribution lists to verify appropriate organizational visibility into systemic vulnerability drivers."
             }
           ]
         },
@@ -276,6 +467,28 @@
               "id": "SI-3.1",
               "description": "Centrally manage malicious code protection mechanisms.",
               "guidance": "Deploy endpoint protection on all systems with centralized management console."
+            }
+          ]
+        },
+        {
+          "id": "SI-7(12)",
+          "name": "Software, Firmware, and Information Integrity | Integrity Verification",
+          "description": "Require that the integrity of the information system, system component, or information system service is verified after events that may compromise integrity, and extend integrity checking to firmware components and supply chain components to detect unauthorized modifications.",
+          "requirements": [
+            {
+              "id": "SI-7(12).1",
+              "description": "Implement integrity verification mechanisms for firmware components, including BIOS/UEFI, device firmware, and embedded controller firmware, to detect unauthorized modifications.",
+              "guidance": "Review firmware integrity measurement and attestation configurations, including Secure Boot settings, TPM-based attestation, and firmware version monitoring."
+            },
+            {
+              "id": "SI-7(12).2",
+              "description": "Implement integrity verification for supply chain components, verifying cryptographic signatures, hashes, or attestations for hardware and software components upon receipt and installation.",
+              "guidance": "Examine supply chain integrity verification procedures, including vendor-provided checksums, code signing validation, and hardware security module attestations for critical components."
+            },
+            {
+              "id": "SI-7(12).3",
+              "description": "Establish a response plan for integrity verification failures that includes isolation, investigation, and replacement procedures for compromised components.",
+              "guidance": "Review integrity failure response procedures, escalation paths, and evidence of tested response processes."
             }
           ]
         }

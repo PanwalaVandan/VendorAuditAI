@@ -162,7 +162,6 @@ def get_framework_context(framework_id: str) -> dict[str, str]:
     # Handle common variations
     id_mapping = {
         "nist_800_53": "nist_csf",
-        "soc2_tsc": "soc2",
         "iso_27001": "iso27001",
     }
     normalized_id = id_mapping.get(normalized_id, normalized_id)

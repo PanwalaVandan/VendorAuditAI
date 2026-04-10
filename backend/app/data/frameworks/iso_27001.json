@@ -1,10 +1,46 @@
 {
   "id": "iso_27001",
   "name": "ISO/IEC 27001:2022",
-  "version": "2022",
-  "description": "ISO/IEC 27001 is an international standard for information security management systems (ISMS). It provides requirements for establishing, implementing, maintaining, and continually improving an ISMS.",
+  "version": "2022 + Amd 1:2024",
+  "description": "ISO/IEC 27001 is an international standard for information security management systems (ISMS). It provides requirements for establishing, implementing, maintaining, and continually improving an ISMS. Updated by ISO/IEC 27001:2022/Amd 1:2024 (published February 2024), which adds a mandatory requirement to consider climate change as a relevant context issue under clauses 4.1 and 4.2.",
   "organization": "ISO/IEC",
   "categories": [
+    {
+      "id": "CL4",
+      "name": "Context of the Organization",
+      "description": "Clauses 4.1 and 4.2 require the organization to understand its internal and external context and the needs and expectations of interested parties relevant to the ISMS. Amended by Amd 1:2024 to explicitly require consideration of climate change.",
+      "controls": [
+        {
+          "id": "CL4.1",
+          "name": "Understanding the Organization and Its Context",
+          "description": "The organization shall determine external and internal issues that are relevant to its purpose and that affect its ability to achieve the intended outcome(s) of its ISMS.",
+          "requirements": [
+            {
+              "id": "CL4.1.1",
+              "description": "Identify and document external and internal issues relevant to the organization's purpose and the ISMS scope.",
+              "guidance": "Consider regulatory environment, technology landscape, competitive factors, organizational culture, and operational dependencies."
+            },
+            {
+              "id": "CL4.1.1.climate",
+              "description": "Climate change considerations (Amd 1:2024) - The organization shall determine whether climate change is a relevant issue when establishing the context of the organization under 4.1 (understanding the organization and its context) and 4.2 (understanding the needs and expectations of interested parties). Climate change impacts on information security shall be identified and addressed in the ISMS scope and risk assessment.",
+              "guidance": "Assess whether climate-related events (extreme weather, physical risk to data centers, regulatory changes from climate legislation) are relevant issues for the organization's information security context. Document this determination in the ISMS context analysis. If relevant, address in risk assessment (e.g., data center flooding, heat-related availability impacts, supply chain disruption from climate events)."
+            }
+          ]
+        },
+        {
+          "id": "CL4.2",
+          "name": "Understanding the Needs and Expectations of Interested Parties",
+          "description": "The organization shall determine the interested parties that are relevant to the ISMS and the requirements of those interested parties relevant to information security.",
+          "requirements": [
+            {
+              "id": "CL4.2.1",
+              "description": "Identify interested parties relevant to the ISMS and determine their information security requirements.",
+              "guidance": "Include customers, regulators, suppliers, employees, and other stakeholders. Document requirements and map them to ISMS controls."
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "A5",
       "name": "Organizational Controls",

@@ -4,6 +4,13 @@
   "version": "2013",
   "description": "The HIPAA Security Rule establishes national standards to protect individuals' electronic personal health information (ePHI) that is created, received, used, or maintained by a covered entity or business associate.",
   "organization": "U.S. Department of Health and Human Services",
+  "pending_amendments": {
+    "nprm_date": "2025-01-06",
+    "final_rule_target": "2026-05",
+    "status": "proposed",
+    "summary": "HHS NPRM published January 6, 2025 proposes significant HIPAA Security Rule updates. Key proposed changes: (1) Eliminate required/addressable distinction — all specifications become mandatory; (2) Mandatory encryption for all ePHI at rest and in transit; (3) Multi-factor authentication (MFA) required for all workforce access to ePHI systems; (4) Annual penetration testing required; (5) Biannual vulnerability scanning required; (6) 72-hour breach notification to HHS (down from 60 days for most breaches); (7) Written incident response plan testing annually; (8) Technology asset inventory and network map required and reviewed annually; (9) Business associate agreement updates required within 180 days of final rule.",
+    "action_required": "Monitor for final rule publication (targeted May 2026). Begin gap assessment against proposed requirements, particularly for encryption and MFA which may require significant technical remediation."
+  },
   "categories": [
     {
       "id": "AS",

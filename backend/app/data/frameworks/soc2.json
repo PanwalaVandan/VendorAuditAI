@@ -1,0 +1,476 @@
+{
+  "id": "soc2",
+  "name": "SOC 2 Type II",
+  "version": "2017",
+  "description": "Service Organization Control 2 (SOC 2) is a framework for managing customer data based on five Trust Service Criteria: security, availability, processing integrity, confidentiality, and privacy.",
+  "organization": "AICPA",
+  "categories": [
+    {
+      "id": "CC",
+      "name": "Common Criteria (Security)",
+      "description": "Common criteria related to security, the foundation of all Trust Service Criteria.",
+      "controls": [
+        {
+          "id": "CC1.1",
+          "name": "COSO Principle 1",
+          "description": "The entity demonstrates a commitment to integrity and ethical values.",
+          "requirements": [
+            {
+              "id": "CC1.1.1",
+              "description": "Sets the tone at the top - The board of directors and management, at all levels, demonstrate through their directives, actions, and behavior the importance of integrity and ethical values.",
+              "guidance": "Review code of conduct, board meeting minutes, and management communications for evidence of ethical tone."
+            },
+            {
+              "id": "CC1.1.2",
+              "description": "Establishes standards of conduct - The expectations of the board of directors and senior management concerning integrity and ethical values are defined in the entity's standards of conduct.",
+              "guidance": "Examine documented standards of conduct and employee acknowledgment records."
+            }
+          ]
+        },
+        {
+          "id": "CC1.2",
+          "name": "COSO Principle 2",
+          "description": "The board of directors demonstrates independence from management and exercises oversight of the development and performance of internal control.",
+          "requirements": [
+            {
+              "id": "CC1.2.1",
+              "description": "Establishes oversight responsibilities - The board of directors identifies and accepts its oversight responsibilities.",
+              "guidance": "Review board charter and documented oversight responsibilities."
+            },
+            {
+              "id": "CC1.2.2",
+              "description": "Applies relevant expertise - The board of directors defines, maintains, and periodically evaluates the skills and expertise needed among its members.",
+              "guidance": "Examine board member qualifications and expertise assessments."
+            }
+          ]
+        },
+        {
+          "id": "CC2.1",
+          "name": "COSO Principle 13",
+          "description": "The entity obtains or generates and uses relevant, quality information to support the functioning of internal control.",
+          "requirements": [
+            {
+              "id": "CC2.1.1",
+              "description": "Identifies information requirements - A process is in place to identify the information required to support the functioning of internal control.",
+              "guidance": "Review information requirements documentation and data flow diagrams."
+            },
+            {
+              "id": "CC2.1.2",
+              "description": "Captures internal and external sources of data - Information systems capture internal and external sources of data.",
+              "guidance": "Examine data capture mechanisms and source documentation."
+            }
+          ]
+        },
+        {
+          "id": "CC3.1",
+          "name": "COSO Principle 6",
+          "description": "The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives.",
+          "requirements": [
+            {
+              "id": "CC3.1.1",
+              "description": "Operations objectives - Reflects management's choices and considers tolerance for risk.",
+              "guidance": "Review documented operational objectives and risk tolerance statements."
+            },
+            {
+              "id": "CC3.1.2",
+              "description": "External financial reporting objectives - Complies with applicable accounting standards.",
+              "guidance": "Examine financial reporting objectives and compliance documentation."
+            }
+          ]
+        },
+        {
+          "id": "CC4.1",
+          "name": "COSO Principle 16",
+          "description": "The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain whether components of internal control are present and functioning.",
+          "requirements": [
+            {
+              "id": "CC4.1.1",
+              "description": "Considers a mix of ongoing and separate evaluations - Management includes a balance of ongoing and separate evaluations.",
+              "guidance": "Review monitoring activities schedule and evaluation reports."
+            },
+            {
+              "id": "CC4.1.2",
+              "description": "Considers rate of change - Management considers the rate of change in business and processes when selecting evaluations.",
+              "guidance": "Examine change management documentation and evaluation frequency assessments."
+            }
+          ]
+        },
+        {
+          "id": "CC5.1",
+          "name": "COSO Principle 10",
+          "description": "The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels.",
+          "requirements": [
+            {
+              "id": "CC5.1.1",
+              "description": "Integrates with risk assessment - Control activities help ensure that risk responses are effectively carried out.",
+              "guidance": "Review risk assessment documentation and control activity mapping."
+            },
+            {
+              "id": "CC5.1.2",
+              "description": "Considers entity-specific factors - Management considers entity-specific factors when selecting control activities.",
+              "guidance": "Examine control selection rationale and entity-specific considerations."
+            }
+          ]
+        },
+        {
+          "id": "CC6.1",
+          "name": "Logical and Physical Access Controls",
+          "description": "The entity implements logical access security software, infrastructure, and architectures over protected information assets.",
+          "requirements": [
+            {
+              "id": "CC6.1.1",
+              "description": "Identifies and manages the inventory of information assets - The entity identifies, inventories, and manages information assets.",
+              "guidance": "Review asset inventory and classification procedures."
+            },
+            {
+              "id": "CC6.1.2",
+              "description": "Restricts logical access - Logical access to information assets is restricted through the use of access control software and rule sets.",
+              "guidance": "Examine access control configurations and user provisioning processes."
+            },
+            {
+              "id": "CC6.1.3",
+              "description": "Identifies and authenticates users - Users are identified and authenticated when accessing protected information assets.",
+              "guidance": "Review authentication mechanisms and identity verification procedures."
+            }
+          ]
+        },
+        {
+          "id": "CC6.2",
+          "name": "User Registration and Authorization",
+          "description": "Prior to issuing system credentials, the entity registers and authorizes new internal and external users.",
+          "requirements": [
+            {
+              "id": "CC6.2.1",
+              "description": "Controls access credentials - Procedures are in place to control access credentials.",
+              "guidance": "Review credential management policies and provisioning workflows."
+            },
+            {
+              "id": "CC6.2.2",
+              "description": "Removes access when no longer required - Access to information assets is removed when no longer required.",
+              "guidance": "Examine termination procedures and access removal logs."
+            }
+          ]
+        },
+        {
+          "id": "CC6.3",
+          "name": "Role-Based Access",
+          "description": "The entity authorizes, modifies, or removes access based on roles, responsibilities, or the system design and changes.",
+          "requirements": [
+            {
+              "id": "CC6.3.1",
+              "description": "Creates or modifies access based on authorization - Access is created or modified based on valid access authorization.",
+              "guidance": "Review access request and approval workflows."
+            },
+            {
+              "id": "CC6.3.2",
+              "description": "Reviews access periodically - Access is reviewed periodically and modified as needed.",
+              "guidance": "Examine access review schedules and remediation actions."
+            }
+          ]
+        },
+        {
+          "id": "CC7.1",
+          "name": "System Operations Monitoring",
+          "description": "To meet its objectives, the entity uses detection and monitoring procedures to identify changes to configurations and anomalies.",
+          "requirements": [
+            {
+              "id": "CC7.1.1",
+              "description": "Uses defined configuration standards - Management has defined configuration standards.",
+              "guidance": "Review configuration baseline documentation and hardening standards."
+            },
+            {
+              "id": "CC7.1.2",
+              "description": "Monitors infrastructure components - Infrastructure components are monitored for deviations from standards.",
+              "guidance": "Examine monitoring tools and alerting configurations."
+            }
+          ]
+        },
+        {
+          "id": "CC7.2",
+          "name": "Security Event Monitoring",
+          "description": "The entity monitors system components and the operation of those components for anomalies indicative of malicious acts and errors.",
+          "requirements": [
+            {
+              "id": "CC7.2.1",
+              "description": "Implements detection policies - Management implements detection policies and procedures.",
+              "guidance": "Review security monitoring policies and SIEM configurations."
+            },
+            {
+              "id": "CC7.2.2",
+              "description": "Monitors detection systems - Security detection systems are monitored for anomalies.",
+              "guidance": "Examine security event logs and incident detection procedures."
+            }
+          ]
+        },
+        {
+          "id": "CC8.1",
+          "name": "Change Management",
+          "description": "The entity authorizes, designs, develops, configures, documents, tests, approves, and implements changes to meet its objectives.",
+          "requirements": [
+            {
+              "id": "CC8.1.1",
+              "description": "Manages changes throughout the system lifecycle - Changes are managed throughout the system lifecycle.",
+              "guidance": "Review change management procedures and change request documentation."
+            },
+            {
+              "id": "CC8.1.2",
+              "description": "Authorizes changes - Changes to the system are authorized before implementation.",
+              "guidance": "Examine change approval workflows and authorization records."
+            },
+            {
+              "id": "CC8.1.3",
+              "description": "Tests changes - Changes are tested before implementation.",
+              "guidance": "Review test plans and test results documentation."
+            }
+          ]
+        },
+        {
+          "id": "CC9.1",
+          "name": "Risk Mitigation",
+          "description": "The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions.",
+          "requirements": [
+            {
+              "id": "CC9.1.1",
+              "description": "Identifies risks that could impair objectives - Management identifies risks that could impair system objectives.",
+              "guidance": "Review risk identification procedures and risk register."
+            },
+            {
+              "id": "CC9.1.2",
+              "description": "Assesses risks to objectives - Identified risks are assessed to determine impact and likelihood.",
+              "guidance": "Examine risk assessment methodology and results."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A",
+      "name": "Availability",
+      "description": "The system is available for operation and use as committed or agreed.",
+      "controls": [
+        {
+          "id": "A1.1",
+          "name": "Availability Commitments",
+          "description": "The entity maintains, monitors, and evaluates current processing capacity and use of system components to manage capacity demand.",
+          "requirements": [
+            {
+              "id": "A1.1.1",
+              "description": "Measures current usage - Current usage is measured to establish a baseline.",
+              "guidance": "Review capacity monitoring tools and usage reports."
+            },
+            {
+              "id": "A1.1.2",
+              "description": "Forecasts capacity - Capacity forecasts are made based on historical trends and future requirements.",
+              "guidance": "Examine capacity planning documentation and forecasting methods."
+            }
+          ]
+        },
+        {
+          "id": "A1.2",
+          "name": "Recovery Planning",
+          "description": "The entity authorizes, designs, develops, implements, operates, approves, maintains, and monitors environmental protections and recovery infrastructure.",
+          "requirements": [
+            {
+              "id": "A1.2.1",
+              "description": "Identifies environmental threats - Environmental threats are identified and addressed.",
+              "guidance": "Review environmental risk assessments and mitigation controls."
+            },
+            {
+              "id": "A1.2.2",
+              "description": "Implements recovery infrastructure - Recovery infrastructure is in place to support system availability.",
+              "guidance": "Examine backup and recovery infrastructure documentation."
+            }
+          ]
+        },
+        {
+          "id": "A1.3",
+          "name": "Recovery Testing",
+          "description": "The entity tests recovery plan procedures supporting system recovery to meet its objectives.",
+          "requirements": [
+            {
+              "id": "A1.3.1",
+              "description": "Tests recovery procedures - Recovery procedures are tested periodically.",
+              "guidance": "Review recovery test plans and test results."
+            },
+            {
+              "id": "A1.3.2",
+              "description": "Documents test results - Recovery test results are documented and gaps addressed.",
+              "guidance": "Examine recovery test reports and remediation actions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI",
+      "name": "Processing Integrity",
+      "description": "System processing is complete, valid, accurate, timely, and authorized to meet the entity's objectives.",
+      "controls": [
+        {
+          "id": "PI1.1",
+          "name": "Processing Integrity Policies",
+          "description": "The entity obtains or generates, uses, and communicates relevant, quality information regarding the objectives related to processing.",
+          "requirements": [
+            {
+              "id": "PI1.1.1",
+              "description": "Defines processing specifications - Processing specifications are defined and documented.",
+              "guidance": "Review processing specifications and data flow documentation."
+            },
+            {
+              "id": "PI1.1.2",
+              "description": "Implements input controls - Input controls ensure data completeness and accuracy.",
+              "guidance": "Examine input validation controls and error handling procedures."
+            }
+          ]
+        },
+        {
+          "id": "PI1.2",
+          "name": "System Inputs",
+          "description": "The entity implements policies and procedures over system inputs that result in products, services, and reporting to meet the entity's objectives.",
+          "requirements": [
+            {
+              "id": "PI1.2.1",
+              "description": "Validates system inputs - System inputs are validated for completeness and accuracy.",
+              "guidance": "Review input validation rules and rejection handling."
+            }
+          ]
+        },
+        {
+          "id": "PI1.3",
+          "name": "Processing Activities",
+          "description": "The entity implements policies and procedures over processing activities to result in products, services, and reporting to meet the entity's objectives.",
+          "requirements": [
+            {
+              "id": "PI1.3.1",
+              "description": "Implements processing controls - Processing controls ensure transactions are processed correctly.",
+              "guidance": "Examine processing logic and control procedures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Confidentiality",
+      "description": "Information designated as confidential is protected as committed or agreed.",
+      "controls": [
+        {
+          "id": "C1.1",
+          "name": "Confidentiality Policies",
+          "description": "The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality.",
+          "requirements": [
+            {
+              "id": "C1.1.1",
+              "description": "Identifies confidential information - Procedures exist to identify confidential information.",
+              "guidance": "Review data classification policies and confidential data inventories."
+            },
+            {
+              "id": "C1.1.2",
+              "description": "Protects confidential information - Confidential information is protected from unauthorized access.",
+              "guidance": "Examine access controls and encryption mechanisms for confidential data."
+            }
+          ]
+        },
+        {
+          "id": "C1.2",
+          "name": "Confidential Information Disposal",
+          "description": "The entity disposes of confidential information to meet the entity's objectives related to confidentiality.",
+          "requirements": [
+            {
+              "id": "C1.2.1",
+              "description": "Identifies data for disposal - Data requiring disposal is identified based on retention policies.",
+              "guidance": "Review data retention policies and disposal schedules."
+            },
+            {
+              "id": "C1.2.2",
+              "description": "Disposes of data securely - Confidential data is disposed of using secure methods.",
+              "guidance": "Examine secure disposal procedures and destruction certificates."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P",
+      "name": "Privacy",
+      "description": "Personal information is collected, used, retained, disclosed, and disposed to meet the entity's objectives.",
+      "controls": [
+        {
+          "id": "P1.1",
+          "name": "Privacy Notice",
+          "description": "The entity provides notice to data subjects about its privacy practices.",
+          "requirements": [
+            {
+              "id": "P1.1.1",
+              "description": "Provides notice at collection - Notice is provided at or before the time of collection.",
+              "guidance": "Review privacy notices and collection point implementations."
+            }
+          ]
+        },
+        {
+          "id": "P2.1",
+          "name": "Consent",
+          "description": "The entity communicates choices available to data subjects and obtains consent.",
+          "requirements": [
+            {
+              "id": "P2.1.1",
+              "description": "Communicates choices - Choices regarding data use are communicated to data subjects.",
+              "guidance": "Examine consent mechanisms and preference management."
+            },
+            {
+              "id": "P2.1.2",
+              "description": "Obtains consent - Consent is obtained before collecting personal information.",
+              "guidance": "Review consent collection processes and documentation."
+            }
+          ]
+        },
+        {
+          "id": "P3.1",
+          "name": "Collection",
+          "description": "Personal information is collected consistent with the entity's objectives related to privacy.",
+          "requirements": [
+            {
+              "id": "P3.1.1",
+              "description": "Limits collection to specified purposes - Collection is limited to purposes identified in the privacy notice.",
+              "guidance": "Review data collection practices against stated purposes."
+            }
+          ]
+        },
+        {
+          "id": "P4.1",
+          "name": "Use and Retention",
+          "description": "The entity limits the use and retention of personal information to meet the entity's objectives.",
+          "requirements": [
+            {
+              "id": "P4.1.1",
+              "description": "Limits use to purposes - Use is limited to purposes identified in the privacy notice.",
+              "guidance": "Examine data use practices and purpose limitation controls."
+            },
+            {
+              "id": "P4.1.2",
+              "description": "Retains for required period - Personal information is retained only for the required period.",
+              "guidance": "Review retention schedules and data lifecycle management."
+            }
+          ]
+        },
+        {
+          "id": "P5.1",
+          "name": "Access",
+          "description": "The entity grants identified and authenticated data subjects the ability to access their stored personal information.",
+          "requirements": [
+            {
+              "id": "P5.1.1",
+              "description": "Authenticates data subject - Data subject identity is authenticated before providing access.",
+              "guidance": "Review identity verification procedures for data subject requests."
+            },
+            {
+              "id": "P5.1.2",
+              "description": "Provides access within reasonable time - Access is provided within a reasonable time frame.",
+              "guidance": "Examine data subject request handling procedures and timelines."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

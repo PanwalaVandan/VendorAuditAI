@@ -1,5 +1,0 @@
-# Local development dependencies for parser-service/
-# Install with:  pip install -r requirements-dev.txt
-
-modal>=0.73.0       # Modal CLI + SDK
-httpx>=0.26.0       # Used by test_parse.py
